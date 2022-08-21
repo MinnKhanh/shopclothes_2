@@ -10,4 +10,6 @@ class Categories extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'categories';
+    public $timestamps = false;
+    protected $fillable = ['type', 'name'];
 }

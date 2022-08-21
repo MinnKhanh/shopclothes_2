@@ -6,7 +6,7 @@
             <span class="bg-secondary pe-3">Danh sách sản phẩm</span>
         </h5>
         <div class="custom-datatable bg-light p-30 table-responsive">
-            <form action="{{route('admin.product.addproduct')}}" class = "mb-3"> <button type="submit" class="btn btn-primary rounded-0 shadow-none">Thêm sản phẩm</button></form>
+            <form action="{{route('admin.product.create')}}" class = "mb-3"> <button type="submit" class="btn btn-primary rounded-0 shadow-none">Thêm sản phẩm</button></form>
           
             <table id="product-table" class="table table-bordered text-center">
                 <thead class="align-middle table-dark">

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TypeRequest;
+use App\Models\Img;
 use App\Models\Type;
 use Illuminate\Http\Request;
 
@@ -16,5 +18,21 @@ class TypeController extends Controller
             $data = Type::get()->toArray();
         }
         return $data;
+    }
+    public function create(Request $request)
+    {
+    }
+    public function store(Request $request)
+    {
+        $type = new Type();
+        $type->name = $request->input('name');
+        $type->save();
+        $logo = optional($request->file('photo'))->store('public/type_img');
+        Img::create([
+            'id_product' => $type->id,
+            'path' => $logo,
+            'type' => 3
+        ]);
+        return $type;
     }
 }

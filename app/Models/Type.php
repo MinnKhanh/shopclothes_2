@@ -10,4 +10,12 @@ class Type extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'type';
+    public $timestamps = false;
+    protected $fillable = [
+        'name'
+    ];
+    public function Categories()
+    {
+        return $this->hasMany(Categories::class, 'type', 'id');
+    }
 }

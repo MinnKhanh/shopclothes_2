@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Brand;
+use App\Models\ProductDetail;
+use App\Models\Products;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Relation::enforceMorphMap([
+            1 => Products::class,
+            5 => Brand::class,
+            2 => ProductDetail::class,
+        ]);
     }
 }

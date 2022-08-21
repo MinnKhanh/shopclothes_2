@@ -10,4 +10,8 @@ class ProductDetail extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'product_detail';
+    public function Img()
+    {
+        return $this->morphMany(Img::class, 'product', 'type');
+    }
 }
