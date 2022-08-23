@@ -37,7 +37,8 @@ class CategoryController extends Controller
         Img::create([
             'id_product' => $Category->id,
             'path' => $logo,
-            'type' => 4
+            'type' => 4,
+            'img_index' => 1
         ]);
         return $Category;
     }

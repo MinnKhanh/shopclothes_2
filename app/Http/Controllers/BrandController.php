@@ -27,7 +27,8 @@ class BrandController extends Controller
         Img::create([
             'id_product' => $brand->id,
             'path' => $logo,
-            'type' => 5
+            'type' => 5,
+            'img_index' => 1
         ]);
         return $brand;
     }

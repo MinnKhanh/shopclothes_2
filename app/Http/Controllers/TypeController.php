@@ -31,7 +31,8 @@ class TypeController extends Controller
         Img::create([
             'id_product' => $type->id,
             'path' => $logo,
-            'type' => 3
+            'type' => 3,
+            'img_index' => 1
         ]);
         return $type;
     }

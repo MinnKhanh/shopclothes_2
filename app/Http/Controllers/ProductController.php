@@ -71,7 +71,8 @@ class ProductController extends Controller
                     Img::create([
                         'product_id' => $product->id,
                         'path' => $logo,
-                        'type' => 1
+                        'type' => 1,
+                        'img_index' => 1
                     ]);
                     DB::commit();
                     return redirect()->route('admin.product.createdetail', ['id' => $product->id]);
@@ -84,8 +85,11 @@ class ProductController extends Controller
     }
     public function createDetail(Request $request)
     {
-        //dd(Color::pluck('id')->toArray());
-        return view('admin.category', ['id' => $request->get('id')]);
+        //dd(ProductDetail::with('sizeProduct', 'colorProduct')->where('id_product', $request->get('id'))->get()->toArray());
+        return view('admin.category', [
+            'id' => $request->get('id'),
+            'list' => ProductDetail::with('sizeProduct', 'colorProduct')->where('id_product', $request->get('id'))->get()->toArray()
+        ]);
     }
     public function storeDetail(Request $request)
     {
@@ -93,27 +97,60 @@ class ProductController extends Controller
             'idProduct' => 'required',
             'color' => ['required', Rule::in(Color::pluck('id')->toArray()),],
             'size' => ['required', Rule::in(Size::pluck('id')->toArray()),],
-            'quanity' => 'required| numeric',
-            'photo' => 'required',
-            'photo.*' => 'mimes:csv,txt,xlx,xls,pdf'
+            'quantity' => 'required| numeric',
+            'photo' => $request->input('id') ? '' : 'required',
+            'photo.*' => $request->input('id') ? '' : 'image'
         ]);
         $productDetail = new ProductDetail();
-        $productDetail->size = $request->input('size');
-        $productDetail->color = $request->input('color');
-        $productDetail->quanity = $request->input('quanity');
+        if ($request->input('id')) {
+            $productDetail = ProductDetail::where('id', $request->input('id'))->first();
+        }
+        //$productDetail = new ProductDetail();
+        $productDetail->id_size = $request->input('size');
+        $productDetail->id_color = $request->input('color');
+        $productDetail->quantity = $request->input('quantity');
         $productDetail->id_product = $request->input('idProduct');
         $productDetail->save();
-        if ($request->hasFile('photo')) {
+        if ($request->input('id')) {
+            for ($i = 1; $i <= $request->input('numberimg'); $i++) {
+                //dd('chay');
+                if ($request->hasFile('photo' . $i)) {
+                    $logo = optional($request->file('photo' . $i))->store('public/product_img');
+                    DB::table('imgs')->where("product_id", $request->get('id'))->where('type', 2)->where('img_index', $i)->update(['path' => $logo]);
+                }
+            }
+        }
+        // dd('khong cos');
+        else if ($request->hasFile('photo')) {
             $files = $request->file('photo');
+            $i = 0;
             foreach ($files as $file) {
-                $logo = optional($file)->store('product-detail_img');
+                $i++;
+                $logo = optional($file)->store('public/product-detail_img');
                 Img::create([
                     'product_id' => $productDetail->id,
                     'path' => $logo,
-                    'type' => 2
+                    'type' => 2,
+                    'img_index' => $i
                 ]);
             }
         }
-        return $productDetail;
+        return [$productDetail, Size::where('id', $request->input('size'))->first()->name, Color::where('id', $request->input('color'))->first()->name];
+    }
+    public function getDetailProduct(Request $request)
+    {
+        $data = ProductDetail::with(['Img' => fn ($query) => $query->where('type', 2), 'sizeProduct', 'colorProduct'])->where('id', $request->input('id'))->first();
+        return $data ? $data->toArray() : [];
+    }
+    public function updateProductDetail(Request $request)
+    {
+    }
+    public function removeImg(Request $request)
+    {
+        if ($request->input('id')) {
+            ProductDetail::where('id', $request->input('id'))->delete();
+            return 1;
+        }
+        return 0;
     }
 }

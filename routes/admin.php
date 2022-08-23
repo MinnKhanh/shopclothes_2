@@ -29,6 +29,7 @@ Route::group([
     Route::get('/update', [ProductController::class, 'update'])->name('update');
     Route::get('/create-detail', [ProductController::class, 'createDetail'])->name('createdetail');
     Route::post('/store-detail', [ProductController::class, 'storeDetail'])->name('storedetail');
+    Route::delete('/remove-img', [ProductController::class, 'removeImg'])->name('removeimg');
 });
 Route::group([
     'as'     => 'type.',

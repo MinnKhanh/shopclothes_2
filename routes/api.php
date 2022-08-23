@@ -3,9 +3,11 @@
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\TypeController;
 use App\Models\Color;
+use App\Models\ProductDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,3 +31,4 @@ Route::get('/type', [TypeController::class, 'getListType'])->name('type');
 Route::get('/brand', [BrandController::class, 'getListBrand'])->name('brand');
 Route::get('/color', [ColorController::class, 'getListColor'])->name('color');
 Route::get('/size', [SizeController::class, 'getListSize'])->name('size');
+Route::get('/productdetail', [ProductController::class, 'getDetailProduct'])->name('productdetail');
