@@ -11,7 +11,7 @@ class Img extends Model
     use HasFactory, SoftDeletes;
     public $timestamps = false;
     protected $fillable = [
-        'product_id', 'path', 'type'
+        'product_id', 'path', 'type', 'img_index'
     ];
     protected $table = 'imgs';
     public function ImgProduct()

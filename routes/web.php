@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProductController;
+use App\Models\Products;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,4 +32,11 @@ Route::get('orders/cart', function () {
 });
 Route::get('orders/checkout', function () {
     return view('orders.checkout');
+});
+Route::group([
+    'as'     => 'product.',
+    'prefix' => 'product',
+], static function () {
+    Route::get('/', [ProductController::class, 'index'])->name('index');
+    Route::get('/list-product', [ProductController::class, 'getProductBy'])->name('listproduct');
 });

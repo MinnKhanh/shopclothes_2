@@ -3,7 +3,7 @@
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +30,7 @@ Route::group([
     Route::get('/create-detail', [ProductController::class, 'createDetail'])->name('createdetail');
     Route::post('/store-detail', [ProductController::class, 'storeDetail'])->name('storedetail');
     Route::delete('/remove-img', [ProductController::class, 'removeImg'])->name('removeimg');
+    Route::delete('/remove-detail', [ProductController::class, 'removeDetail'])->name('removedetail');
 });
 Route::group([
     'as'     => 'type.',

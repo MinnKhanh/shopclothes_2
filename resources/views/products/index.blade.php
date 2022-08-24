@@ -1,4 +1,12 @@
   @extends('layout.master')
+  @push('css')
+    <style>
+        .img-fluid{
+            height: 260px;
+            
+        }
+    </style>
+  @endpush
   @section('content')
   <!-- Breadcrumb Start -->
     <div class="container-fluid">
@@ -25,33 +33,38 @@
                 <div class="bg-light p-4 mb-30">
                     <form>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="price-all">
+                            <input type="checkbox" class="custom-control-input" value='all' checked id="price-all">
                             <label class="custom-control-label" for="price-all">All Price</label>
-                            <span class="badge border font-weight-normal">1000</span>
+                            <span class="badge border font-weight-normal">100.000Đ</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-1">
-                            <label class="custom-control-label" for="price-1">$0 - $100</label>
+                            <input type="checkbox" class="custom-control-input" value='100000' id="price-1">
+                            <label class="custom-control-label lbprice" for="price-1">< 100.000Đ</label>
                             <span class="badge border font-weight-normal">150</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-2">
-                            <label class="custom-control-label" for="price-2">$100 - $200</label>
+                            <input type="checkbox" class="custom-control-input" value='100000' id="price-2">
+                            <label class="custom-control-label lbprice" for="price-2">100.000Đ - 200.000Đ</label>
                             <span class="badge border font-weight-normal">295</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-3">
-                            <label class="custom-control-label" for="price-3">$200 - $300</label>
+                            <input type="checkbox" class="custom-control-input" value='200000-400000' id="price-3">
+                            <label class="custom-control-label lbprice" for="price-3">200.000 - 400.000Đ</label>
                             <span class="badge border font-weight-normal">246</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input type="checkbox" class="custom-control-input" id="price-4">
-                            <label class="custom-control-label" for="price-4">$300 - $400</label>
+                            <label class="custom-control-label lbprice" for="price-4">400.000Đ - 600.000Đ</label>
                             <span class="badge border font-weight-normal">145</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
                             <input type="checkbox" class="custom-control-input" id="price-5">
-                            <label class="custom-control-label" for="price-5">$400 - $500</label>
+                            <label class="custom-control-label lbprice" for="price-5">600.000Đ - 1000.000Đ</label>
+                            <span class="badge border font-weight-normal">168</span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
+                            <input type="checkbox" class="custom-control-input" id="price-5">
+                            <label class="custom-control-label lbprice" for="price-5">> 1000.000Đ</label>
                             <span class="badge border font-weight-normal">168</span>
                         </div>
                     </form>
@@ -59,53 +72,24 @@
                 <!-- Price End -->
                 
                 <!-- Color Start -->
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by color</span></h5>
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by type</span></h5>
                 <div class="bg-light p-4 mb-30">
-                    <form>
+                      <form>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="color-all">
-                            <label class="custom-control-label" for="price-all">All Color</label>
+                            <input type="checkbox" class="custom-control-input typeall" value=0 checked id="type-all">
+                            <label class="custom-control-label" for="type-all">All Type</label>
                             <span class="badge border font-weight-normal">1000</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-1">
-                            <label class="custom-control-label" for="color-1">Black</label>
+                        @forelse ($type as $item)
+                            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input type" value={{$item['id']}} id="type-{{$item['id']}}">
+                            <label class="custom-control-label" for="type-{{$item['id']}}">{{$item['name']}}</label>
                             <span class="badge border font-weight-normal">150</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-2">
-                            <label class="custom-control-label" for="color-2">White</label>
-                            <span class="badge border font-weight-normal">295</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-3">
-                            <label class="custom-control-label" for="color-3">Red</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-4">
-                            <label class="custom-control-label" for="color-4">Blue</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="color-5">
-                            <label class="custom-control-label" for="color-5">Green</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div>
-                    </form>
-                </div>
-                <!-- Color End -->
-
-                <!-- Size Start -->
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by size</span></h5>
-                <div class="bg-light p-4 mb-30">
-                    <form>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="size-all">
-                            <label class="custom-control-label" for="size-all">All Size</label>
-                            <span class="badge border font-weight-normal">1000</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            </div>
+                        @empty
+                            
+                        @endforelse
+                        {{-- <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input type="checkbox" class="custom-control-input" id="size-1">
                             <label class="custom-control-label" for="size-1">XS</label>
                             <span class="badge border font-weight-normal">150</span>
@@ -129,7 +113,55 @@
                             <input type="checkbox" class="custom-control-input" id="size-5">
                             <label class="custom-control-label" for="size-5">XL</label>
                             <span class="badge border font-weight-normal">168</span>
+                        </div> --}}
+                    </form>
+                  
+                </div>
+                <!-- Color End -->
+
+                <!-- Size Start -->
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by category</span></h5>
+                <div class="bg-light p-4 mb-30">
+                    <form>
+                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input categoryall" checked id="category-all">
+                            <label class="custom-control-label" for="category-all">All Category</label>
+                            <span class="badge border font-weight-normal">1000</span>
                         </div>
+                        @forelse ($categories as $item)
+                            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input category" value={{$item['id']}} id="category-{{$item['id']}}">
+                            <label class="custom-control-label" for="category-{{$item['id']}}">{{$item['name']}} ({{$item['typename']}})</label>
+                            <span class="badge border font-weight-normal">1000</span>
+                        </div>
+                        @empty
+                            
+                        @endforelse
+                        {{-- <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="color-1">
+                            <label class="custom-control-label" for="color-1">Black</label>
+                            <span class="badge border font-weight-normal">150</span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="color-2">
+                            <label class="custom-control-label" for="color-2">White</label>
+                            <span class="badge border font-weight-normal">295</span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="color-3">
+                            <label class="custom-control-label" for="color-3">Red</label>
+                            <span class="badge border font-weight-normal">246</span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="color-4">
+                            <label class="custom-control-label" for="color-4">Blue</label>
+                            <span class="badge border font-weight-normal">145</span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
+                            <input type="checkbox" class="custom-control-input" id="color-5">
+                            <label class="custom-control-label" for="color-5">Green</label>
+                            <span class="badge border font-weight-normal">168</span>
+                        </div> --}}
                     </form>
                 </div>
                 <!-- Size End -->
@@ -166,10 +198,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                    @forelse ($list as $item)
+                         <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
                         <div class="product-item bg-light mb-4">
                             <div class="product-img position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="img/product-1.jpg" alt="">
+                                <img class="img-fluid w-100 imgProduct" src="{{asset('storage/'.$item['img'][0]['path'])}}" alt="">
                                 <div class="product-action">
                                     <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
                                     <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
@@ -178,9 +211,12 @@
                                 </div>
                             </div>
                             <div class="text-center py-4">
-                                <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
+                                <a class="h6 text-decoration-none text-truncate" href="">{{$item['name']}}</a>
                                 <div class="d-flex align-items-center justify-content-center mt-2">
-                                    <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                                    <h5>{{$item['priceSell']}}Đ</h5>
+                                </div>
+                                 <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <h5>{{$item['brand_product']['name']}}</h5>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center mb-1">
                                     <small class="fa fa-star text-primary mr-1"></small>
@@ -188,13 +224,17 @@
                                     <small class="fa fa-star text-primary mr-1"></small>
                                     <small class="fa fa-star text-primary mr-1"></small>
                                     <small class="fa fa-star text-primary mr-1"></small>
-                                    <small>(99)</small>
+                                    {{-- <small>(99)</small> --}}
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-                        <div class="product-item bg-light mb-4">
+                    @empty
+                        
+                    @endforelse
+                   
+                    {{-- <div class="col-lg-4 col-md-6 col-sm-6 pb-1"> --}}
+                        {{-- <div class="product-item bg-light mb-4">
                             <div class="product-img position-relative overflow-hidden">
                                 <img class="img-fluid w-100" src="img/product-2.jpg" alt="">
                                 <div class="product-action">
@@ -408,7 +448,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-12">
                         <nav>
                           <ul class="pagination justify-content-center">
@@ -426,3 +466,66 @@
         </div>
     </div>
     @endsection
+    @push('js')
+    <script>
+        function getProduct(){
+              $.ajax({
+            url: `http://localhost/Coffee/addtocart.php?masp=${masp}&soluong=1&size=${size}`,
+            method: 'GET',
+            success: function (response) {
+
+             }
+            })
+        }
+        var Maphanloai=''
+        var categories=''
+        $('.type').change(function(){
+            if( $(".type:checked").length>0){
+             document.getElementById("type-all").checked = false;
+            }else{
+             document.getElementById("type-all").checked = true;
+            }
+            let i=0
+             Maphanloai=''
+           $(".type:checked").each(function(){
+                if(i==0)
+                Maphanloai+=$(this).val()
+                else
+                Maphanloai+="-"+$(this).val()
+               i++;
+        });
+       
+        console.log(Maphanloai)
+        })
+         $('.category').change(function(){
+            if( $(".category:checked").length>0){
+             document.getElementById("category-all").checked = false;
+            }else{
+             document.getElementById("category-all").checked = true;
+            }
+            let i=0
+             categories=''
+           $(".category:checked").each(function(){
+                if(i==0)
+                categories+=$(this).val()
+                else
+                categories+="-"+$(this).val()
+               i++;
+            });
+            console.log(categories)
+        })
+         $(".categoryall").change(function(){
+            categories=""
+            if($('.categoryall').is(':checked')){
+                $(".category").prop( "checked", false );
+            }
+        })
+         $(".typeall").change(function(){
+            categories=""
+            if($('.typeall').is(':checked')){
+                $(".type").prop( "checked", false );
+            }
+        })
+    </script>
+        
+    @endpush
