@@ -8,6 +8,9 @@
     height: 36px;
     border-radius: 0px;
 }
+.error{
+    color: red !important;
+}
     </style>
 @endpush
 @section('content')

@@ -40,6 +40,7 @@ class ProductController extends Controller
     public function getProductBy(Request $request)
     {
         $product = Products::with('Img', 'BrandProduct');
+
         if ($request->input('type')) {
             $types = explode('-', $request->input('type'));
             $product->whereIn('type', $types);
@@ -48,6 +49,21 @@ class ProductController extends Controller
             $categories = explode('-', $request->input('category'));
             $product->whereIn('category', $categories);
         }
-        dd($product->get()->toArray());
+        if ($request->input('price')) {
+            $prices = preg_replace("/[Đ\.><]/", "", $request->input('price'));
+            // $prices = str_replace(".", "", $prices);
+            // $prices = str_replace(".", "", $prices);
+            $prices = explode('_', $prices);
+            $product->where(function ($query) use ($prices) {
+                foreach ($prices as $item) {
+                    $itemprices = explode(' ', trim($item));
+                    $from = $itemprices[0];
+                    $to = $itemprices[count($itemprices) - 1];
+                    $query->orwhereBetween('priceSell', [$from, $to]);
+                }
+            });
+        }
+        //  dd($product->get()->toArray());
+        return $product->get()->toArray();
     }
 }

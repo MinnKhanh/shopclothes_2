@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\TypeController;
 use App\Models\Color;

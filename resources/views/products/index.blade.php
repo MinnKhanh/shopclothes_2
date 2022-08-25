@@ -5,6 +5,38 @@
             height: 260px;
             
         }
+        .priceitem{
+                font-size: .9rem
+        }
+        .paginationjs-page > a,.paginationjs-prev >a,.paginationjs-next > a {
+            position: relative;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #FFD333 !important;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+
+        }
+        .active >a{
+            background-color:  #ffc107;
+            color: white !important;
+        }
+        .paginationjs-page > a:hover,.paginationjs-prev >a:hover,.paginationjs-next > a:hover {
+            z-index: 2;
+            color: #FFD333 !important;
+            text-decoration: none;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+        li{
+            list-style: none;
+        }
+        .paginationjs-pages > ul{
+            display: flex;
+            justify-content: center;
+        }
     </style>
   @endpush
   @section('content')
@@ -32,39 +64,39 @@
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by price</span></h5>
                 <div class="bg-light p-4 mb-30">
                     <form>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" value='all' checked id="price-all">
-                            <label class="custom-control-label" for="price-all">All Price</label>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
+                            <input type="checkbox" class="custom-control-input inputPrice" checked id="price-all">
+                            <label class="custom-control-label priceall" for="price-all">All Price</label>
                             <span class="badge border font-weight-normal">100.000Đ</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" value='100000' id="price-1">
-                            <label class="custom-control-label lbprice" for="price-1">< 100.000Đ</label>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
+                            <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-1">
+                            <label class="custom-control-label lbprice priceitem" for="price-1">< 100.000Đ</label>
                             <span class="badge border font-weight-normal">150</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" value='100000' id="price-2">
-                            <label class="custom-control-label lbprice" for="price-2">100.000Đ - 200.000Đ</label>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
+                            <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-2">
+                            <label class="custom-control-label lbprice priceitem" for="price-2">100.000Đ - 200.000Đ</label>
                             <span class="badge border font-weight-normal">295</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" value='200000-400000' id="price-3">
-                            <label class="custom-control-label lbprice" for="price-3">200.000 - 400.000Đ</label>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
+                            <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" value='200000-400000' id="price-3">
+                            <label class="custom-control-label lbprice priceitem" for="price-3">200.000 - 400.000Đ</label>
                             <span class="badge border font-weight-normal">246</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-4">
-                            <label class="custom-control-label lbprice" for="price-4">400.000Đ - 600.000Đ</label>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
+                            <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-4">
+                            <label class="custom-control-label lbprice priceitem" for="price-4">400.000Đ - 600.000Đ</label>
                             <span class="badge border font-weight-normal">145</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="price-5">
-                            <label class="custom-control-label lbprice" for="price-5">600.000Đ - 1000.000Đ</label>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
+                            <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-5">
+                            <label class="custom-control-label lbprice priceitem" for="price-5">600.000Đ - 1000.000Đ</label>
                             <span class="badge border font-weight-normal">168</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="price-5">
-                            <label class="custom-control-label lbprice" for="price-5">> 1000.000Đ</label>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between price">
+                            <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-6">
+                            <label class="custom-control-label lbprice priceitem" for="price-6">> 1000.000Đ</label>
                             <span class="badge border font-weight-normal">168</span>
                         </div>
                     </form>
@@ -198,8 +230,9 @@
                             </div>
                         </div>
                     </div>
-                    @forelse ($list as $item)
-                         <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                     <div class="col-12 pb-1 row" id="list-products">
+                    {{-- @forelse ($list as $item) --}}
+                         {{-- <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
                         <div class="product-item bg-light mb-4">
                             <div class="product-img position-relative overflow-hidden">
                                 <img class="img-fluid w-100 imgProduct" src="{{asset('storage/'.$item['img'][0]['path'])}}" alt="">
@@ -225,13 +258,13 @@
                                     <small class="fa fa-star text-primary mr-1"></small>
                                     <small class="fa fa-star text-primary mr-1"></small>
                                     {{-- <small>(99)</small> --}}
-                                </div>
+                                {{-- </div>
                             </div>
                         </div>
-                    </div>
-                    @empty
+                    </div> --}}
+                    {{-- @empty
                         
-                    @endforelse
+                    @endforelse --}}
                    
                     {{-- <div class="col-lg-4 col-md-6 col-sm-6 pb-1"> --}}
                         {{-- <div class="product-item bg-light mb-4">
@@ -449,9 +482,12 @@
                             </div>
                         </div>
                     </div> --}}
-                    <div class="col-12">
+                     </div>
+                     <div class="col-12 pb-1" id="pagination">
+                    {{-- <div class="col-12"> 
                         <nav>
                           <ul class="pagination justify-content-center">
+                              
                             <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>
                             <li class="page-item active"><a class="page-link" href="#">1</a></li>
                             <li class="page-item"><a class="page-link" href="#">2</a></li>
@@ -459,7 +495,7 @@
                             <li class="page-item"><a class="page-link" href="#">Next</a></li>
                           </ul>
                         </nav>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <!-- Shop Product End -->
@@ -467,18 +503,102 @@
     </div>
     @endsection
     @push('js')
+         {{-- <script src={{ asset("js/pagination.min.js")}}></script> --}}
+        <script src={{ asset("js/pagination.js")}}></script>
     <script>
-        function getProduct(){
-              $.ajax({
-            url: `http://localhost/Coffee/addtocart.php?masp=${masp}&soluong=1&size=${size}`,
-            method: 'GET',
-            success: function (response) {
 
-             }
-            })
-        }
+
+        var rangePrice=''
         var Maphanloai=''
         var categories=''
+         getProduct()
+         $("#price-all").change(function(){
+             console.log('cha nha')
+            categories=""
+            if($('#price-all').is(':checked')){
+                $(".inputPriceitem").prop( "checked", false );
+            }
+        })
+        $('.inputPriceitem').change(function(){
+            console.log($(".inputPriceitem:checked"))
+             if( $(".inputPriceitem:checked").length>0){
+             document.getElementById("price-all").checked = false;
+            }else{
+             document.getElementById("price-all").checked = true;
+            }
+            let i=0
+           rangePrice=''
+             $(".inputPriceitem:checked").each(function(){
+                if(i==0)
+                 rangePrice+=$(this).next().text()
+                else
+                rangePrice+="_"+$(this).next().text()
+               i++;
+        })
+        //console.log(rangePrice)
+        getProduct()
+        })
+
+          function showproduct(response){
+    $('#pagination').pagination({
+    dataSource: response,
+    pageSize: 1,
+    formatResult: function(data) {
+       
+    },
+    callback: function(response, pagination) {
+        console.log("respon",response)
+        let inner=''
+        response.forEach(element => {
+                inner+=`  <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+            <div class="product-item bg-light mb-4">
+                <div class="product-img position-relative overflow-hidden">
+                    <img class="img-fluid w-100 imgProduct" src="http://localhost/Shop_clothes/public/storage/${element['img'][0]['path']}" alt="">
+                    <div class="product-action">
+                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                    </div>
+                </div>
+                <div class="text-center py-4">
+                    <a class="h6 text-decoration-none text-truncate" href="">${element['name']}</a>
+                    <div class="d-flex align-items-center justify-content-center mt-2">
+                        <h5>${element['priceSell']}Đ</h5>
+                    </div>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                        <h5>${element['brand_product']['name']}</h5>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center mb-1">
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        {{-- <small>(99)</small> --}}
+                    </div>
+                </div>
+            </div>
+        </div>`
+        });
+         document.getElementById('list-products').innerHTML = inner;
+          
+    }
+})
+     
+  }
+        function getProduct(){
+              $.ajax({
+                url: "{{route('product.listproduct')}}"+'?type='+Maphanloai+'&category='+categories+'&price='+rangePrice,
+                method: 'GET',
+                success: function (response) {
+                    console.log(response);
+                   showproduct(response)
+                   
+                }
+                })
+        }
+        
         $('.type').change(function(){
             if( $(".type:checked").length>0){
              document.getElementById("type-all").checked = false;
@@ -494,7 +614,7 @@
                 Maphanloai+="-"+$(this).val()
                i++;
         });
-       
+        getProduct()
         console.log(Maphanloai)
         })
          $('.category').change(function(){
@@ -512,6 +632,7 @@
                 categories+="-"+$(this).val()
                i++;
             });
+             getProduct()
             console.log(categories)
         })
          $(".categoryall").change(function(){
@@ -519,12 +640,14 @@
             if($('.categoryall').is(':checked')){
                 $(".category").prop( "checked", false );
             }
+             getProduct()
         })
          $(".typeall").change(function(){
             categories=""
             if($('.typeall').is(':checked')){
                 $(".type").prop( "checked", false );
             }
+             getProduct()
         })
     </script>
         

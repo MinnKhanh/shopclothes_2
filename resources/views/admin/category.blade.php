@@ -86,7 +86,7 @@
                             </th>
                         </tr>
                     @empty
-                        <tr>Chưa có dữ liệu</tr>
+                     
                     @endforelse
                 </tbody>
             </table>

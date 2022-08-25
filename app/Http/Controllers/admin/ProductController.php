@@ -59,12 +59,13 @@ class ProductController extends Controller
             $product->type = $request->get('type');
             $product->brand = $request->get('brand');
             $product->status = $request->get('status');
-            $product->feated = $request->get('featured');
+            $product->featured = $request->get('featured');
             $product->description = $request->get('description');
             $product->quantity = $request->get('quantity') ? $request->get('quantity') : 0;
             $product->save();
             if ($request->file('photo')) {
                 $logo = optional($request->file('photo'))->store('public/product_img');
+                $logo = str_replace("public/", "", $logo);
                 if ($request->get('id')) {
                     DB::table('imgs')->where("product_id", $request->get('id'))->where('type', 1)->update(['path' => $logo]);
                     DB::commit();
@@ -82,7 +83,7 @@ class ProductController extends Controller
             }
         } catch (Throwable $e) {
             DB::rollBack();
-            return Redirect::back()->withInput($request->input())->withErrors(['msg' => 'Thêm Thất Bại']);
+            return Redirect::back()->withInput($request->input())->withErrors(['msg' => $e->getMessage()]);
         }
     }
     public function createDetail(Request $request)
