@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class ProductDetail extends Model
 {
@@ -13,7 +14,6 @@ class ProductDetail extends Model
     protected $table = 'product_detail';
     protected $fillable = [
         'id_color',
-        'id_size',
         'quantity',
         'product_id',
         'price_import',
@@ -25,10 +25,14 @@ class ProductDetail extends Model
     }
     public function sizeProduct()
     {
-        return $this->belongsTo(Size::class, 'id_size', 'id');
+        return $this->hasManyThrough(Size::class, ProductSize::class, 'id_productdetail', 'id', 'id', 'size');
     }
     public function colorProduct()
     {
         return $this->belongsTo(Color::class, 'id_color', 'id');
+    }
+    public function ProductSizeDetail()
+    {
+        return $this->hasMany(ProductSize::class, 'id_productdetail', 'id'); //->select('id_productdetail', 'quantity');
     }
 }

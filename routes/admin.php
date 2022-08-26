@@ -31,6 +31,10 @@ Route::group([
     Route::post('/store-detail', [ProductController::class, 'storeDetail'])->name('storedetail');
     Route::delete('/remove-img', [ProductController::class, 'removeImg'])->name('removeimg');
     Route::delete('/remove-detail', [ProductController::class, 'removeDetail'])->name('removedetail');
+    Route::post('/store-size', [ProductController::class, 'storeSize'])->name('storeSize');
+    Route::get('/getsize', [ProductController::class, 'getSize'])->name('getsize');
+    Route::delete('/removesize', [ProductController::class, 'removeSize'])->name('removesize');
+    Route::post('/changesize', [ProductController::class, 'changeSize'])->name('changesize');
 });
 Route::group([
     'as'     => 'type.',

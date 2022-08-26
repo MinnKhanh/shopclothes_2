@@ -63,7 +63,20 @@ class ProductController extends Controller
                 }
             });
         }
+        if ($request->input('search')) {
+            $product->where('name', 'like', '%' . $request->get('search') . '%');
+        }
         //  dd($product->get()->toArray());
         return $product->get()->toArray();
+    }
+    public function getProductDetail(Request $request)
+    {
+        $data = Products::with('BrandProduct', 'Img', 'TypeProduct')->where('id', $request->input('id'))->get()->toArray();
+        return view('products.detail', ['data' => $data]);
+    }
+    public function listNameProduct(Request $request)
+    {
+        $data = Products::pluck('name')->toArray();
+        return $data;
     }
 }

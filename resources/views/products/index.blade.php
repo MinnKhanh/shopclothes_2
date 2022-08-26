@@ -37,7 +37,29 @@
             display: flex;
             justify-content: center;
         }
+        .autoComplete_list_1{
+            position: relative;
+        }
+         #autoComplete_list_1{
+            position: absolute;
+            /* transform: translate(0, 20px); */
+            z-index: 1;
+            top: 38px;
+            left: 0px;
+            background-color: white;
+            padding-left: 10px;
+            width: 100%;
+        }
+        #autoComplete_list_1 > li{
+            margin-top: 8px;
+             margin-bottom: 8px;
+        }
+        #autoComplete_list_1 > li:hover{
+            background-color: #f8f8f8
+        }
     </style>
+         {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css"> --}}
+
   @endpush
   @section('content')
   <!-- Breadcrumb Start -->
@@ -206,10 +228,24 @@
                 <div class="row pb-3">
                     <div class="col-12 pb-1">
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <div>
+                            <div class="d-flex">
                                 <button class="btn btn-sm btn-light"><i class="fa fa-th-large"></i></button>
                                 <button class="btn btn-sm btn-light ml-2"><i class="fa fa-bars"></i></button>
+                                <div>
+                                <form action="" class="ml-2">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" id="autoComplete" placeholder="Search for products">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg-transparent text-primary">
+                                                <i class="fa fa-search"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </form>
+                               {{-- <input id="autoComplete" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off"> --}}
                             </div>
+                            </div>
+                            
                             <div class="ml-2">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Sorting</button>
@@ -503,14 +539,40 @@
     </div>
     @endsection
     @push('js')
-         {{-- <script src={{ asset("js/pagination.min.js")}}></script> --}}
         <script src={{ asset("js/pagination.js")}}></script>
+         <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
     <script>
+        $.ajax({
+                url: "{{route('api.listnameproduct')}}",
+                method: 'GET',
+                success: function (response) {
+                    console.log(response)
+                       const autoCompleteJS = new autoComplete({
+                        placeHolder: "Search for Food...",
+                        data: {
+                            src: response,
+                            cache: true,
+                        },
+                        resultItem: {
+                            highlight: true
+                        },
+                        events: {
+                            input: {
+                                selection: (event) => {
+                                    const selection = event.detail.selection.value;
+                                    autoCompleteJS.input.value = selection;
+                                }
+                            }
+                        }
+                    });
+                }
+                })
 
 
         var rangePrice=''
         var Maphanloai=''
         var categories=''
+        var search=''
          getProduct()
          $("#price-all").change(function(){
              console.log('cha nha')
@@ -542,7 +604,7 @@
           function showproduct(response){
     $('#pagination').pagination({
     dataSource: response,
-    pageSize: 1,
+    pageSize: 3,
     formatResult: function(data) {
        
     },
@@ -553,16 +615,14 @@
                 inner+=`  <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
             <div class="product-item bg-light mb-4">
                 <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100 imgProduct" src="http://localhost/Shop_clothes/public/storage/${element['img'][0]['path']}" alt="">
+                    <img class="img-fluid w-100 imgProduct" src="{{asset('storage/')}}/${element['img'][0]['path']}" alt="">
                     <div class="product-action">
                         <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
                         <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
                     </div>
                 </div>
                 <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">${element['name']}</a>
+                    <a class="h6 text-decoration-none text-truncate" href="{{route('product.productdetail')}}?id=${element['id']}">${element['name']}</a>
                     <div class="d-flex align-items-center justify-content-center mt-2">
                         <h5>${element['priceSell']}Đ</h5>
                     </div>
@@ -589,7 +649,7 @@
   }
         function getProduct(){
               $.ajax({
-                url: "{{route('product.listproduct')}}"+'?type='+Maphanloai+'&category='+categories+'&price='+rangePrice,
+                url: "{{route('product.listproduct')}}"+'?type='+Maphanloai+'&category='+categories+'&price='+rangePrice+'&search='+search,
                 method: 'GET',
                 success: function (response) {
                     console.log(response);
@@ -598,7 +658,10 @@
                 }
                 })
         }
-        
+        $('#autoComplete').change(function(){
+            search=$(this).val()
+            getProduct()
+        })
         $('.type').change(function(){
             if( $(".type:checked").length>0){
              document.getElementById("type-all").checked = false;

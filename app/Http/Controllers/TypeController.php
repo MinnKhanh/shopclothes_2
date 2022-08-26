@@ -28,6 +28,7 @@ class TypeController extends Controller
         $type->name = $request->input('name');
         $type->save();
         $logo = optional($request->file('photo'))->store('public/type_img');
+        $logo = str_replace("public/", "", $logo);
         Img::create([
             'id_product' => $type->id,
             'path' => $logo,

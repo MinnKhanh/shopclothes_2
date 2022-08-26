@@ -24,6 +24,7 @@ class BrandController extends Controller
         $brand->description = $request->input('description');
         $brand->save();
         $logo = optional($request->file('photo'))->store('public/brand_img');
+        $logo = str_replace("public/", "", $logo);
         Img::create([
             'id_product' => $brand->id,
             'path' => $logo,

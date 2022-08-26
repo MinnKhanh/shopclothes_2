@@ -10,11 +10,15 @@ use App\Models\Color;
 use App\Models\Img;
 use App\Models\ProductDetail;
 use App\Models\Products;
+use App\Models\ProductSize;
 use App\Models\Size;
 use App\Models\Type;
+use Error;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\Rule;
 use Symfony\Component\Console\Input\Input;
 use Throwable;
@@ -91,16 +95,23 @@ class ProductController extends Controller
         //dd(ProductDetail::with('sizeProduct', 'colorProduct')->where('id_product', $request->get('id'))->get()->toArray());
         return view('admin.category', [
             'id' => $request->get('id'),
-            'list' => ProductDetail::with('sizeProduct', 'colorProduct')->where('id_product', $request->get('id'))->get()->toArray()
+            'list' => ProductDetail::with(['sizeProduct', 'colorProduct', 'ProductSizeDetail' => function ($query) {
+                $query->select('id_productdetail', DB::raw('sum(quantity) as sum'))->groupBy('id_productdetail');
+            }])->where('id_product', $request->get('id'))->get()->toArray(),
+
         ]);
     }
     public function storeDetail(Request $request)
     {
         $request->validate([
             'idProduct' => 'required',
-            'color' => ['required', Rule::in(Color::pluck('id')->toArray()),],
-            'size' => ['required', Rule::in(Size::pluck('id')->toArray()),],
-            'quantity' => 'required| numeric',
+            'color' => [
+                'required', Rule::in(Color::pluck('id')->toArray()),
+                Rule::unique('product_detail', 'id_color')->where(fn ($query) => $query->where('id_product', $request->input('idProduct')))
+                    ->ignore(request('id'), 'id'),
+            ],
+            // 'size' => ['required', Rule::in(Size::pluck('id')->toArray()),],
+            // 'quantity' => 'required| numeric',
             'photo' => $request->input('id') ? '' : 'required',
             'photo.*' => $request->input('id') ? '' : 'image',
             'numberimg' => $request->input('id') ? 'numeric' : ''
@@ -109,17 +120,17 @@ class ProductController extends Controller
         if ($request->input('id')) {
             $productDetail = ProductDetail::where('id', $request->input('id'))->first();
         }
-        //$productDetail = new ProductDetail();
-        $productDetail->id_size = $request->input('size');
         $productDetail->id_color = $request->input('color');
-        $productDetail->quantity = $request->input('quantity');
+        $productDetail->quantity = 0;
         $productDetail->id_product = $request->input('idProduct');
         $productDetail->save();
+
         if ($request->input('id')) {
             for ($i = 1; $i <= $request->input('numberimg'); $i++) {
                 //dd('chay');
                 if ($request->hasFile('photo' . $i)) {
                     $logo = optional($request->file('photo' . $i))->store('public/product_img');
+                    $logo = str_replace("public/", "", $logo);
                     DB::table('imgs')->where("product_id", $request->get('id'))->where('type', 2)->where('img_index', $i)->update(['path' => $logo]);
                 }
             }
@@ -130,6 +141,7 @@ class ProductController extends Controller
                 foreach ($files as $file) {
                     $i++;
                     $logo = optional($file)->store('public/product-detail_img');
+                    $logo = str_replace("public/", "", $logo);
                     Img::create([
                         'product_id' => $productDetail->id,
                         'path' => $logo,
@@ -146,6 +158,7 @@ class ProductController extends Controller
             foreach ($files as $file) {
                 $i++;
                 $logo = optional($file)->store('public/product-detail_img');
+                $logo = str_replace("public/", "", $logo);
                 Img::create([
                     'product_id' => $productDetail->id,
                     'path' => $logo,
@@ -153,12 +166,16 @@ class ProductController extends Controller
                     'img_index' => $i
                 ]);
             }
-        }
-        return [$productDetail, Size::where('id', $request->input('size'))->first()->name, Color::where('id', $request->input('color'))->first()->name];
+        } //Size::where('id', $request->input('size'))->first()->name
+        return [
+            $productDetail,
+            Color::where('id', $request->input('color'))->first()->name,
+            ProductDetail::with('sizeProduct')->where('id', $productDetail->id)->get()->toArray()
+        ];
     }
     public function getDetailProduct(Request $request)
     {
-        $data = ProductDetail::with(['Img' => fn ($query) => $query->where('type', 2), 'sizeProduct', 'colorProduct'])->where('id', $request->input('id'))->first();
+        $data = ProductDetail::with(['Img' => fn ($query) => $query->where('type', 2), 'colorProduct'])->where('id', $request->input('id'))->first();
         return $data ? $data->toArray() : [];
     }
     public function updateProductDetail(Request $request)
@@ -178,5 +195,73 @@ class ProductController extends Controller
             ProductDetail::where('id', $request->input('id'))->delete();
             Img::where('product_id', $request->input('id'))->where('type', 2)->delete();
         }
+    }
+    public function storeSize(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'size' => ['required', Rule::in(Size::pluck('id')->toArray()), Rule::unique('product_size', 'size')
+                ->where(fn ($query) => $query->where('id_productdetail', $request->input('id'))->where('deleted_at', null))],
+            'quantity' => 'required| numeric',
+            'typesize' => 'required',
+        ]);
+        $productsize = ProductSize::create([
+            'size' => $request->input('size'),
+            'id_productdetail' => $request->input('id'),
+            'quantity' => $request->input('quantity')
+        ]);
+        return [
+            ProductSize::with('infoSize')->where('size', $request->input('size'))->where('id_productdetail', $request->input('id'))->get()->toArray(),
+            ProductSize::where('id_productdetail', $request->input('id'))->select(DB::raw('sum(quantity) as sum'))->get(),
+            ProductSize::with('infoSize')->where('id_productdetail', $request->input('id'))->get()->toArray()
+        ];
+    }
+    public function updateSize(Request $request)
+    {
+        $request->validate([
+            'idProductDetail' => 'required',
+            'size' => ['required', Rule::in(Size::pluck('id')->toArray()), Rule::unique('product_size', 'size')
+                ->where(fn ($query) => $query->where('id_productdetail', $request->input('id'))->where('size', '!=', $request->input('size')))],
+            'quantity' => 'required| numeric',
+            'typesize' => 'required',
+        ]);
+        $productsize = ProductSize::where('id_productdetail', $request->input('id'))->where('size', $request->input('size'))->update([
+            'size' => $request->input('size'),
+            'quantity' => $request->input('quantity')
+        ]);
+        return [$productsize, Size::where('id', $request->input('size')->first()->toArray())];
+    }
+    public function getSize(Request $request)
+    {
+        $data = ProductSize::with('infoSize')->where('id_productdetail', $request->input('id'))->get()->toArray();
+        return $data;
+    }
+    public function removeSize(Request $request)
+    {
+        try {
+            if (!$request->input('idproduct') || !$request->input('idsize')) {
+                throw new Exception("Remove failled", 30);
+            } else {
+                ProductSize::where('id_productdetail', $request->input('idproduct'))->where('size', $request->input('idsize'))->delete();
+                return [
+                    ProductSize::where('id_productdetail', $request->input('idproduct'))->select(DB::raw('sum(quantity) as sum'))->get(),
+                    ProductSize::with('infoSize')->where('id_productdetail', $request->input('idproduct'))->get()->toArray()
+                ];
+            }
+        } catch (Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
+    public function changeSize(Request $request)
+    {
+        $request->validate([
+            'idProductDetail' => 'required',
+            'size' => 'required',
+            'quantity' => 'required| numeric',
+        ]);
+        $productsize = ProductSize::where('id_productdetail', $request->input('idProductDetail'))->where('size', $request->input('size'))->update([
+            'quantity' => $request->input('quantity')
+        ]);
+        return [$productsize, ProductSize::where('id_productdetail', $request->input('idProductDetail'))->select(DB::raw('sum(quantity) as sum'))->get()];
     }
 }

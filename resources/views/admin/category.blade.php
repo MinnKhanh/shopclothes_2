@@ -27,36 +27,24 @@
                     <div class="col-md-8 form-group">
                     <label>Màu sắc</label>
                     <select name="color" id="color" class = "form-control color"></select>
-                    {{-- <div class="error">error</div> --}}
+                    <div class="errorcolor"></div>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                     <button class="btn btn-primary rounded-0 shadow-none mb-3" type="button" data-toggle="modal" data-target="#modalcolor">Thêm Màu</button>
                     </div>
                 </div>
-                 <div class="col-md-2 form-group">
-                    <label>Loại Kích Cỡ</label>
-                      <select name="typesize" id="typesize" class = "form-control">
-                        <option value=1>Chữ</option>
-                        <option value=2>Số</option>
-                      </select>
-                </div>
-                <div class="col-md-4 form-group">
-                    <label>Kích cỡ</label>
-                    <select class="form-control size" name="size" id="size"></select>
-                    
-                </div>
-                <div class="col-md-6 form-group">
+                {{-- <div class="col-md-6 form-group">
                     <label>Số lượng</label>
                     <input type="text" name="quantity" id="quantity" class = "form-control shadow-none rounded-0" placeholder = "Số lượng">
-                   {{-- <div class="error">error</div> --}}
-                </div>
+                   <div class="errorquantity"></div>
+                </div> --}}
                 <div class="col-md-6 form-group">
                     <label>Ảnh phân loại</label>
                     <input type="file" name="photo[]" multiple id="photo" class = "form-control shadow-none rounded-0">
-                   {{-- <div class="error">error</div> --}}
+                   <div class="errorphoto"></div>
                 </div>
-                <div class="col-md-6">
-                    <button class="btn btn-primary rounded-0 shadow-none mt-3 addDetail" type="button">Lưu phân loại</button>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button class="btn btn-primary rounded-0 shadow-none addDetail mb-3" type="button">Lưu phân loại</button>
                 </div>
             </div>
             <table id="category-color-size-table" class="table table-bordered text-center">
@@ -69,11 +57,31 @@
                     </tr>
                 </thead>
                 <tbody class="align-middle" id="body">
+                    {{-- @php
+                        dd($list);
+                    @endphp --}}
                     @forelse ($list as $item)
                         <tr class="id{{$item['id']}} item">
                             <td class="itemcolor">{{$item['color_product']['name']}}</td>
-                            <td class="itemsize">{{$item['size_product']['name']}}</td>
-                            <td class="itemquantity">{{$item['quantity']}}</td>
+                            <td class="itemsize size{{$item['id']}}">
+                                @php
+                                    $i=0;
+                                @endphp
+                                @forelse ($item['size_product'] as $itemsize)
+                                       @if ($i==0)
+                                            @php
+                                                $i=$i+1;
+                                            @endphp
+                                            {{$itemsize['name']}}
+                                       @else
+                                           {{','.$itemsize['name']}}
+                                       @endif
+                                    
+                                @empty
+                                    {{'Chưa Có Size'}}
+                                @endforelse
+                            </td>
+                            <td class="itemquantity quantity{{$item['id']}}">{{$item['product_size_detail']?$item['product_size_detail'][0]['sum']:0}}</td>
                             <th class="text-center">
                                 <div data-toggle="modal" data-target="#modalupdate" data-id={{$item['id']}} class="btn btn-primary btn-xs m-r-5 update" data-toggle="tooltip"
                                     data-original-title="Sửa"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -83,6 +91,14 @@
                                 <div data-id={{$item['id']}} data-toggle="modal" data-target="#deleteModal"
                                     class="btn btn-danger delete-category btn-xs m-r-5 remove"
                                     data-toggle="tooltip" data-original-title="Xóa"><i class="fa fa-trash font-14"></i></div>
+                                <div data-id={{$item['id']}} data-toggle="modal" data-target="#modalSize"
+                                    class="btn btn-danger delete-category btn-xs m-r-5 addsize"
+                                    data-toggle="tooltip" data-original-title="Xóa">
+                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                        </svg>
+                                </div>
                             </th>
                         </tr>
                     @empty
@@ -123,7 +139,7 @@
 </div>
     {{-- Them Mau --}}
  {{-- Update --}}
-   <div class="modal fade" id="modalupdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="modalupdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -137,49 +153,25 @@
              <input type="number" name='idProduct' class="d-none" id="idProductUpdate" value="{{$id}}">
             <input type="number" id="idUpdate" name='id' class="d-none">
            <div class="container-fluid row mb-3">
-                <div class="col-md-12 form-group row">
+                <div class="col-md-12 form-group row colorupdate">
                     <div class="col-md-8 form-group">
                     <label>Màu sắc</label>
                     <select name="color" id="colorUpdate" style="width: 100%" class = "form-control color"></select>
-                    {{-- <div class="error">error</div> --}}
+                    <div class="errorcolor"></div>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                     <button class="btn btn-primary rounded-0 shadow-none mb-3" type="button" data-toggle="modal" data-target="#modalcolor">Thêm Màu</button>
                     </div>
                 </div>
-                 <div class="col-md-3 form-group">
-                    <label>Cỡ Bằng</label>
-                      <select name="typesize" id="typeSizeUpdate" class = "form-control">
-                        <option value=1>Chữ</option>
-                        <option value=2>Số</option>
-                      </select>
-                </div>
-                <div class="col-md-4 form-group">
-                    <label>Kích cỡ</label>
-                    <select class="form-control size" name="size" style="width: 100%" id="sizeUpdate"></select>
-                    
-                </div>
-                <div class="col-md-5 form-group" id="sl">
-                    <label>Số lượng</label>
-                    <input type="text" name="quantity" id="quantityUpdate" class = "form-control shadow-none rounded-0" placeholder = "Số lượng">
-                   {{-- <div class="error">error</div> --}}
-                </div>
-                {{-- <div class="col-md-6 form-group">
-                    <label>Ảnh Thêm</label>
-                    <input type="file" name="photo[]" multiple id="photo" multiple class = "form-control shadow-none rounded-0">
-                   
-                </div> --}}
                 <div class="col-md-12 form-group row">
-                            <div class="col-md-6 form-group imgInput">
-                            <label>Ảnh Thêm</label>
-                            <input class = "form-control shadow-none rounded-0 file-img" name="photo[]" multiple id="photo" type = "file">
-                            @if($errors->has('photo'))
-                                <div class="error">{{ $errors->first('photo') }}</div>
-                            @endif
-                            </div>
-                            <div class="col-md-4 form-group">
-                                <img style="width:100px; height:100%;" class="imgchange" id="imgtype"/>
-                            </div>
+                    <div class="col-md-6 form-group imgInput">
+                    <label>Ảnh Thêm</label>
+                    <input class = "form-control shadow-none rounded-0 file-img" name="photo[]" multiple id="photo" type = "file">
+                        <div class="errorphoto"></div>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <img style="width:100px; height:100%;" class="imgchange" id="imgtype"/>
+                    </div>
                 </div>
                 <input type="number" id="numberImg" name='numberimg' class="d-none">
                
@@ -193,6 +185,57 @@
   </div>
 </div>
     {{-- Update --}}
+     {{-- Add size --}}
+<div class="modal fade" id="modalSize" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Chỉnh Sửa Kích Cỡ</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form class="modal-body" id="formsize" action="{{ route('admin.product.storeSize') }}" method="post" enctype="multipart/form-data">
+        @csrf
+            <input type="number" id="idProductDetail" name='id' class="d-none">
+           <div class="container-fluid row mb-3">
+                 <div class="col-md-3 form-group">
+                    <label>Cỡ Bằng</label>
+                      <select name="typesize" id="typeSize" class = "form-control">
+                        <option value=1>Chữ</option>
+                        <option value=2>Số</option>
+                      </select>
+                       <div class="error errortypesize"></div>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label>Kích cỡ</label>
+                    <select class="form-control size" name="size" style="width: 100%" id="size"></select>
+                     <div class="error errorsize"></div>
+                </div>
+                <div class="col-md-5 form-group" id="sl">
+                    <label>Số lượng</label>
+                    <input type="text" name="quantity" id="quantityUpdate" class = "form-control shadow-none rounded-0" placeholder = "Số lượng">
+                     <div class="error errorquantity"></div>
+                </div>
+            </div>
+      </form>
+      <table class="table table-bordered text-center">
+        <thead class="align-middle table-dark">
+            <th>Size</th>
+            <th>Quantity</th>
+            <th></th>
+        </thead>
+        <tbody class="bodylistsize align-middle">
+        </tbody>
+      </table>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary closetype" data-dismiss="modal">Đóng</button>
+        <button class="btn btn-primary rounded-0 shadow-none addSize" type="button">Lưu Kích Cỡ</button>
+      </div>
+    </div>
+  </div>
+</div>
+    {{-- Add size --}}
 @endsection
 @push('js')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -262,14 +305,14 @@
                     $('#quantityUpdate').val(response.quantity)
                     insetOption(response.color_product,$('#colorUpdate'))
                     setvauleSelect2($('#colorUpdate'),parseInt(response.id_color))
-                    if(!isNaN(response.id_size))
-                    $("#typeSizeUpdate option[value='1']").attr("selected", "selected");
-                    else
-                    $("#typeSizeUpdate option[value='2']").attr("selected", "selected");
-                    insetOption(response.size_product,$('#sizeUpdate'))
-                    setvauleSelect2($('#sizeUpdate'),parseInt(response.id_size))
+                    // if(!isNaN(response.id_size))
+                    // $("#typeSizeUpdate option[value='1']").attr("selected", "selected");
+                    // else
+                    // $("#typeSizeUpdate option[value='2']").attr("selected", "selected");
+                    // insetOption(response.size_product,$('#sizeUpdate'))
+                    // setvauleSelect2($('#sizeUpdate'),parseInt(response.id_size))
                     inner='';
-                    console.log(response)
+                    console.log('d',response)
                     $('.img').remove();
                     let i=0
                     response.img.forEach(function(item,index){
@@ -295,7 +338,7 @@
                     $('.removeimg').unbind('click');
                     $('#numberImg').val(i)
                     $('#idUpdate').val(response.id)
-                    $('#sl').after(inner)
+                    $('.colorupdate').after(inner)
                     $('.removeimg').click(function(e){
                     let obj=$(this)
                     let id=$(this).attr('data-id')
@@ -358,36 +401,14 @@
                         }
                     }
                 });
-                 $(".size").select2({
+                
+                 $("#size").select2({
                     ajax: {
                         url: '{{ route('api.size') }}',
                         data: function(params) {
                             const queryParameters = {
                                 q: params.term,
-                                type:$('#typesize').val()
-                            };
-
-                            return queryParameters;
-                        },
-                        processResults: function(data) {
-                            return {
-                                results: $.map(data, function(item) {
-                                    return {
-                                        text: item.name,
-                                        id: item.id
-                                    }
-                                })
-                            };
-                        }
-                    }
-                });
-                 $("#sizeUpdate").select2({
-                    ajax: {
-                        url: '{{ route('api.size') }}',
-                        data: function(params) {
-                            const queryParameters = {
-                                q: params.term,
-                                type:$('#typeSizeUpdate').val()
+                                type:$('#typeSize').val()
                             };
 
                             return queryParameters;
@@ -465,13 +486,13 @@
                   $('#quantity').val(null)
                   $('#photo').val(null)
                  obj.find('.text-danger').text('')
-                 $('#size').val(null).trigger('change');
+                //  $('#size').val(null).trigger('change');
                  $('#color').val(null).trigger('change');
-                   console.log(response)
-                   inner=` <tr>
-                        <td>${response[2]}</td>
-                        <td>${response[1]}</td>
-                        <td>${response[0].quantity}</td>
+                   console.log('detal',response)
+                   inner=` <tr class="id${response[0].id} item">
+                        <td class="itemcolor">${response[1]}</td>
+                        <td class="itemsize size${response[0].id}">Hiện Chưa Có</td>
+                        <td class="itemquantity quantity${response[0].id}">${response[0].quantity}</td>
                         <th class="text-center">
                                 <div data-toggle="modal" data-target="#modalupdate" data-id=${response[0].id} class="btn btn-primary btn-xs m-r-5 update" data-toggle="tooltip"
                                     data-original-title="Sửa"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -480,11 +501,73 @@
                                     </svg></div>
                                 <div data-id=${response[0].id} data-toggle="modal" data-target="#deleteModal"
                                     class="btn btn-danger delete-category btn-xs m-r-5 remove"
-                                    data-toggle="tooltip" data-original-title="Xóa"><i class="fa fa-trash font-14"></i></div>
+                                    data-toggle="tooltip" data-original-title="Xóa">
+                                        <i class="fa fa-trash font-14"></i>
+                                    </div>
+                                <div data-id=${response[0].id} data-toggle="modal" data-target="#modalSize"
+                                    class="btn btn-danger delete-category btn-xs m-r-5 addsize"
+                                    data-toggle="tooltip" data-original-title="Thêm Size">
+                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                    </svg>
+                                </div>
+                                   
                             </th>
                     </tr>`
 
                     $('#body').append(inner);
+                    $('.update').unbind('click')
+                     $('.update').click(function(){
+                        console.log($(this).attr('data-id'))
+                        setValueUpdate($(this).attr('data-id'))
+                    })
+                    $('.remove').unbind('click')
+                     $('.remove').click(function(){
+                        setValueUpdate($(this).attr('data-id'))
+                    })
+                    $('.addsize').unbind('click')
+                       $('.addsize').click(function(){
+                            let id=$(this).attr('data-id')
+                            $.ajax({
+                                url: "{{route('admin.product.getsize')}}",
+                                type: 'GET',
+                                data:{
+                                    id:id
+                                },
+                                success: function(response) {
+                                    
+                                    console.log(response)
+                                    $('#idProductDetail').val(id)
+                                    $('.listsize').remove()
+                                    inner=''
+                                    response.forEach(element => {
+                                        inner+=`<tr class="listsize">
+                                        <td>${element.info_size.name}<td>
+                                        <td><input value=${element.quantity} data-id=${element.id_productdetail} data-size=${element.size}/></td>
+                                        <td>  <div data-id=${element.id_productdetail} data-size=${element.size} data-toggle="modal" data-target="#deleteModal"
+                                                class="btn btn-danger delete-category btn-xs m-r-5 removesize"
+                                                data-toggle="tooltip" data-original-title="Xóa">
+                                                    <i class="fa fa-trash font-14"></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        `
+                                    });
+                                $('.bodylistsize').append(inner)
+                                $('.removesize').unbind('click')
+                                
+                                $('.removesize').click(function(){
+                                    let idproduct=$(this).attr('data-id')
+                                    let idsize=$(this).attr('data-size')
+                                        remove($(this),"{{route('admin.product.removesize')}}",idproduct,idsize)
+                                })
+            },
+            error: function(response) {
+            
+            }
+        });
+   })
                 },
                 error: function(response) {
                     console.log(response)
@@ -506,8 +589,8 @@
                 //  obj.find('input').val(null)
                 //  obj.find('.text-danger').text('')
                 console.log('.id'+$('#idProductUpdate').val()+' .itemcolor')
-                $('.id'+$('#idUpdate').val()+' .itemcolor').text(response[2])
-                $('.id'+$('#idUpdate').val()+' .itemsize').text(response[1])
+                $('.id'+$('#idUpdate').val()+' .itemcolor').text(response[1])
+                ///$('.id'+$('#idUpdate').val()+' .itemsize').text(response[1])
                 $('.id'+$('#idUpdate').val()+' .itemquantity').text(response[0].quantity)
                 }      
      
@@ -516,6 +599,169 @@
         const formData = new FormData(obj[0]);
        sumitform(formData,obj,successUpdatedetail)
     })
+    function remove(e,url,id1,id2){
+        $.ajax({
+                url: url,
+                data:{ "_token": "{{ csrf_token() }}",
+                    idproduct:id1,
+                    idsize:id2
+                },
+                type: 'DELETE',
+                success:  function(response) {
+                    Swal.fire({
+                    icon: 'success',
+                    title: 'Thêm thành công',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+                e.closest('.listsize').remove()
+                console.log(response)
+                resetValueColor(id1,response[0][0].sum,response[1])
+                },
+                error: function(response) {
+                    alert(response.responseJSON.error)
+                }
+            });
+    }
+   $('.addsize').click(function(){
+        let id=$(this).attr('data-id')
+          $.ajax({
+            url: "{{route('admin.product.getsize')}}",
+            type: 'GET',
+            data:{
+                id:id
+            },
+            success: function(response) {
+                
+                
+                $('#idProductDetail').val(id)
+                $('.listsize').remove()
+                inner=''
+                response.forEach(element => {
+                    inner+=`<tr class="listsize">
+                    <td>${element.info_size.name}</td>
+                    <td><input type="number" class="sizeinput" value=${element.quantity} data-id=${element.id_productdetail} data-size=${element.size}></td>
+                    <td>  <div data-id=${element.id_productdetail} data-size=${element.size} data-toggle="modal" data-target="#deleteModal"
+                            class="btn btn-danger delete-category btn-xs m-r-5 removesize"
+                            data-toggle="tooltip" data-original-title="Xóa">
+                                <i class="fa fa-trash font-14"></i>
+                            </div>
+                        </td>
+                    </tr>
+                    `
+                });
+                console.log(inner)
+               $('.bodylistsize').append(inner)
+               $('.removesize').unbind('click')
+               
+               $('.removesize').click(function(){
+                let idproduct=$(this).attr('data-id')
+                let idsize=$(this).attr('data-size')
+                    remove($(this),"{{route('admin.product.removesize')}}",idproduct,idsize)
+               })
+               $('.sizeinput').unbind('change')
+                 $('.sizeinput').change(function(){
+                    console.log($(this))
+                    let idproduct=$(this).attr('data-id')
+                let idsize=$(this).attr('data-size')
+                let quantity=$(this).val()
+                $.ajax({
+                    url: "{{route('admin.product.changesize')}}",
+                    type: 'POST',
+                    data:{"_token": "{{ csrf_token() }}",
+                        idProductDetail:idproduct,
+                        size:idsize,
+                        quantity:quantity,
+                        
+                    },
+                    success: function(response) {
+
+                        $('.quantity'+idproduct).text(response[1][0].sum)
+                    },
+                    error: function(response) {
+                    
+                    }
+                });
+                })
+            },
+            error: function(response) {
+            
+            }
+        });
+   })
+   function resetValueColor(id,quantity,sizes){
+    //console.log(response[1][0].sum)
+                $('.quantity'+id).text(quantity)
+                let listsize=''
+                let i=true;
+                sizes.forEach(element => {
+                    if(i){
+                        listsize+=element.info_size.name
+                        i=false
+                    }else{
+                        listsize+=','+element.info_size.name
+                    }
+                    
+                });
+                $('.size'+id).text(listsize)
+   }
+      
+   function successAddSize(response){
+    console.log(response)
+                 inner=''
+                    inner+=`<tr class="listsize">
+                    <td>${response[0][0].info_size.name}</td>
+                    <td><input type="number" class="sizeinput" value=${response[0][0].quantity} data-id=${response[0][0].id_productdetail} data-size=${response[0][0].size}></td>
+                    <td>  <div data-id=${response[0][0].id_productdetail} data-size=${response[0][0].size} data-toggle="modal" data-target="#deleteModal"
+                            class="btn btn-danger delete-category btn-xs m-r-5 removesize"
+                            data-toggle="tooltip" data-original-title="Xóa">
+                                <i class="fa fa-trash font-14"></i>
+                            </div>
+                        </td>
+                    </tr>`
+                    console.log(inner)
+               $('.bodylistsize').append(inner)
+               $('#formsize error').text('')
+               $('#formsize #quantityUpdate').val(null)
+               $('#formsize .size').val(null).trigger('change');
+               $('.removesize').unbind('click')
+               $('.removesize').click(function(){
+                let idproduct=$(this).attr('data-id')
+                let idsize=$(this).attr('data-size')
+                remove($(this),"{{route('admin.product.removesize')}}",idproduct,idsize)
+                
+               })
+                let id=$('#idProductDetail').val()
+                resetValueColor(id,response[1][0].sum,response[2])
+                $('.sizeinput').unbind('change')
+                $('.sizeinput').change(function(){
+                    console.log($(this))
+                    let idproduct=$(this).attr('data-id')
+                let idsize=$(this).attr('data-size')
+                let quantity=$(this).val()
+                $.ajax({
+                    url: "{{route('admin.product.changesize')}}",
+                    type: 'POST',
+                    data:{"_token": "{{ csrf_token() }}",
+                        idProductDetail:idproduct,
+                        size:idsize,
+                        quantity:quantity,
+                        
+                    },
+                    success: function(response) {
+                        $('.quantity'+idproduct).text(response[1][0].sum)
+                    },
+                    error: function(response) {
+                    
+                    }
+                });
+                })
+   }
    
+   $('.addSize').click(function(){
+     const obj = $('#formsize');
+        const formData = new FormData(obj[0]);
+       sumitform(formData,obj,successAddSize)
+   })
     </script>
 @endpush
