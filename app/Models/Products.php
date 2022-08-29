@@ -10,6 +10,7 @@ class Products extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'products';
+    protected $primaryKey = ['id'];
     protected $fillable = [
         'name',
         'description',
@@ -39,5 +40,9 @@ class Products extends Model
     public function TypeProduct()
     {
         return $this->belongsTo(Type::class, 'type', 'id');
+    }
+    public function ProductDetail()
+    {
+        return $this->hasMany(ProductDetail::class, 'id_product', 'id');
     }
 }

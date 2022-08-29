@@ -1,4 +1,12 @@
 @extends('layout.master')
+@push('css')
+<style>
+        .h-100 {
+            height: 500px !important;
+        }
+</style>
+
+@endpush
 @section('content')
 <div class="container-fluid">
         <div class="row px-xl-5">
@@ -17,21 +25,28 @@
     <!-- Shop Detail Start -->
     <div class="container-fluid pb-5">
         <div class="row px-xl-5">
+            <input type="text" value={{$product['id']}} class="d-none" id="idProduct">
             <div class="col-lg-5 mb-30">
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner bg-light">
+                    <div class="carousel-inner bg-light" id="listImg"> 
                         <div class="carousel-item active">
-                            <img class="w-100 h-100" src={{ asset("img/product-1.jpg")}} alt="Image">
+                            <img class="w-100 h-100" style="height: 100%;" src={{asset('storage/'.$product['img'][0]['path'] )}} alt="Image">
                         </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src={{ asset("img/product-2.jpg")}} alt="Image">
+                        @forelse ($data as $item)
+                       <div class="carousel-item">
+                            <img class="w-100 h-100" src={{ asset('storage/'.$item['img'][0]['path'] )}} alt="Image">
                         </div>
-                        <div class="carousel-item">
+                        @empty
+                            
+                        @endforelse
+                        
+                        
+                        {{-- <div class="carousel-item">
                             <img class="w-100 h-100" src={{ asset("img/product-3.jpg")}} alt="Image">
                         </div>
                         <div class="carousel-item">
                             <img class="w-100 h-100" src={{ asset("img/product-4.jpg")}} alt="Image">
-                        </div>
+                        </div> --}}
                     </div>
                     <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
                         <i class="fa fa-2x fa-angle-left text-dark"></i>
@@ -44,7 +59,7 @@
 
             <div class="col-lg-7 h-auto mb-30">
                 <div class="h-100 bg-light p-30">
-                    <h3>Product Name Goes Here</h3>
+                    <h3>{{$product['name']}}</h3>
                     <div class="d-flex mb-3">
                         <div class="text-primary mr-2">
                             <small class="fas fa-star"></small>
@@ -55,39 +70,20 @@
                         </div>
                         <small class="pt-1">(99 Reviews)</small>
                     </div>
-                    <h3 class="font-weight-semi-bold mb-4">$150.00</h3>
-                    <p class="mb-4">Volup erat ipsum diam elitr rebum et dolor. Est nonumy elitr erat diam stet sit
-                        clita ea. Sanc ipsum et, labore clita lorem magna duo dolor no sea
-                        Nonumy</p>
-                    <div class="d-flex mb-3">
-                        <strong class="text-dark mr-3">Sizes:</strong>
-                        <form>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" id="size-1" name="size">
-                                <label class="custom-control-label" for="size-1">XS</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" id="size-2" name="size">
-                                <label class="custom-control-label" for="size-2">S</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" id="size-3" name="size">
-                                <label class="custom-control-label" for="size-3">M</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" id="size-4" name="size">
-                                <label class="custom-control-label" for="size-4">L</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" id="size-5" name="size">
-                                <label class="custom-control-label" for="size-5">XL</label>
-                            </div>
-                        </form>
-                    </div>
+                    <h3 class="font-weight-semi-bold mb-4">{{$product['priceSell']}}</h3>
+                    <p class="mb-4">{{$product['description']}}</p>
                     <div class="d-flex mb-4">
                         <strong class="text-dark mr-3">Colors:</strong>
                         <form>
-                            <div class="custom-control custom-radio custom-control-inline">
+                            @forelse ($data as $item)
+                                <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input color" value={{$item['color_product']['id']}} id="color-{{$item['id']}}" name="color">
+                                <label class="custom-control-label" for="color-{{$item['id']}}">{{$item['color_product']['name']}}</label>
+                            </div>
+                            @empty
+                                
+                            @endforelse
+                            {{-- <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" class="custom-control-input" id="color-1" name="color">
                                 <label class="custom-control-label" for="color-1">Black</label>
                             </div>
@@ -106,24 +102,52 @@
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" class="custom-control-input" id="color-5" name="color">
                                 <label class="custom-control-label" for="color-5">Green</label>
-                            </div>
+                            </div> --}}
                         </form>
                     </div>
+                    <div class="d-flex mb-3">
+                        <strong class="text-dark mr-3">Sizes:</strong>
+                        <form id="listSize">
+                            <div class="btn-primary" style="padding: 5px"> Vui lòng chọn màu trước</div>
+                           
+                            {{-- <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="size-1" name="size">
+                                <label class="custom-control-label" for="size-1">XS</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="size-2" name="size">
+                                <label class="custom-control-label" for="size-2">S</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="size-3" name="size">
+                                <label class="custom-control-label" for="size-3">M</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="size-4" name="size">
+                                <label class="custom-control-label" for="size-4">L</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="size-5" name="size">
+                                <label class="custom-control-label" for="size-5">XL</label>
+                            </div> --}}
+                        </form>
+                    </div>
+                    
                     <div class="d-flex align-items-center mb-4 pt-2">
                         <div class="input-group quantity mr-3" style="width: 130px;">
                             <div class="input-group-btn">
-                                <button class="btn btn-primary btn-minus">
+                                <button class="btn btn-primary btn-minus subtrac butchange">
                                     <i class="fa fa-minus"></i>
                                 </button>
                             </div>
-                            <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
+                            <input type="text" class="form-control bg-secondary border-0 text-center inputquantity" value="1">
                             <div class="input-group-btn">
-                                <button class="btn btn-primary btn-plus">
+                                <button class="btn btn-primary btn-plus add butchange">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To
+                        <button class="btn btn-primary px-3 addtodcart"><i class="fa fa-shopping-cart mr-1"></i> Add To
                             Cart</button>
                     </div>
                     <div class="d-flex pt-2">
@@ -264,9 +288,10 @@
         <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel related-carousel">
-                    <div class="product-item bg-light">
+                    @forelse ($productSuggest as $item)
+                        <div class="product-item bg-light">
                         <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src={{ asset("img/product-1.jpg")}} alt="">
+                            <img class="img-fluid w-100" src={{ asset("storage/".$item['img'][0]['path'])}} alt="">
                             <div class="product-action">
                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
@@ -275,9 +300,9 @@
                             </div>
                         </div>
                         <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
+                            <a class="h6 text-decoration-none text-truncate" href="">{{$item['name']}}</a>
                             <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                                <h5>{{$item['priceSell']}}</h5>
                             </div>
                             <div class="d-flex align-items-center justify-content-center mb-1">
                                 <small class="fa fa-star text-primary mr-1"></small>
@@ -288,8 +313,12 @@
                                 <small>(99)</small>
                             </div>
                         </div>
+                    @empty
+                        
+                    @endforelse
+                    
                     </div>
-                    <div class="product-item bg-light">
+                    {{-- <div class="product-item bg-light">
                         <div class="product-img position-relative overflow-hidden">
                             <img class="img-fluid w-100" src={{ asset("img/product-2.jpg")}} alt="">
                             <div class="product-action">
@@ -388,9 +417,120 @@
                                 <small>(99)</small>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
     </div>
    @endsection
+   @push('js')
+        <script>
+              $.ajax({
+                    url: "{{route('cart.changecart')}}",
+                    type: 'GET',
+                    data:{
+                        id:5,
+                        idProduct:22,
+                        color:3,
+                        size:10,
+                        quantity:0
+                    },
+                    success: function(response) {
+                       console.log(response)
+                    },
+                    error: function(response) {
+                    
+                    }
+                });
+            function changeRadio(){
+                let data=$("input[type='radio'].color:checked").val()
+                let id=$("#idProduct").val()
+                console.log('data',data)
+                $.ajax({
+                    url: "{{route('product.getsizeandimg')}}",
+                    type: 'GET',
+                    data:{
+                        id:id,
+                        color:data
+                    },
+                    success: function(response) {
+                        let textSize=''
+                         let textImg=''
+                        console.log(response)
+                        response[1].forEach((element,index) => {
+                            textImg+=`<div class="carousel-item ${index==0?'active':''}">
+                            <img class="w-100 h-100" src=http://localhost/Shop_clothes/public/storage/${element.path} alt="Image">
+                        </div>`
+                        });
+                        response[0].forEach((element,index) => {
+                            textSize+=`<div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input size" data-quantity=${element.quantity} value=${element.id} id="size-${element.id}" name="size">
+                                <label class="custom-control-label" for="size-${element.id}">${element.name}</label>
+                            </div>`
+                        });
+                         enableButton($('.butchange'),true)
+                         document.getElementById('listImg').innerHTML = textImg;
+                         document.getElementById('listSize').innerHTML = textSize;
+                         $('.size').change(function(){
+                            if($("input[type='radio'].size:checked").length>0){
+                                enableButton($('.btn-plus'),false)
+                            }
+                        })
+                    },
+                    error: function(response) {
+                    
+                    }
+                });
+            }
+            function activeAddtoCart(){
+
+            }
+           
+            $('.addtodcart').attr('disabled',true)
+             //changeRadio()
+             $('.color').change(function(){
+                changeRadio()
+             })
+             function enableButton(e,status){
+                e.attr('disabled',status)
+             }
+            //  $('.inputquantity').change(function(){
+            //     let maxdata=parseInt($("input[type='radio'].size:checked").val())
+            //     let data=parseInt($(this).val())
+            //     console.log(maxdata,data)
+            //     if(data>maxdata){
+            //         enableButton($('.add'),true)
+            //     }else if(data<=0){
+            //         enableButton($('.subtrac'),true)
+            //     }else{
+            //         enableButton($('.butchange',false))
+            //     }
+            //  })
+            enableButton($('.butchange'),true)
+            $('.butchange').on('click', function () {
+                var button = $(this);
+                let maxdata=parseInt($("input[type='radio'].size:checked").val())
+                console.log(maxdata)
+                var oldValue = button.parent().parent().find('input').val();
+                if (button.hasClass('btn-plus')) {
+                    if(parseFloat(oldValue) + 1>maxdata){
+                       enableButton($(this),true)
+                    }else{
+                        enableButton($('.btn-minus'),false)
+                        var newVal = parseFloat(oldValue) + 1;
+                        button.parent().parent().find('input').val(newVal);
+                }
+                } else {
+                    if (oldValue > 0) {
+                        var newVal = parseFloat(oldValue) - 1;
+                        enableButton($('.btn-plus'),false)
+                    } else {
+                        newVal = 0;
+                        enableButton($(this),true)
+                    }
+                    button.parent().parent().find('input').val(newVal);
+                }
+                
+            });
+        </script>
+   @endpush

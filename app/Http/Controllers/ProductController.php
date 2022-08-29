@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categories;
 use App\Models\Color;
+use App\Models\ProductDetail;
 use App\Models\Products;
 use App\Models\Type;
 use Illuminate\Http\Request;
@@ -71,12 +72,32 @@ class ProductController extends Controller
     }
     public function getProductDetail(Request $request)
     {
-        $data = Products::with('BrandProduct', 'Img', 'TypeProduct')->where('id', $request->input('id'))->get()->toArray();
-        return view('products.detail', ['data' => $data]);
+        $data = ProductDetail::with(['colorProduct', 'Img' => fn ($query) => $query->where('type', 2)->where('img_index', 1)])->where('id_product', $request->input('id'))->get()->toArray();
+        $product = Products::with('Img')->where('id', $request->input('id'))->first()->toArray();
+        $dataSuggest = Products::with('Img')->where('type', $product['type'])->where('category', $product['category'])->where('id', '!=', $product['id'])->get()->toArray();
+        return view('products.detail', [
+            'data' => $data,
+            'product' => $product,
+            'productSuggest' => $dataSuggest
+        ]);
     }
     public function listNameProduct(Request $request)
     {
         $data = Products::pluck('name')->toArray();
         return $data;
+    }
+    public function getSizeAndImg(Request $request)
+    {
+        if ($request->input('id') && $request->input('color')) {
+            $listsize = ProductDetail::where('product_detail.id_product', $request->input('id'))->where('product_detail.id_color', $request->input('color'))
+                ->join('product_size', 'product_detail.id', 'product_size.id_productdetail')
+                ->join('size', 'size.id', 'product_size.size')->select('size.name', 'size.id', 'product_size.quantity')->get()->toArray();
+            //  DB::enableQueryLog();
+            $listImg = ProductDetail::join('imgs', 'imgs.product_id', 'product_detail.id')->where('imgs.type', 2)->where('imgs.deleted_at', null)
+                ->where('product_detail.id_product', $request->input('id'))->where('product_detail.id_color', $request->input('color'))->get('imgs.path')->toArray();
+            //dd($listImg);
+            // dd(DB::getQueryLog());
+            return [$listsize, $listImg];
+        }
     }
 }

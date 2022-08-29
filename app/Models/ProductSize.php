@@ -10,7 +10,6 @@ class ProductSize extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'product_size';
-    protected $primaryKey = null;
     public $incrementing = false;
     public $timestamps = false;
     protected $fillable = [
@@ -18,6 +17,7 @@ class ProductSize extends Model
         'size',
         'quantity',
     ];
+    protected $primaryKey = ['id_productdetail', 'size'];
     public function infoSize()
     {
         return $this->belongsTo(Size::class, 'size', 'id');

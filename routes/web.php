@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Models\Img;
 use App\Models\ProductDetail;
@@ -20,10 +21,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $productsize = ProductDetail::with(['sizeProduct', 'colorProduct', 'ProductSizeDetail' => function ($query) {
-        $query->select('id_productdetail', DB::raw('sum(quantity) as sum'))->groupBy('id_productdetail');
-    }])->where('id_product', 5)->get()->toArray();
-    dd($productsize);
+    $product = ProductDetail::where('id', 26)->first();
+    //d($product);
+    $product->quantity = 6;
+    $product->save();
 });
 Route::get('products', function () {
     return view('products.index');
@@ -47,4 +48,14 @@ Route::group([
     Route::get('/', [ProductController::class, 'index'])->name('index');
     Route::get('/list-product', [ProductController::class, 'getProductBy'])->name('listproduct');
     Route::get('/product-detail', [ProductController::class, 'getProductDetail'])->name('productdetail');
+    Route::get('/getsizeandimg', [ProductController::class, 'getSizeAndImg'])->name('getsizeandimg');
+});
+Route::group([
+    'as'     => 'cart.',
+    'prefix' => 'cart',
+], static function () {
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    Route::get('/addtocart', [CartController::class, 'AddToCart'])->name('addtocart');
+    Route::get('/removecart', [CartController::class, 'removeCart'])->name('removecart');
+    Route::get('/changecart', [CartController::class, 'changeCart'])->name('changecart');
 });
