@@ -64,3 +64,9 @@ Route::group([
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
     Route::post('/checkout', [OrderController::class, 'CreateOrder'])->name('checkout');
 });
+Route::group([
+    'as'     => 'orders.',
+    'prefix' => 'orders',
+], static function () {
+    Route::get('/', [OrderController::class, 'index'])->name('index');
+});
