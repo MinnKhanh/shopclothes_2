@@ -27,6 +27,7 @@ class Orders extends Model
         'city',
         'district',
         'zip_code',
+        'status'
     ];
     protected $cast = [
         'created_at' => 'date:Y-m-d',

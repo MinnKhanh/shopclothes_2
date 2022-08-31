@@ -193,6 +193,7 @@
                         </div>
                           <div class="d-flex justify-content-between mt-3">
                             <h6 class="font-weight-medium">Discount</h6>
+                            <input id="discount" name="discount" value=0>
                             <h6 class="font-weight-medium "><span class="discount">0</span>%</h6>
                         </div>
                     </div>
@@ -224,6 +225,9 @@
                                 <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
                             </div>
                         </div>
+                        @if($errors->has('payment'))
+                        <div class="error">{{ $errors->first('payment') }}</div>
+                    @endif
                         <button class="btn btn-block btn-primary font-weight-bold py-3" type="submit">Place Order</button>
                     </div>
                 </div>
@@ -247,6 +251,7 @@
                         success: function(response) {
                             console.log(response)
                             $('.discount').text(response)
+                            $('#discount').val(response)
                             let total=(parseFloat($('#subtotal').text())*(100-response)/100)-parseFloat($('.ship').text())
                             console.log(total)
                             $('.total').text(total)
