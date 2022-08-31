@@ -84,8 +84,8 @@
     });
 
 
-    // Product Quantity
-    // $('.quantity button').on('click', function () {
+   // Product Quantity
+    // $('.buttomCart').on('click', function () {
     //     var button = $(this);
     //     var oldValue = button.parent().parent().find('input').val();
     //     if (button.hasClass('btn-plus')) {

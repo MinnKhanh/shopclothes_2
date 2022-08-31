@@ -3,14 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Discount;
 use App\Models\ProductDetail;
 use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use PDO;
 
 class CartController extends Controller
 {
+    public function index(Request $request)
+    {
+        $cart = Session('cart') ? Session('cart') : null;
+        return view('orders.cart', ['cart' => $cart]);
+    }
     public function AddToCart(Request $request)
     {
         $request->validate([
@@ -26,12 +33,16 @@ class CartController extends Controller
                     ->join('color', 'color.id', 'product_detail.id_color')
                     ->where('products.id', $request->input('id'))
                     ->join('size', 'size.id', 'product_size.size')
+                    ->join('imgs', 'imgs.product_id', 'products.id')->where('imgs.type', 1)
                     ->where('product_detail.id_color', $request->input('color'))->where('product_size.size', $request->input('size'))
                     ->select(
                         'products.name',
                         'products.id',
                         DB::raw(
                             'products.priceSell as price'
+                        ),
+                        DB::raw(
+                            'imgs.path as img'
                         ),
                         DB::raw('products.code'),
                         DB::raw('product_detail.id_color'),
@@ -44,11 +55,11 @@ class CartController extends Controller
                 if ($product != null) {
                     $oldcart = Session('cart') ? Session('cart') : null;
                     $newcart = new Cart($oldcart);
-                    $newcart->AddCart($product, $product['idProductDetail'], $request->input('quantity'),);
+                    $quantityInStock = $newcart->AddCart($product, $product['idProductDetail'], $request->input('quantity'),);
                     $request->session()->put('cart', $newcart);
                 }
             }
-            return [$request->session()->get('cart')];
+            return [$request->session()->get('cart')->getTotalQuantity(), $quantityInStock];
         }
     }
     public function removeProductInCart(Request $request)
@@ -87,11 +98,24 @@ class CartController extends Controller
     }
     public function removeCart(Request $request)
     {
-        $oldcart = Session('cart') ? Session('cart') : null;
-        if ($oldcart != null) {
-            $newcart = new Cart($oldcart);
-            $newcart->removeCart();
-        }
+        // $oldcart = Session('cart') ? Session('cart') : null;
+        // if ($oldcart != null) {
+        //     $newcart = new Cart($oldcart);
+        //     $newcart->removeCart();
+        // }
         $request->session()->forget('cart');
+    }
+    public function getDiscount(Request $request)
+    {
+        if ($request->input('code')) {
+            $data = Discount::where('code', $request->input('code'))->first();
+            //  dd($data);
+            return $data ? $data->persent : 0;
+        }
+    }
+    public function checkout(Request $request)
+    {
+        $cart = Session('cart') ? Session('cart') : null;
+        return view('orders.checkout', ['cart' => $cart]);
     }
 }

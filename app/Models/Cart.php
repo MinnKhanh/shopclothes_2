@@ -18,49 +18,50 @@ class Cart
     public function AddCart($product, $id, $quantity)
     {
         if ($quantity > 0) {
-            $oldquantity = 0;
+            // $oldquantity = 0;
             $newProduct = ['productInfo' => $product, 'price' => 0, 'quantity' => 0, 'inventoryNumber' => $product['quantity']];
             if ($this->products) {
                 if (array_key_exists($id . '_' . $product['idsize'], $this->products)) {
                     $newProduct = $this->products[$id . '_' . $product['idsize']];
                     $this->totalMoney -= floatval($this->products[$id . '_' . $product['idsize']]['price']);
                     $this->totalQuantity -= floatval($this->products[$id . '_' . $product['idsize']]['quantity']);
-                    $oldquantity = floatval($this->products[$id . '_' . $product['idsize']]['quantity']);
+                    //$oldquantity = floatval($this->products[$id . '_' . $product['idsize']]['quantity']);
                 }
             }
             $newProduct['quantity'] += $quantity;
-            if ($newProduct['quantity'] > $product['quantity']) {
-                $newProduct['quantity'] = $product['quantity'];
+            if (floatval($newProduct['quantity']) > floatval($product['quantity'])) {
+                $newProduct['quantity'] = floatval($product['quantity']);
             }
             $newProduct['price'] = $newProduct['quantity'] * $product['price'];
             $this->products[$id . '_' . $product['idsize']] = $newProduct;
-            $this->totalMoney += $newProduct['price'];
-            $this->totalQuantity += $newProduct['quantity'];
-            //dd($oldquantity, $newProduct['quantity']);
-            $this->updateQuantity($oldquantity, $newProduct['quantity'], $id, $product['idsize']);
+            $this->totalMoney += floatval($newProduct['price']);
+            $this->totalQuantity += floatval($newProduct['quantity']);
+            // $this->products[$id . '_' . $product['idsize']]['inventoryNumber'] = $this->products[$id . '_' . $product['idsize']]['inventoryNumber'] + $oldquantity - $newProduct['quantity'];
+            return $this->products[$id . '_' . $product['idsize']]['inventoryNumber'];
         }
     }
     public function ChangeProduct($id, $quantity, $size)
     {
         if ($this->products) {
             if (array_key_exists($id . '_' . $size, $this->products)) {
-                $oldquantity = 0;
-                $this->totalMoney = $this->totalMoney - $this->products[$id . '_' . $size]['price'];
-                $this->totalQuantity = $this->totalQuantity - $this->products[$id . '_' . $size]['quantity'];
-                $oldquantity = $this->products[$id . '_' . $size]['quantity'];
-                $this->products[$id . '_' . $size]['quantity'] += $quantity;
-                if ($this->products[$id . '_' . $size]['quantity'] <= 0) {
+                // $oldquantity = 0;
+                $this->totalMoney = $this->totalMoney - floatval($this->products[$id . '_' . $size]['price']);
+                $this->totalQuantity = $this->totalQuantity - floatval($this->products[$id . '_' . $size]['quantity']);
+                //$oldquantity = $this->products[$id . '_' . $size]['quantity'];
+                $this->products[$id . '_' . $size]['quantity'] += floatval($quantity);
+                if (floatval($this->products[$id . '_' . $size]['quantity']) <= 0) {
                     unset($this->products[$id . '_' . $size]);
-                    $this->updateQuantity($oldquantity, 0, $id, $size);
+                    return 0;
                 } else {
-                    if ($this->products[$id . '_' . $size]['quantity'] > $this->products[$id . '_' . $size]['inventoryNumber']) {
-                        $this->products[$id . '_' . $size]['quantity'] = $this->products[$id . '_' . $size]['inventoryNumber'];
+                    if (floatval($this->products[$id . '_' . $size]['quantity']) > floatval($this->products[$id . '_' . $size]['inventoryNumber'])) {
+                        $this->products[$id . '_' . $size]['quantity'] = floatval($this->products[$id . '_' . $size]['inventoryNumber']);
                     }
 
-                    $this->products[$id . '_' . $size]['price'] = $this->products[$id . '_' . $size]['quantity'] * $this->products[$id . '_' . $size]['productInfo']['price'];
-                    $this->totalMoney += $this->products[$id . '_' . $size]['price'];
-                    $this->totalQuantity += $this->products[$id . '_' . $size]['quantity'];
-                    $this->updateQuantity($oldquantity, $this->products[$id . '_' . $size]['quantity'], $id, $size);
+                    $this->products[$id . '_' . $size]['price'] = floatval($this->products[$id . '_' . $size]['quantity']) * floatval($this->products[$id . '_' . $size]['productInfo']['price']);
+                    $this->totalMoney += floatval($this->products[$id . '_' . $size]['price']);
+                    $this->totalQuantity += floatval($this->products[$id . '_' . $size]['quantity']);
+                    // $this->products[$id . '_' . $size]['inventoryNumber'] = $this->products[$id . '_' . $size]['inventoryNumber'] + $oldquantity - $this->products[$id . '_' . $size]['quantity'];
+                    return $this->products[$id . '_' . $size]['inventoryNumber'];
                 }
             }
         }
@@ -70,22 +71,23 @@ class Cart
 
         if ($this->products) {
             if (array_key_exists($id . '_' . $size, $this->products)) {
-                $oldquantity = 0;
-                $this->totalMoney -= $this->products[$id . '_' . $size]['price'];
-                $this->totalQuantity -= $this->products[$id . '_' . $size]['quantity'];
-                $oldquantity = $this->products[$id . '_' . $size]['quantity'];
-                $this->products[$id . '_' . $size]['quantity'] = $quantity;
-                if ($this->products[$id . '_' . $size]['quantity'] <= 0) {
+                // $oldquantity = 0;
+                $this->totalMoney -= floatval($this->products[$id . '_' . $size]['price']);
+                $this->totalQuantity -= floatval($this->products[$id . '_' . $size]['quantity']);
+                //$oldquantity = $this->products[$id . '_' . $size]['quantity'];
+                $this->products[$id . '_' . $size]['quantity'] = floatval($quantity);
+                if (floatval($this->products[$id . '_' . $size]['quantity']) <= 0) {
                     unset($this->products[$id . '_' . $size]);
-                    $this->updateQuantity($oldquantity, 0, $id, $size);
+                    return 0;
                 } else {
-                    if ($this->products[$id . '_' . $size]['quantity'] > $this->products[$id . '_' . $size]['inventoryNumber']) {
-                        $this->products[$id . '_' . $size]['quantity'] = $this->products[$id . '_' . $size]['inventoryNumber'];
+                    if (floatval($this->products[$id . '_' . $size]['quantity']) > floatval($this->products[$id . '_' . $size]['inventoryNumber'])) {
+                        $this->products[$id . '_' . $size]['quantity'] = floatval($this->products[$id . '_' . $size]['inventoryNumber']);
                     }
-                    $this->products[$id . '_' . $size]['price'] = $this->products[$id . '_' . $size]['quantity'] * $this->products[$id . '_' . $size]['productInfo']['price'];
-                    $this->totalMoney += $this->products[$id . '_' . $size]['price'];
-                    $this->totalQuantity += $this->products[$id . '_' . $size]['quantity'];
-                    $this->updateQuantity($oldquantity, $this->products[$id . '_' . $size]['quantity'], $id, $size);
+                    $this->products[$id . '_' . $size]['price'] = floatval($this->products[$id . '_' . $size]['quantity']) * floatval($this->products[$id . '_' . $size]['productInfo']['price']);
+                    $this->totalMoney += floatval($this->products[$id . '_' . $size]['price']);
+                    $this->totalQuantity += floatval($this->products[$id . '_' . $size]['quantity']);
+                    //$this->products[$id . '_' . $size]['inventoryNumber'] = $this->products[$id . '_' . $size]['inventoryNumber'] + $oldquantity - $this->products[$id . '_' . $size]['quantity'];
+                    return $this->products[$id . '_' . $size]['inventoryNumber'];
                 }
                 //dd($this->totalMoney); //, $this->products[$id . '_' . $size]['price']);
             }
@@ -93,10 +95,13 @@ class Cart
     }
     public function removeProductInCart($id, $size)
     {
-        $this->totalMoney -= $this->products[$id . '_' . $size]['price'];
-        $this->totalQuantity -= $this->products[$id . '_' . $size]['quantity'];
-        $this->updateQuantity($this->products[$id . '_' . $size]['quantity'], 0, $id, $size);
-        unset($this->products[$id . '_' . $size]);
+        if ($this->products[$id . '_' . $size]) {
+            $this->totalMoney -= floatval($this->products[$id . '_' . $size]['price']);
+            $this->totalQuantity -= floatval($this->products[$id . '_' . $size]['quantity']);
+            //$quantity = $this->updateQuantity($this->products[$id . '_' . $size]['quantity'], 0, $id, $size);
+            unset($this->products[$id . '_' . $size]);
+            // return $quantity;
+        }
     }
     public function removeCart()
     {
@@ -107,10 +112,9 @@ class Cart
     public function updateQuantity($oldquantity, $newquanity, $id, $size)
     {
         $product = ProductSize::where('id_productdetail', $id)->where('size', $size)->first();
-        $product->quantity = $product->quantity + $oldquantity - $newquanity;
-        $product->save();
-
-        dd($product);
+        ProductSize::where('id_productdetail', $id)->where('size', $size)->update(['quantity' => $product->quantity + $oldquantity - $newquanity]);
+        return  ProductSize::where('id_productdetail', $id)->where('size', $size)->first()->quantity;
+        //dd($product);
     }
     public function getTotalMoney()
     {

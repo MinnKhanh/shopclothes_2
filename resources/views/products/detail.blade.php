@@ -140,14 +140,14 @@
                                     <i class="fa fa-minus"></i>
                                 </button>
                             </div>
-                            <input type="text" class="form-control bg-secondary border-0 text-center inputquantity" value="1">
+                            <input type="text" class="form-control bg-secondary border-0 text-center inputquantity" value="0">
                             <div class="input-group-btn">
                                 <button class="btn btn-primary btn-plus add butchange">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <button class="btn btn-primary px-3 addtodcart"><i class="fa fa-shopping-cart mr-1"></i> Add To
+                        <button class="btn btn-primary px-3 addtocart"><i class="fa fa-shopping-cart mr-1"></i> Add To
                             Cart</button>
                     </div>
                     <div class="d-flex pt-2">
@@ -425,23 +425,33 @@
    @endsection
    @push('js')
         <script>
-              $.ajax({
-                    url: "{{route('cart.changecart')}}",
+              
+            $('.addtocart').click(function(){
+                let id=$('#idProduct').val()
+                let color=$("input[type='radio'].color:checked").val()
+                let size=$("input[type='radio'].size:checked").val()
+                let quantity=$('.inputquantity').val()
+                $.ajax({
+                    url: "{{route('cart.addtocart')}}",
                     type: 'GET',
                     data:{
-                        id:5,
-                        idProduct:22,
-                        color:3,
-                        size:10,
-                        quantity:0
+                        id:id,
+                        color:color,
+                        size:size,
+                        quantity:quantity
                     },
                     success: function(response) {
-                       console.log(response)
+                        console.log(response)
+                        $('.inputquantity').val(0)
+                        $("input[type='radio'].size:checked").attr('data-quantity',response[1])
+                        enableButton($('.btn-minus'),true)
+                        enableButton($('.addtocart'),true)
                     },
                     error: function(response) {
                     
                     }
                 });
+            })
             function changeRadio(){
                 let data=$("input[type='radio'].color:checked").val()
                 let id=$("#idProduct").val()
@@ -456,15 +466,27 @@
                     success: function(response) {
                         let textSize=''
                          let textImg=''
+                         let check=false;
                         console.log(response)
                         response[1].forEach((element,index) => {
                             textImg+=`<div class="carousel-item ${index==0?'active':''}">
                             <img class="w-100 h-100" src=http://localhost/Shop_clothes/public/storage/${element.path} alt="Image">
                         </div>`
                         });
+                        // // console.log('length',Object.keys(response[2]).length);
+                        // if(response[2].length>0){
+                        //     check=true
+                        // }
                         response[0].forEach((element,index) => {
+                            let count=0
+                            if(Object.keys(response[2]).length){
+                            count=response[2].products.hasOwnProperty(element.idProduct+'_'+element.id) ? response[2].products[element.idProduct+'_'+element.id].quantity:0
+                            }
+                            console.log(count)
                             textSize+=`<div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input size" data-quantity=${element.quantity} value=${element.id} id="size-${element.id}" name="size">
+                                <input type="radio" class="custom-control-input size"
+                                 data-quantity=${element.quantity-count}
+                                  value=${element.id} id="size-${element.id}" name="size">
                                 <label class="custom-control-label" for="size-${element.id}">${element.name}</label>
                             </div>`
                         });
@@ -473,7 +495,18 @@
                          document.getElementById('listSize').innerHTML = textSize;
                          $('.size').change(function(){
                             if($("input[type='radio'].size:checked").length>0){
-                                enableButton($('.btn-plus'),false)
+                                if($("input[type='radio'].size:checked").attr('data-quantity')!=0){
+                                    $(".inputquantity").val(1)
+                                    enableButton($('.btn-plus'),false)
+                                    enableButton($('.btn-minus'),false)
+                                    enableButton($('.addtocart'),false)
+                                }else{
+                                    $("input[type='radio'].size:checked").val(0)
+                                    enableButton($('.btn-plus'),true)
+                                    enableButton($('.btn-minus'),true)
+                                    enableButton($('.addtocart'),true)
+                                }
+                                
                             }
                         })
                     },
@@ -486,7 +519,7 @@
 
             }
            
-            $('.addtodcart').attr('disabled',true)
+            $('.addtocart').attr('disabled',true)
              //changeRadio()
              $('.color').change(function(){
                 changeRadio()
@@ -509,14 +542,16 @@
             enableButton($('.butchange'),true)
             $('.butchange').on('click', function () {
                 var button = $(this);
-                let maxdata=parseInt($("input[type='radio'].size:checked").val())
+                let maxdata=parseInt($("input[type='radio'].size:checked").attr('data-quantity'))
                 console.log(maxdata)
                 var oldValue = button.parent().parent().find('input').val();
                 if (button.hasClass('btn-plus')) {
                     if(parseFloat(oldValue) + 1>maxdata){
                        enableButton($(this),true)
+                       enableButton($('.addtocart'),true)
                     }else{
                         enableButton($('.btn-minus'),false)
+                         enableButton($('.addtocart'),false)
                         var newVal = parseFloat(oldValue) + 1;
                         button.parent().parent().find('input').val(newVal);
                 }
@@ -524,9 +559,11 @@
                     if (oldValue > 0) {
                         var newVal = parseFloat(oldValue) - 1;
                         enableButton($('.btn-plus'),false)
+                        enableButton($('.addtocart'),false)
                     } else {
                         newVal = 0;
                         enableButton($(this),true)
+                        enableButton($('.addtocart'),true)
                     }
                     button.parent().parent().find('input').val(newVal);
                 }

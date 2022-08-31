@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Models\Img;
 use App\Models\ProductDetail;
@@ -58,4 +59,8 @@ Route::group([
     Route::get('/addtocart', [CartController::class, 'AddToCart'])->name('addtocart');
     Route::get('/removecart', [CartController::class, 'removeCart'])->name('removecart');
     Route::get('/changecart', [CartController::class, 'changeCart'])->name('changecart');
+    Route::get('/removeproductincart', [CartController::class, 'removeProductInCart'])->name('removeproductincart');
+    Route::get('/getdiscount', [CartController::class, 'getDiscount'])->name('getdiscount');
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [OrderController::class, 'CreateOrder'])->name('checkout');
 });

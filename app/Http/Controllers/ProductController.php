@@ -9,6 +9,7 @@ use App\Models\Products;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class ProductController extends Controller
 {
@@ -91,13 +92,13 @@ class ProductController extends Controller
         if ($request->input('id') && $request->input('color')) {
             $listsize = ProductDetail::where('product_detail.id_product', $request->input('id'))->where('product_detail.id_color', $request->input('color'))
                 ->join('product_size', 'product_detail.id', 'product_size.id_productdetail')
-                ->join('size', 'size.id', 'product_size.size')->select('size.name', 'size.id', 'product_size.quantity')->get()->toArray();
+                ->join('size', 'size.id', 'product_size.size')->select(DB::raw('product_detail.id as idProduct'), 'size.name', 'size.id', 'product_size.quantity')->get()->toArray();
             //  DB::enableQueryLog();
             $listImg = ProductDetail::join('imgs', 'imgs.product_id', 'product_detail.id')->where('imgs.type', 2)->where('imgs.deleted_at', null)
                 ->where('product_detail.id_product', $request->input('id'))->where('product_detail.id_color', $request->input('color'))->get('imgs.path')->toArray();
             //dd($listImg);
             // dd(DB::getQueryLog());
-            return [$listsize, $listImg];
+            return [$listsize, $listImg, Session::get('cart') ? Session::get('cart') : []];
         }
     }
 }
