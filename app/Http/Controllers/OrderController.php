@@ -58,6 +58,7 @@ class OrderController extends Controller
                 }
                 DB::commit();
                 $request->session()->forget('cart');
+                return Redirect::route('product.index');
             } else {
                 return Redirect::route('product.index');
             }
@@ -65,5 +66,10 @@ class OrderController extends Controller
             DB::rollBack();
             return Redirect::back()->withInput($request->input())->withErrors(['msg' => $e->getMessage()]);
         }
+    }
+    public function index(Request $request)
+    {
+        $orders = Orders::get()->toArray();
+        return view('orders.listorder', ['orders' => $orders]);
     }
 }
