@@ -189,11 +189,12 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
+                            <input type="text" class="d-none" name="ship" value=10000>
                           <h6 class="font-weight-medium "><span class="ship">10000</span>Đ</h6>
                         </div>
                           <div class="d-flex justify-content-between mt-3">
                             <h6 class="font-weight-medium">Discount</h6>
-                            <input id="discount" name="discount" value=0>
+                            <input id="discount" class="d-none" name="discount" value=0>
                             <h6 class="font-weight-medium "><span class="discount">0</span>%</h6>
                         </div>
                     </div>

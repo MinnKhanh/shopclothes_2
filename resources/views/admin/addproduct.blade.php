@@ -129,8 +129,8 @@
                 <div class="col-md-3">
                     <label>Trạng thái</label>
                     <select class="form-control" name="status" id="TrangThai">
-                        <option value=0 {{(isset($edit)?$product['status']:old('status'))==0?'selected':''}}>Hiển thị</option>
-                        <option value=1 {{(isset($edit)?$product['status']:old('status'))==1?'selected':''}}>Ẩn</option>
+                        <option value=1 {{(isset($edit)?$product['status']:old('status'))==0?'selected':''}}>Hiển thị</option>
+                        <option value=0 {{(isset($edit)?$product['status']:old('status'))==1?'selected':''}}>Ẩn</option>
                     </select>
                       @if($errors->has('status'))
                         <div class="error">{{ $errors->first('status') }}</div>

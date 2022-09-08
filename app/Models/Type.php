@@ -18,4 +18,12 @@ class Type extends Model
     {
         return $this->hasMany(Categories::class, 'type', 'id');
     }
+    public function Img()
+    {
+        return $this->morphMany(Img::class, 'product', 'type');
+    }
+    public function Product()
+    {
+        return $this->hasMany(Products::class, 'type', 'id');
+    }
 }

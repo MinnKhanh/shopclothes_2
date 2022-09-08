@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Brand;
 use App\Models\ProductDetail;
 use App\Models\Products;
+use App\Models\Type;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -31,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
             1 => Products::class,
             5 => Brand::class,
             2 => ProductDetail::class,
+            3 => Type::class,
         ]);
     }
 }

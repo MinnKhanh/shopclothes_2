@@ -28,8 +28,9 @@ class ProductController extends Controller
     use ResponseTrait;
     public function index()
     {
-
-        return view('admin.product');
+        $data = Products::with('Img', 'TypeProduct')->get()->toArray();
+        //dd($data);
+        return view('admin.product', ['products' => $data]);
     }
     public function create()
     {
@@ -263,5 +264,26 @@ class ProductController extends Controller
             'quantity' => $request->input('quantity')
         ]);
         return [$productsize, ProductSize::where('id_productdetail', $request->input('idProductDetail'))->select(DB::raw('sum(quantity) as sum'))->get()];
+    }
+    public function changStatus(Request $request)
+    {
+        if ($request->input('id') && ($request->input('status') || $request->input('status') == 0)) {
+            Products::where('id', $request->input('id'))->update([
+                'status' => $request->input('status')
+            ]);
+            return [$request->input('status')];
+        }
+        return response()->json(['error' => "Thất bại"], 200);
+    }
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'id' => 'required'
+        ]);
+        if ($request->input('id')) {
+            Products::where('id', $request->input('id'))->delete();
+            return response()->json(['success' => "Xóa thành công"], 200);
+        }
+        return response()->json(['eror' => "Xóa thất bại"], 400);
     }
 }

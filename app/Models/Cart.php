@@ -37,7 +37,7 @@ class Cart
             $this->totalMoney += floatval($newProduct['price']);
             $this->totalQuantity += floatval($newProduct['quantity']);
             // $this->products[$id . '_' . $product['idsize']]['inventoryNumber'] = $this->products[$id . '_' . $product['idsize']]['inventoryNumber'] + $oldquantity - $newProduct['quantity'];
-            return $this->products[$id . '_' . $product['idsize']]['inventoryNumber'];
+            return $this->products[$id . '_' . $product['idsize']]['inventoryNumber'] - $this->products[$id . '_' . $product['idsize']]['quantity'];
         }
     }
     public function ChangeProduct($id, $quantity, $size)
@@ -61,7 +61,7 @@ class Cart
                     $this->totalMoney += floatval($this->products[$id . '_' . $size]['price']);
                     $this->totalQuantity += floatval($this->products[$id . '_' . $size]['quantity']);
                     // $this->products[$id . '_' . $size]['inventoryNumber'] = $this->products[$id . '_' . $size]['inventoryNumber'] + $oldquantity - $this->products[$id . '_' . $size]['quantity'];
-                    return $this->products[$id . '_' . $size]['inventoryNumber'];
+                    return $this->products[$id . '_' . $size]['inventoryNumber'] - $this->products[$id . '_' . $size]['quantity'];
                 }
             }
         }
@@ -87,7 +87,7 @@ class Cart
                     $this->totalMoney += floatval($this->products[$id . '_' . $size]['price']);
                     $this->totalQuantity += floatval($this->products[$id . '_' . $size]['quantity']);
                     //$this->products[$id . '_' . $size]['inventoryNumber'] = $this->products[$id . '_' . $size]['inventoryNumber'] + $oldquantity - $this->products[$id . '_' . $size]['quantity'];
-                    return $this->products[$id . '_' . $size]['inventoryNumber'];
+                    return $this->products[$id . '_' . $size]['inventoryNumber'] - $this->products[$id . '_' . $size]['quantity'];
                 }
                 //dd($this->totalMoney); //, $this->products[$id . '_' . $size]['price']);
             }

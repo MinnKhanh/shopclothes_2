@@ -12,4 +12,8 @@ class Categories extends Model
     protected $table = 'categories';
     public $timestamps = false;
     protected $fillable = ['type', 'name'];
+    public function Img()
+    {
+        return $this->morphMany(Img::class, 'product', 'type');
+    }
 }

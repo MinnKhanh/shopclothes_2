@@ -1,4 +1,17 @@
 @extends('layout.master')
+@push('css')
+    <style>
+        .img{
+            width: 100px;
+            height: 100px;
+            }
+        .name{
+                text-align: left;
+        }
+
+        
+    </style>
+@endpush
 @section('content')
     <div class="row px-xl-3">
     <div class="col-12">
@@ -20,73 +33,116 @@
                     </tr>
                 </thead>
                 <tbody class="align-middle">
-                    {{-- @foreach (var productItem in ViewBag.ProductList)
-                    { --}}
+                    @forelse ($products as $item)
                         <tr>
-                            <td>MaSanPham</td>
-                            <td>
-                                <img src="~/Content/assets/img/test-sp-img/AnhDaiDien" class="product-info-img">
-                                TenSanPham
+                            <td>{{$item['code']}}</td>
+                            <td class="name">
+                                <img src="{{asset('storage')}}/{{$item['img'][0]['path']}}" class="product-info-img img">
+                                {{$item['name']}}
                             </td>
-                            <td>GiaNhap</td>
-                            <td>GiaBan</td>
-                            <td>PhanLoaiPhu</td>
+                            <td> {{$item['priceImport']}}</td>
+                            <td> {{$item['priceSell']}}</td>
+                            <td> {{$item['type_product']['name']}}</td>
                             <td class="align-middle d-flex flex-column">
-                                <a href="/Admin/AddCategoryProduct?masanpham=MaSanPham" type="button" class="btn btn-primary btn-sm shadow-none rounded-0 mb-2">
+                                <a href="{{route('admin.product.createdetail',['id'=>$item['id']])}}" type="button" class="btn btn-primary btn-sm shadow-none rounded-0 mb-2">
                                     <i class="fas fa-plus me-2"></i>Thêm phân loại
                                 </a>
-                                <form action="">
-                                     <button type="submit" class="btn btn-danger btn-sm shadow-none rounded-0 mb-2 w-100">
+                                <div>
+                                     <button type="button" class="btn btn-danger btn-sm shadow-none rounded-0 mb-2 w-100 remove" data-id={{$item['id']}}>
                                         <i class="fas fa-trash me-2"></i>Xoá
                                     </button>
-                                </form>
-                              
-                                {{-- @if (TrangThai)
-                                { --}}
-                                    <form action="">
-                                        <button type="submit" class="btn btn-success btn-sm shadow-none rounded-0 w-100 mb-2">
+                                </div>
+                                @if ($item['status']==1)
+                                     <div>
+                                        <button type="button" class="btn btn-danger tn-sm shadow-none rounded-0 w-100 mb-2 changestatus" data-id={{$item['id']}} data-status=0>
+                                            <i class="fas fa-check me-2"></i>Ẩn
+                                        </button>
+                                    </div>
+                                @else
+                                    <div>
+                                        <button type="button" class="btn btn-success btn-sm shadow-none rounded-0 w-100 mb-2 changestatus" data-id={{$item['id']}} data-status=1>
                                             <i class="fas fa-check me-2"></i>Hiển thị
                                         </button>
-                                    </form>
+                                    </div>
+                                @endif
                                    
-                                {{-- } --}}
-                                {{-- else
-                                {
-                                    <form action="">
-                                        <button type="submit" class="btn btn-danger btn-sm shadow-none rounded-0 w-100 mb-2">
-                                            <i class="fas fa-ban me-2"></i>Ẩn
-                                        </button>
-                                    </form>
-                                   
-                                }
-                                @if (NoiBat)
-                                {
-
-                                   
-                                        <form action="">
-                                        <button type="submit" class="btn btn-success btn-sm shadow-none rounded-0 w-100">
-                                            <i class="fas fa-check me-2"></i>Có nổi bật
-                                        </button>
-                                    </form>
-                                       
+                                     
                                     
-
-                                }
-                                else
-                                {
-                                    <form action="">
-                                        <button type="submit" class="btn btn-danger btn-sm shadow-none rounded-0 w-100">
-                                            <i class="fas fa-ban me-2"></i>Không nổi bật
-                                        </button>
-                                    </form>
-                                    
-                                } --}}
                             </td>
                         </tr>
-                    {{-- }re --}}
+                    @empty
+                        
+                    @endforelse
+                        
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 @endsection
+@push('js')
+    <script>
+        $('.changestatus').click(function(){
+            let status=$(this).attr('data-status')
+            let id=$(this).attr('data-id')
+            let element=$(this)
+             $.ajax({
+                    url: "{{route('admin.product.changstatus')}}",
+                    type: 'GET',
+                    data:{
+                        id:id,
+                        status:status
+                    },
+                    success: function(response) {
+                        element.addClass( "d-none" )
+                        if(parseInt(status)==1){
+                            element.attr('class','btn btn-danger btn-sm shadow-none rounded-0 w-100 mb-2 changestatus')
+                           element.attr('data-status',0)
+                           element.html(' <i class="fas fa-check me-2"></i>Ẩn')
+                        }else{
+                            element.attr('class','btn btn-success btn-sm shadow-none rounded-0 w-100 mb-2 changestatus')
+                           element.attr('data-status',1)
+                           element.html('<i class="fas fa-check me-2"></i>Hiển thị')
+                        }
+                    },
+                    error: function(response) {
+                      Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                    }
+                });
+        })
+        $('.remove').click(function(){
+            let id=$(this).attr('data-id')
+            let ele=$(this)
+            $.ajax({
+                    url: "{{route('admin.product.delete')}}",
+                    type: 'DELETE',
+                    data:{
+                        "_token": "{{ csrf_token() }}",
+                        id:id,
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                        ele.parent().parent().remove()
+                    },
+                    error: function(response) {
+                      Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                    }
+                });
+        })
+    </script>
+@endpush         

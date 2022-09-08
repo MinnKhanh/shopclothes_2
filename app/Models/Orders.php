@@ -27,10 +27,15 @@ class Orders extends Model
         'city',
         'district',
         'zip_code',
-        'status'
+        'status',
+        'ship'
     ];
-    protected $cast = [
+    protected $casts = [
         'created_at' => 'date:Y-m-d',
         'updated-at' => 'date:Y-m-d',
     ];
+    public function DiscountProduct()
+    {
+        return $this->belongsTo(Discount::class, 'discount', 'id');
+    }
 }

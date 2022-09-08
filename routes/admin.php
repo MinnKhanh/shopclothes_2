@@ -35,6 +35,8 @@ Route::group([
     Route::get('/getsize', [ProductController::class, 'getSize'])->name('getsize');
     Route::delete('/removesize', [ProductController::class, 'removeSize'])->name('removesize');
     Route::post('/changesize', [ProductController::class, 'changeSize'])->name('changesize');
+    Route::get('/changstatus', [ProductController::class, 'changStatus'])->name('changstatus');
+    Route::post('/delete', [ProductController::class, 'delete'])->name('delete');
 });
 Route::group([
     'as'     => 'type.',
