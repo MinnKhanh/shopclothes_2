@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RateRequest;
 use App\Models\Categories;
 use App\Models\Color;
+use App\Models\favorite;
 use App\Models\ProductDetail;
 use App\Models\Products;
+use App\Models\Rate;
 use App\Models\Type;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -15,6 +19,7 @@ class ProductController extends Controller
 {
     public function index()
     {
+        $typenav = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();
         // dd(Type::get()->toArray());
         $product = Products::join('product_detail', 'products.id', '=', 'product_detail.id_product')
             ->select('products.id', 'products.name', 'products.category', 'products.type');
@@ -35,7 +40,8 @@ class ProductController extends Controller
             [
                 'list' => Products::with('Img', 'BrandProduct')->get()->toArray(),
                 'categories' => $categories,
-                'type' => $type
+                'type' => $type,
+                'typenav' => $typenav
             ]
         );
     }
@@ -73,13 +79,15 @@ class ProductController extends Controller
     }
     public function getProductDetail(Request $request)
     {
+        $type = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();
         $data = ProductDetail::with(['colorProduct', 'Img' => fn ($query) => $query->where('type', 2)->where('img_index', 1)])->where('id_product', $request->input('id'))->get()->toArray();
         $product = Products::with('Img')->where('id', $request->input('id'))->first()->toArray();
         $dataSuggest = Products::with('Img')->where('type', $product['type'])->where('category', $product['category'])->where('id', '!=', $product['id'])->get()->toArray();
         return view('products.detail', [
             'data' => $data,
             'product' => $product,
-            'productSuggest' => $dataSuggest
+            'productSuggest' => $dataSuggest,
+            'typenav' => $type
         ]);
     }
     public function listNameProduct(Request $request)
@@ -100,5 +108,45 @@ class ProductController extends Controller
             // dd(DB::getQueryLog());
             return [$listsize, $listImg, Session::get('cart') ? Session::get('cart') : []];
         }
+    }
+    public function addFaverite(Request $request)
+    {
+        if ($request->input('id') && auth()->check()) {
+            $faverite = DB::table('favorite')->where('id_product', $request->input('id'))->where('id_customer', auth()->user()->id)->first();
+            if ($faverite) {
+                return DB::table('favorite')->where('id_customer', auth()->user()->id)->select(DB::raw('count(id_product) as quantity'))->get()->toArray();
+            } else {
+                DB::table('favorite')->insert([
+                    'id_customer' => auth()->user()->id,
+                    'id_product' => $request->input('id')
+                ]);
+                return DB::table('favorite')->where('id_customer', auth()->user()->id)->select(DB::raw('count(id_product) as quantity'))->get()->toArray();
+            }
+        }
+        return response()->json(['error' => 'Thêm thất bại'], 400);
+    }
+    public function rateProduct(RateRequest $request)
+    {
+        $dataupdate = [
+            'number_stars' => $request->input('rate'),
+            'review' => $request->input('review'),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ];
+
+        if ($request->input('review')) {
+            $dataupdate = [
+                'number_stars' => $request->input('rate'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+        }
+        DB::table('rate')->updateOrInsert(
+            [
+                'id_product' => $request->input('id'),
+                'id_customer' => 1
+            ],
+            $dataupdate
+        );
     }
 }

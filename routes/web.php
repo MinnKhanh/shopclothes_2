@@ -49,6 +49,8 @@ Route::group([
     Route::get('/list-product', [ProductController::class, 'getProductBy'])->name('listproduct');
     Route::get('/product-detail', [ProductController::class, 'getProductDetail'])->name('productdetail');
     Route::get('/getsizeandimg', [ProductController::class, 'getSizeAndImg'])->name('getsizeandimg');
+    Route::get('/add-faverite', [ProductController::class, 'addFaverite'])->name('addfaverite');
+    Route::get('/rate-product', [ProductController::class, 'rateProduct'])->name('rateproduct');
 });
 Route::group([
     'as'     => 'cart.',

@@ -34,17 +34,18 @@ class ProductController extends Controller
     }
     public function create()
     {
+        $typenav = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();
         // DB::enableQueryLog();
         // dd(Type::with(['Categories' => fn ($query) => $query->where('id', 1)])->where('id', 1)->get()->first()->toArray()['categories'][0]['name']);
         // dd(DB::getQueryLog());
-        return view('admin.addproduct', ['type' => Type::query(), 'brand' => Brand::query()]);
+        return view('admin.addproduct', ['type' => Type::query(), 'brand' => Brand::query(), 'typenav' => $typenav]);
     }
     public function update(Request $request)
     {
         //dd(Products::with('Img', 'BrandProduct', 'TypeProduct')->where('id', $request->get('id'))->first()->toArray());
         return view('admin.addproduct', [
             'type' => Type::query(), 'brand' => Brand::query(),
-            'edit' => 1, 'product' => Products::with('Img')->where('id', $request->get('id'))->first()->toArray()
+            'edit' => 1, 'product' => Products::with('Img')->where('id', $request->get('id'))->first()->toArray(),
         ]);
     }
     public function store(ProductRequest $request)

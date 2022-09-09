@@ -37,4 +37,9 @@ class TypeController extends Controller
         ]);
         return $type;
     }
+    public function index(Request $request)
+    {
+        $typenav = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();
+        return view('admin.type', ['typenav' => $typenav]);
+    }
 }

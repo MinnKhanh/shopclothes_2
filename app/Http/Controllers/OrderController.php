@@ -26,7 +26,7 @@ class OrderController extends Controller
             $cart = Session::get('cart') ? Session::get('cart') : null;
             if ($cart != null) {
                 $order = Orders::create([
-                    'id_customer' => auth()->id,
+                    'id_customer' => auth()->user()->id,
                     'price' => $cart->getTotalMoney(),
                     'quantity' => $cart->getTotalQuantity(),
                     'type' => OrderTypeEnum::OrderSell,

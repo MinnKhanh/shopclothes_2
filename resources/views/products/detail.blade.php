@@ -1,11 +1,11 @@
 @extends('layout.master')
 @push('css')
 <style>
-        .h-100 {
+        img.h-100 {
             height: 500px !important;
         }
 </style>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endpush
 @section('content')
 <div class="container-fluid">
@@ -175,7 +175,7 @@
                 <div class="bg-light p-30">
                     <div class="nav nav-tabs mb-4">
                         <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</a>
-                        <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a>
+                        {{-- <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a> --}}
                         <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>
                     </div>
                     <div class="tab-content">
@@ -184,7 +184,7 @@
                             <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
                             <p>Dolore magna est eirmod sanctus dolor, amet diam et eirmod et ipsum. Amet dolore tempor consetetur sed lorem dolor sit lorem tempor. Gubergren amet amet labore sadipscing clita clita diam clita. Sea amet et sed ipsum lorem elitr et, amet et labore voluptua sit rebum. Ea erat sed et diam takimata sed justo. Magna takimata justo et amet magna et.</p>
                         </div>
-                        <div class="tab-pane fade" id="tab-pane-2">
+                        {{-- <div class="tab-pane fade" id="tab-pane-2">
                             <h4 class="mb-3">Additional Information</h4>
                             <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
                             <div class="row">
@@ -221,10 +221,10 @@
                                       </ul> 
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="tab-pane fade" id="tab-pane-3">
                             <div class="row">
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <h4 class="mb-4">1 review for "Product Name"</h4>
                                     <div class="media mb-4">
                                         <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
@@ -240,38 +240,41 @@
                                             <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
+                                </div> --}}
+                                
+                                <form action="{{route('product.rateproduct')}}" id="formreview" class="col-md-12">
+                                    @csrf
+                                    <input type="text" class="d-none" name="id" value={{$product['id']}}>
                                     <h4 class="mb-4">Leave a review</h4>
                                     <small>Your email address will not be published. Required fields are marked *</small>
                                     <div class="d-flex my-3">
                                         <p class="mb-0 mr-2">Your Rating * :</p>
-                                        <div class="text-primary">
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                        </div>
+                                        <div id="starrate"></div>
+                                        <input type="number" class="" id="rate" name="rate">
                                     </div>
-                                    <form>
-                                        <div class="form-group">
-                                            <label for="message">Your Review *</label>
-                                            <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
+                                    <div>
+                                        <div class="form-group row">
+                                            <div class='col-6'>
+                                                <label for="message">Your Review *</label>
+                                                <textarea id="message" name="review" cols="30" rows="5" class="form-control"></textarea>
+                                            </div>
+                                               {{-- <div class='col-6'>
+                                                <label for="name">Your Name *</label>
+                                                <input type="text" class="form-control" name="name" id="name">
+                                            </div> --}}
                                         </div>
-                                        <div class="form-group">
-                                            <label for="name">Your Name *</label>
-                                            <input type="text" class="form-control" id="name">
+                                        <div class="form-group row">
+                                                {{-- <div class='col-6'>
+                                                <label for="email">Your Email *</label>
+                                                <input type="email" class="form-control" name="email" id="email">
+                                            </div> --}}
+                                            <div class='col-6' style="margin-top: 32px">
+                                                <input type="button" value="Leave Your" class="btn btn-primary px-3 rating">
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="email">Your Email *</label>
-                                            <input type="email" class="form-control" id="email">
-                                        </div>
-                                        <div class="form-group mb-0">
-                                            <input type="submit" value="Leave Your Review" class="btn btn-primary px-3">
-                                        </div>
-                                    </form>
-                                </div>
+                                        {{-- {{auth()->check()?'':'disabled'}} --}}
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -424,8 +427,33 @@
     </div>
    @endsection
    @push('js')
+   {{-- <script src="https://code.jquery.com/jquery-3.6.1.slim.js" integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk=" crossorigin="anonymous"></script> --}}
+   <script src="{{asset('js/rating-star-icons/dist/rating.js')}}"></script>
         <script>
-              
+            $('.rating').click(function(){
+                var form = $('#formreview');
+                var actionUrl = form.attr('action');
+                console.log('dd')        
+               $.ajax({
+                    type: "POST",
+                    url: actionUrl,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                    }
+                });
+            })
+              $(function(){
+                    $("#starrate").rating({
+                            "half":true,
+                            "click":function (e) {
+                                $('#rate').val(e.stars)
+                    }
+                    });
+                });
+            $("#message").click(function(){
+                console.log($('#starrate').val())
+            })    
             $('.addtocart').click(function(){
                 let id=$('#idProduct').val()
                 let color=$("input[type='radio'].color:checked").val()
