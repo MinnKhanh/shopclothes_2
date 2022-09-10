@@ -47,15 +47,16 @@ class ProductController extends Controller
     }
     public function getProductBy(Request $request)
     {
-        $product = Products::with('Img', 'BrandProduct');
+        $product = Products::with('Img', 'BrandProduct')
+            ->join('categories', 'categories.id', 'products.category');
 
         if ($request->input('type')) {
             $types = explode('-', $request->input('type'));
-            $product->whereIn('type', $types);
+            $product->whereIn('categories.type', $types);
         }
         if ($request->input('category')) {
             $categories = explode('-', $request->input('category'));
-            $product->whereIn('category', $categories);
+            $product->whereIn('products.category', $categories);
         }
         if ($request->input('price')) {
             $prices = preg_replace("/[Đ\.><]/", "", $request->input('price'));
@@ -72,10 +73,10 @@ class ProductController extends Controller
             });
         }
         if ($request->input('search')) {
-            $product->where('name', 'like', '%' . $request->get('search') . '%');
+            $product->where('products.name', 'like', '%' . $request->get('search') . '%');
         }
         //  dd($product->get()->toArray());
-        return $product->get()->toArray();
+        return $product->select(DB::raw('products.*'))->get()->toArray();
     }
     public function getProductDetail(Request $request)
     {

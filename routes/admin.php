@@ -45,6 +45,8 @@ Route::group([
     Route::get('/', [TypeController::class, 'index'])->name('index');
     Route::get('/create', [TypeController::class, 'create'])->name('create');
     Route::post('/store', [TypeController::class, 'store'])->name('store');
+    Route::get('/update', [TypeController::class, 'update'])->name('update');
+    Route::delete('/delete', [TypeController::class, 'delete'])->name('delete');
 });
 Route::group([
     'as'     => 'category.',
@@ -52,7 +54,9 @@ Route::group([
 ], static function () {
     Route::get('/', [CategoryController::class, 'index'])->name('index');
     Route::get('/create', [CategoryController::class, 'create'])->name('create');
+    Route::get('/listcategories', [CategoryController::class, 'getCategoriesById'])->name('listbyid');
     Route::post('/store', [CategoryController::class, 'store'])->name('store');
+    Route::get('/delete', [CategoryController::class, 'delete'])->name('delete');
 });
 Route::group([
     'as'     => 'brand.',

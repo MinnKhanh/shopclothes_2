@@ -30,7 +30,7 @@ class ProductController extends Controller
     {
         $data = Products::with('Img', 'TypeProduct')->get()->toArray();
         //dd($data);
-        return view('admin.product', ['products' => $data]);
+        return view('admin.product.product', ['products' => $data]);
     }
     public function create()
     {
@@ -38,12 +38,12 @@ class ProductController extends Controller
         // DB::enableQueryLog();
         // dd(Type::with(['Categories' => fn ($query) => $query->where('id', 1)])->where('id', 1)->get()->first()->toArray()['categories'][0]['name']);
         // dd(DB::getQueryLog());
-        return view('admin.addproduct', ['type' => Type::query(), 'brand' => Brand::query(), 'typenav' => $typenav]);
+        return view('admin.product.addproduct', ['type' => Type::query(), 'brand' => Brand::query(), 'typenav' => $typenav]);
     }
     public function update(Request $request)
     {
         //dd(Products::with('Img', 'BrandProduct', 'TypeProduct')->where('id', $request->get('id'))->first()->toArray());
-        return view('admin.addproduct', [
+        return view('admin.product.addproduct', [
             'type' => Type::query(), 'brand' => Brand::query(),
             'edit' => 1, 'product' => Products::with('Img')->where('id', $request->get('id'))->first()->toArray(),
         ]);
