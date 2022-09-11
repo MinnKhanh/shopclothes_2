@@ -65,7 +65,9 @@ Route::group([
 ], static function () {
     Route::get('/', [BrandController::class, 'index'])->name('index');
     Route::get('/create', [BrandController::class, 'create'])->name('create');
+    Route::get('/update', [BrandController::class, 'update'])->name('update');
     Route::post('/store', [BrandController::class, 'store'])->name('store');
+    Route::delete('/delete', [BrandController::class, 'delete'])->name('delete');
 });
 Route::group([
     'as'     => 'color.',

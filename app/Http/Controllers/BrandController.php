@@ -5,33 +5,57 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BrandRequest;
 use App\Models\Brand;
 use App\Models\Img;
+use App\Models\Products;
+use App\Models\Type;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    public function __construct()
+    {
+        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+            ->get()->toArray();
+    }
     public function index()
     {
+        $brands = Brand::with('Img')->withCount('Product')->get()->toArray();
+        //dd($brands);
+        return view('admin.brand.index', ['brands' => $brands, 'typenav' => $this->typenav]);
     }
     public function create()
     {
-        //dd(Brand::with('Img')->get()->toArray());
+        return view('admin.brand.createorupdate', ['typenav' => $this->typenav]);
     }
     public function store(BrandRequest $request)
     {
         $brand = new Brand();
+        if ($request->input('id')) {
+            $brand = Brand::where('id', $request->input('id'))->first();
+        }
         $brand->name = $request->input('name');
         $brand->country = $request->input('country');
         $brand->description = $request->input('description');
         $brand->save();
-        $logo = optional($request->file('photo'))->store('public/brand_img');
-        $logo = str_replace("public/", "", $logo);
-        Img::create([
-            'id_product' => $brand->id,
-            'path' => $logo,
-            'type' => 5,
-            'img_index' => 1
-        ]);
+        if ($request->file('photo')) {
+            $logo = optional($request->file('photo'))->store('public/brand_img');
+            $logo = str_replace("public/", "", $logo);
+            Img::updateOrCreate(
+                [
+                    'product_id' => $brand->id,
+                    'type' => 5,
+                    'img_index' => 1
+                ],
+                ['path' => $logo]
+            );
+        }
         return $brand;
+    }
+    public function update(Request $request)
+    {
+        if ($request->input('id')) {
+            $data = Brand::where('id', $request->input('id'))->with('Img')->withCount('Product')->get()->toArray();
+            return view('admin.brand.createorupdate', ['brand' => $data[0], 'typenav' => $this->typenav, 'isedit' => 1]);
+        }
     }
     public function getListBrand(Request $request)
     {
@@ -43,5 +67,17 @@ class BrandController extends Controller
             $data = Brand::get()->toArray();
         }
         return $data;
+    }
+    public function delete(Request $request)
+    {
+        if ($request->input('id')) {
+            if (Products::where('brand', $request->input('id'))->count()) {
+                return response()->json(['error' => 'Hiện còn sản phẩm trong kho thuộc nhã hiệu này không thể xóa'], 400);
+            } else {
+                Brand::where('id', $request->input('id'))->delete();
+                Img::where('type', 5)->where('product_id', $request->input('id'))->delete();
+                return response()->json(['success' => 'Xóa thành công'], 200);
+            }
+        }
     }
 }

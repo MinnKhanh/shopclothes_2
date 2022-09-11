@@ -12,6 +12,11 @@ use Illuminate\Validation\Rule;
 
 class TypeController extends Controller
 {
+    public function __construct()
+    {
+        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+            ->get()->toArray();
+    }
     public function getListType(Request $request)
     {
         $data = [];
@@ -24,9 +29,9 @@ class TypeController extends Controller
     }
     public function create(Request $request)
     {
-        $typenav = Type::with('Img', 'Categories')->withCount('Product')
-            ->get()->toArray();
-        return view('admin.types.createorupdate', ['typenav' => $typenav]);
+        // $typenav = Type::with('Img', 'Categories')->withCount('Product')
+        //     ->get()->toArray();
+        return view('admin.types.createorupdate', ['typenav' => $this->typenav]);
     }
     public function store(Request $request)
     {
@@ -60,17 +65,17 @@ class TypeController extends Controller
     }
     public function index(Request $request)
     {
-        $typenav = Type::with('Img', 'Categories')->withCount('Product')
-            ->get()->toArray();
+        // $typenav = Type::with('Img', 'Categories')->withCount('Product')
+        //     ->get()->toArray();
         //  dd(Products::join('categories', 'categories.id', 'products.category')->where('categories.type', 2)->count());
-        return view('admin.types.index', ['typenav' => $typenav]);
+        return view('admin.types.index', ['typenav' => $this->typenav]);
     }
     public function update(Request $request)
     {
-        $typenav = Type::with('Img', 'Categories')->withCount('Product')
-            ->get()->toArray();
-        $type  = $typenav[array_search($request->input('id'), array_column($typenav, 'id'))];
-        return view('admin.types.createorupdate', ['idtype' => $request->input('id'), 'typenav' => $typenav, 'type' => $type, 'isedit' => 1]);
+        // $typenav = Type::with('Img', 'Categories')->withCount('Product')
+        //     ->get()->toArray();
+        $type  = $this->typenav[array_search($request->input('id'), array_column($this->typenav, 'id'))];
+        return view('admin.types.createorupdate', ['idtype' => $request->input('id'), 'typenav' => $this->typenav, 'type' => $type, 'isedit' => 1]);
     }
     public function delete(Request $request)
     {

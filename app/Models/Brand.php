@@ -17,4 +17,8 @@ class Brand extends Model
     {
         return $this->morphMany(Img::class, 'product', 'type');
     }
+    public function Product()
+    {
+        return $this->hasMany(Products::class, 'brand', 'id');
+    }
 }
