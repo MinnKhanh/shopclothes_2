@@ -80,7 +80,7 @@ class TypeController extends Controller
             } else {
                 Type::where('id', $request->input('id'))->delete();
                 Categories::where('type', $request->input('id'))->delete();
-                Img::where('type', 4)->where('product_id', $request->input('id'))->delete();
+                Img::whereIn('type', [3, 4])->where('product_id', $request->input('id'))->delete();
                 return response()->json(['success' => 'Xóa thành công'], 200);
             }
         }

@@ -93,6 +93,7 @@
       <form id="formcategory" action="{{ route('admin.category.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <input type="text" class="d-none" name="type" id="idtype">
+        <input type="text" class="d-none" name="id" id="idupdate">
           <div class="col-md-6 form-group mb-4">
             <label>Tên Loại</label>
             <input class = "form-control shadow-none rounded-0" id="namecategory" type="text" name="name" >
@@ -112,6 +113,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary closecategory" data-dismiss="modal">Đóng</button>
         <button type="button" class="btn btn-primary addcategory">Thêm</button>
+        <button type="button" class="btn btn-primary updatecategory d-none">Cập nhật</button>
       </div>
       <table class="table">
         <thead class="thead-dark">
@@ -151,6 +153,11 @@
              reader.readAsDataURL(this.files[0])
         console.log($(this).val())
         })
+        function resetform(){
+            $('#namecategory').val(null)
+            $('.imgchange').attr('src','')
+            $('#photocategory').val(null)
+        }
         $('.addcategory').click(function(){
                 const obj = $("#formcategory");
                 const formData = new FormData(obj[0]);
@@ -166,28 +173,60 @@
                     success: function(data)
                     {
                         console.log(data)
-                         let inner=` <tr class="table-bordered">
+                         let inner=` <tr class="table-bordered item-${data['id']}">
                                 <th>${++index}</th>
-                                 <td class="itemimg"><img class="img-fluid img" src='{{ asset("storage/")}}/${element['img'][0]?element['img'][0]['path']:''}}}' alt=""></td>
-                                <th>${element.name}</th>
+                                 <td class="itemimg"><img class="img-fluid img" src='{{ asset("storage/")}}/${data['img'][0]?data['img'][0]['path']:''}' alt=""></td>
+                                <th class="nameitem">${data.name}</th>
                                 <th class="buttoncate">
-                                <button type="button" class="btn btn-danger btn-sm mb-2 d-block buttonchange update" data-id=${element['id']}>
+                                <button type="button" class="btn btn-danger btn-sm mb-2 d-block buttonchange update" data-id=${data['id']}>
                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                 <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
                                 </svg> Cập nhật
                                 </button>
-                                <button type="button" class="btn btn-danger btn-sm mb-2 d-block buttonchange remove" data-id=${element['id']}>
+                                <button type="button" class="btn btn-danger btn-sm mb-2 d-block buttonchange remove" data-id=${data['id']}>
                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                                 <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
                                 </svg> Xóa
                                 </button>
                                 </th>
                             </tr>`
+                            console.log(inner)
                     $('.bodycate').append(inner)
                     $('.update').unbind('click')
                     $('.update').click(function(){
-                        
+                        let id=$(this).attr('data-id')
+                        let name=$(this).parent().prev().text()
+                        let img=$(this).parent().prev().prev().attr('src')
+                        $('.addcategory').addClass('d-none')
+                         $('.updatecategory').removeClass('d-none')
+                         $('#idupdate').val(id)
+                        console.log(id,name,img)
                     })
+                    resetform()
+                    }
+                });
+        })
+        $('.updatecategory').click(function(){
+            let id=$(this).attr('data-id')
+            const obj = $("#formcategory");
+            const formData = new FormData(obj[0]);
+            var actionUrl = obj.attr('action');      
+               $.ajax({
+                    type: "POST",
+                    url: "{{route('admin.category.update')}}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    enctype: 'multipart/form-data',
+                    success: function(data)
+                    {
+                        console.log(data)
+                        $('.item-'+data['id']).find('.itemimg img').attr('src',"{{asset('storage')}}"+'/'+data['img'][0]['path'])
+                         $('.item-'+data['id']).find('.nameitem').text(data['name'])
+                         $('.addcategory').removeClass('d-none')
+                         $('.updatecategory').addClass('d-none')
+                         resetform()
                     }
                 });
         })
@@ -232,10 +271,10 @@
                     console.log(response)
                     inner=''
                     response.forEach((element,index) => {
-                         inner+=` <tr class="table-bordered">
+                         inner+=` <tr class="table-bordered item-${element['id']}">
                                 <th>${++index}</th>
-                                <td class="itemimg"><img class="img-fluid img" src='{{ asset("storage/")}}/${element['img'][0]?element['img'][0]['path']:''}}}' alt=""></td>
-                                <th>${element.name}</th>
+                                <td class="itemimg"><img class="img-fluid img" src='{{ asset("storage/")}}/${element['img'][0]?element['img'][0]['path']:''}' alt=""></td>
+                                <th class="nameitem">${element.name}</th>
                                 <th class="buttoncate">
                                 <button type="button" class="btn btn-danger btn-sm mb-2 d-block buttonchange update" data-id=${element['id']}>
                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -252,6 +291,48 @@
                     });
                    $('.bodycate').empty()
                    $('.bodycate').append(inner)
+                    $('.update').unbind('click')
+                    $('.update').click(function(){
+                        let id=$(this).attr('data-id')
+                        let name=$(this).parent().prev().text()
+                        let img=$(this).parent().prev().prev().find('img').attr('src')
+                        console.log(id,name,img)
+                        $('.imgchange').attr('src',img)
+                        $('#namecategory').val(name)
+                         $('#idupdate').val(id)
+                        $('.addcategory').addClass('d-none')
+                         $('.updatecategory').removeClass('d-none')
+                    })
+                    $('.remove').unbind('click')
+                    $('.remove').click(function(){
+                        let e=$(this)
+                        let id=$(this).attr('data-id')
+                          $.ajax({
+                            url: "{{route('admin.category.delete')}}",
+                            data:{ "_token": "{{ csrf_token() }}",
+                                id:id
+                            },
+                            type: 'DELETE',
+                            success:  function(response) {
+                                Swal.fire({
+                                icon: 'success',
+                                title: 'Xóa thành công',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                                e.parent().parent().remove()
+                            },
+                            error: function(response) {
+                                Swal.fire({
+                                icon: 'error',
+                                title: response.responseJSON.error,
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                            }
+                        });
+                    })
+                    
                 },
                 error: function(response) {
                 }
