@@ -4,6 +4,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\admin\CustomerController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -76,4 +77,20 @@ Route::group([
     Route::get('/', [BrandController::class, 'index'])->name('index');
     Route::get('/create', [BrandController::class, 'create'])->name('create');
     Route::post('/store', [ColorController::class, 'store'])->name('store');
+});
+Route::group([
+    'as'     => 'order.',
+    'prefix' => 'order',
+], static function () {
+    Route::get('/', [BrandController::class, 'index'])->name('index');
+    Route::get('/create', [BrandController::class, 'create'])->name('create');
+    Route::post('/store', [ColorController::class, 'store'])->name('store');
+});
+Route::group([
+    'as'     => 'customers.',
+    'prefix' => 'customers',
+], static function () {
+    Route::get('/', [CustomerController::class, 'index'])->name('index');
+    Route::get('/create', [CustomerController::class, 'create'])->name('create');
+    Route::post('/store', [CustomerController::class, 'store'])->name('store');
 });

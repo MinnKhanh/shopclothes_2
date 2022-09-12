@@ -10,6 +10,7 @@ use App\Models\OrderDetails;
 use App\Models\Orders;
 use App\Models\Products;
 use App\Models\ProductSize;
+use App\Models\Type;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,11 @@ use Throwable;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+            ->get()->toArray();
+    }
     public function CreateOrder(OrderRequest $request)
     {
         DB::beginTransaction();
@@ -74,7 +80,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $orders = Orders::get()->toArray();
-        return view('orders.listorder', ['orders' => $orders]);
+        return view('orders.listorder', ['orders' => $orders, 'typenav' => $this->typenav]);
     }
     public function OrderDetail(Request $request)
     {
@@ -133,7 +139,7 @@ class OrderController extends Controller
                 ->join('size', 'size.id', 'product_size.size')
                 ->join('imgs', 'imgs.product_id', 'product_detail.id')->where('img_index', 1)
                 ->select('order_details.quantity', 'order_details.id_order', 'order_details.id_product', 'order_details.totalPrice', 'order_details.size', 'products.name', 'imgs.path', DB::raw('color.name as colorname'), DB::raw('size.name as sizename'))->get()->toArray();
-            return view('orders.updateorder', ['order' => $order, 'orderdetail' => $orderdetail, 'id' => $id]);
+            return view('orders.updateorder', ['order' => $order, 'orderdetail' => $orderdetail, 'id' => $id, 'typenav' => $this->typenav]);
         }
     }
     public function deleteDetail(Request $request)

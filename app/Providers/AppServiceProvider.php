@@ -7,6 +7,7 @@ use App\Models\Categories;
 use App\Models\ProductDetail;
 use App\Models\Products;
 use App\Models\Type;
+use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -35,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
             2 => ProductDetail::class,
             3 => Type::class,
             4 => Categories::class,
+            6 => User::class
         ]);
     }
 }

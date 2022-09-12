@@ -29,6 +29,7 @@ class User extends Authenticatable
         'age',
         'gender',
         'remember_token',
+        'username'
     ];
 
     /**
@@ -49,4 +50,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function Img()
+    {
+        return $this->morphMany(Img::class, 'product', 'type');
+    }
 }

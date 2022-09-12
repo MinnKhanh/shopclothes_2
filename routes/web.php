@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -26,21 +27,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [MainController::class, 'index'])->name('index');
 
-Route::get('products', function () {
-    return view('products.index');
-});
-Route::get('products/detail', function () {
-    return view('products.detail');
-});
-Route::get('customer/contact', function () {
-    return view('auth.register');
-});
-Route::get('orders/cart', function () {
-    return view('orders.cart');
-});
-Route::get('orders/checkout', function () {
-    return view('orders.checkout');
-});
+// Route::get('products', function () {
+//     return view('products.index');
+// });
+// Route::get('products/detail', function () {
+//     return view('products.detail');
+// });
+// Route::get('customer/contact', function () {
+//     return view('auth.register');
+// });
+// Route::get('orders/cart', function () {
+//     return view('orders.cart');
+// });
+// Route::get('orders/checkout', function () {
+//     return view('orders.checkout');
+// });
 Route::group([
     'as'     => 'product.',
     'prefix' => 'product',
@@ -68,6 +69,7 @@ Route::group([
 Route::group([
     'as'     => 'orders.',
     'prefix' => 'orders',
+    'middleware' => 'auth'
 ], static function () {
     Route::get('/', [OrderController::class, 'index'])->name('index');
     Route::get('/detail', [OrderController::class, 'OrderDetail'])->name('detail');
@@ -86,4 +88,11 @@ Route::group([
     Route::post('/registering', [AuthController::class, 'registering'])->name('registering');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
+});
+Route::group([
+    'as'     => 'user.',
+    'prefix' => 'user',
+], static function () {
+    Route::get('/', [UserController::class, 'index'])->name('index')->middleware('auth');
+    Route::get('/updateinfo', [UserController::class, 'updateInfo'])->name('updateinfo')->middleware('auth');
 });
