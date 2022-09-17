@@ -39,15 +39,15 @@
                         {{ $errors->first('password') }}
                     @endif
                 </span>         
-            <select class="form-control rounded-0 shadow-none" id="role" name="role" placeholder="Vai Trò" type="text" value=""
-            {{(auth()->check() && auth()->role==3)?'':'disabled'}}>
-                @foreach (RoleEnum::getValues()   as $item)
-                    <option value={{$item}} {{ $loop->first ? 'selected="selected"' : '' }}>{{RoleEnum::getRole($item)}}</option>
+            <select class="form-control rounded-0 shadow-none {{auth()->check()?(auth()->user()->hasDirectPermission('Admin')?'':'d-none'):'d-none'}}" id="role" name="role" placeholder="Vai Trò" type="text"
+           > 
+                @foreach ($listroles as $key => $item)
+                    <option value={{$key}} {{ $key==2 ? 'selected="selected"' : '' }}>{{ $item}}</option>
                 @endforeach
             </select>
             <span class="field-validation-valid text-danger mb-3"> 
-                    @if($errors->has('password'))
-                        {{ $errors->first('password') }}
+                    @if($errors->has('permiss'))
+                        {{ $errors->first('permiss') }}
                     @endif
                 </span>    
             <button class="btn btn-primary rounded-0 shadow-none mb-3">Đăng ký</button>

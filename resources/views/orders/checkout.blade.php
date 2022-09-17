@@ -36,61 +36,61 @@
                         <div class="error">{{ $errors->first('msg') }}</div>
                     @endif
             @csrf
-            <div class="col-lg-8">
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Billing Address</span></h5>
+            <div class="col-8">
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Địa chỉ đơn hàng</span></h5>
                 <div class="bg-light p-30 mb-5">
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <label>Name</label>
-                            <input class="form-control name" name="name" type="text" placeholder="John">
+                            <label>Tên</label>
+                            <input class="form-control name" name="name" type="text" placeholder="John" value="{{old('name')}}">
                               @if($errors->has('name'))
                         <div class="error">{{ $errors->first('name') }}</div>
                     @endif
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>Phone</label>
-                            <input class="form-control phone" name="phone" type="text" placeholder="Doe">
+                            <label>Điện thoại</label>
+                            <input class="form-control phone" name="phone" type="text" placeholder="Doe" value="{{old('phone')}}">
                               @if($errors->has('phone'))
                         <div class="error">{{ $errors->first('phone') }}</div>
                     @endif
                         </div>
                         <div class="col-md-6 form-group">
                             <label>E-mail</label>
-                            <input class="form-control email" name="email" type="text" placeholder="example@email.com">
+                            <input class="form-control email" name="email" type="text" placeholder="example@email.com" value="{{old('email')}}">
                               @if($errors->has('email'))
                         <div class="error">{{ $errors->first('email') }}</div>
                     @endif
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>Address</label>
-                            <input class="form-control address" name="address" type="text" placeholder="+123 456 789">
+                            <label>Địa chỉ</label>
+                            <input class="form-control address" name="address" type="text" placeholder="+123 456 789" value="{{old('address')}}">
                               @if($errors->has('address'))
                         <div class="error">{{ $errors->first('address') }}</div>
                     @endif
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>Note</label>
-                            <textarea class="form-control note" name="note" type="text" placeholder="123 Street"></textarea>
+                            <label>Ghi chú</label>
+                            <textarea class="form-control note" name="note" type="text" placeholder="123 Street">{{old('note')}}</textarea>
                               @if($errors->has('note'))
                         <div class="error">{{ $errors->first('note') }}</div>
                     @endif
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>Country</label>
-                            <input class="form-control country" name="country" type="text" placeholder="" value="Việt Nam">
+                            <label>Quốc gia</label>
+                            <input class="form-control country" name="country" type="text" placeholder="" value="Việt Nam" value="{{old('country')}}">
                               @if($errors->has('country'))
                         <div class="error">{{ $errors->first('country') }}</div>
                     @endif
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>City</label>
+                            <label>Thành phố</label>
                             <select class="form-control city" name="city"></select>
                               @if($errors->has('city'))
                         <div class="error">{{ $errors->first('city') }}</div>
                     @endif
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>District</label>
+                            <label>Quận/Huyện</label>
                             <select class="form-control district" name="district"></select>
                               @if($errors->has('district'))
                         <div class="error">{{ $errors->first('district') }}</div>
@@ -98,17 +98,14 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label>ZIP Code</label>
-                            <input class="form-control code" name="zip_code" type="text" placeholder="123">
+                            <input class="form-control code" name="zip_code" type="text" placeholder="123" value="{{old('zip_code')}}">
                               @if($errors->has('code'))
-                        <div class="error">{{ $errors->first('code') }}</div>
-                    @endif
+                                <div class="error">{{ $errors->first('code') }}</div>
+                            @endif
                         </div>
-                        {{-- <div class="col-md-12">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="shipto">
-                                <label class="custom-control-label" for="shipto"  data-toggle="collapse" data-target="#shipping-address">Ship to different address</label>
-                            </div>
-                        </div> --}}
+                        <div class="col-md-12">
+                                <button class="btn btn-primary btn-sm pt-2 pb-2 info-account" type="button">Lấy thông tin của tài khoản</button>
+                        </div>
                     </div>
                 </div>
                 {{-- <div class="collapse mb-5" id="shipping-address">
@@ -151,14 +148,14 @@
                     </div>
                 </div> --}}
             </div>
-            <div class="col-lg-4">
+            <div class="col-4">
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Order Total</span></h5>
                 <div class="bg-light p-30 mb-5">
                     <div class="border-bottom">
-                        <h6 class="mb-3">Products</h6>
+                        <h6 class="mb-3">Sản phẩm</h6>
                         @forelse ($cart?$cart->getProductInCart():[] as $item)
                         <div class="d-flex justify-content-between">
-                            <p>{{$item['productInfo']['namecolor'].'-'.$item['productInfo']['namesize']}}</p>
+                            <p>{{$item['productInfo']['name'].'-'.$item['productInfo']['namecolor'].'-'.$item['productInfo']['namesize']}}</p>
                             <p>{{$item['price']}}Đ</p>
                         </div>
                         @empty
@@ -241,6 +238,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        
+        var district=null
          $('.applydiscount').click(function(){
                 if($('.inputdiscont').val()){
                     $.ajax({
@@ -280,18 +279,24 @@
             const districts = await response.json();
              let string = '';
             // const selectedValue = $(".district").val();
+            const selectedValue = "{{!empty(old('district'))?old('district'):''}}" ;
             console.log( path)
             $.each(districts.district, function(index, each) {
                 if (each.pre === 'Quận' || each.pre === 'Huyện') {
-                    string += `<option`;
-                    // if (selectedValue === each.name) {
-                    //     string += ` selected `;
-                    // }
-                    string += `>${each.name}</option>`;
+                     string += `<option value='${each.name}' ${each.name==selectedValue?'selected':''}>${each.name}</option>`;
                 }
             })
             $(".district").append(string);
             $('.district').val(null).trigger('change');
+            let olddistric="{{!empty(old('district'))?old('district'):''}}"
+
+            if(olddistric){
+                setValueSelect($('.district'),olddistric);
+            }
+            else if(district){
+                setValueSelect($('.district'),district);
+            }
+
         }
        
             async function insertCity(){
@@ -300,11 +305,14 @@
                 console.log(cities)
                 $.each(cities, function(index, each) {
                     $(".city").append(`
-                    <option data-path='${each.file_path}'>
-                        ${index}
-                    </option>`)
+                    <option value='${index}' data-path='${each.file_path}'>${index}</option>`)
                 })
                 $('.city').val(null).trigger('change');
+                let city="{{!empty(old('city'))?old('city'):''}}"
+                if(city){
+                    console.log(city,'  co nha')
+                setValueSelect($('.city'),city)
+                }
             }
            insertCity()
             $(".city").select2({
@@ -321,6 +329,32 @@
                     loadDistrict(array[2])
                 }
             })
-            
+            function setValueSelect(e,data){
+                console.log(e.find("option[value='" + data + "']").length)
+                if (e.find("option[value='" + data + "']").length) {
+                    e.val(data).trigger('change');
+                } 
+                // else { 
+                //     // Create a DOM Option and pre-select by default
+                //     var newOption = new Option(data.text, data.id, true, true);
+                //     // Append it to the select
+                //     e.append(newOption).trigger('change');
+                // } 
+            }
+            $('.info-account').click(function(){
+                let name="{{auth()->user()->name}}"
+                $('.name').val(name);
+                let email="{{auth()->user()->email}}"
+                $('.email').val(email);
+                let phone="{{auth()->user()->phone}}"
+                $('.phone').val(phone);
+                let address="{{auth()->user()->address}}"
+                $('.address').val(address);
+                let note="{{auth()->user()->note}}"
+                $('.note').val(note);
+                let city="{{auth()->user()->city}}"
+                district="{{auth()->user()->district}}"
+                setValueSelect($('.city'),city)
+            })
     </script>
 @endpush

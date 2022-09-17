@@ -1,19 +1,23 @@
 <?php
 
+use App\Events\RegisterEvent;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Testcontroller;
 use App\Http\Controllers\UserController;
+use App\Jobs\SendEmail;
 use App\Models\Img;
 use App\Models\ProductDetail;
 use App\Models\Products;
 use App\Models\ProductSize;
+use App\Models\Size;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-
+use App\Models\User;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -51,7 +55,7 @@ Route::group([
     Route::get('/product-detail', [ProductController::class, 'getProductDetail'])->name('productdetail');
     Route::get('/getsizeandimg', [ProductController::class, 'getSizeAndImg'])->name('getsizeandimg');
     Route::get('/add-faverite', [ProductController::class, 'addFaverite'])->name('addfaverite');
-    Route::get('/rate-product', [ProductController::class, 'rateProduct'])->name('rateproduct');
+    Route::post('/rate-product', [ProductController::class, 'rateProduct'])->name('rateproduct');
 });
 Route::group([
     'as'     => 'cart.',
@@ -71,13 +75,14 @@ Route::group([
     'prefix' => 'orders',
     'middleware' => 'auth'
 ], static function () {
-    Route::get('/', [OrderController::class, 'index'])->name('index');
+    Route::post('/', [OrderController::class, 'index'])->name('index');
     Route::get('/detail', [OrderController::class, 'OrderDetail'])->name('detail');
     Route::delete('/delete', [OrderController::class, 'delete'])->name('delete');
     Route::get('/updateinfor/{id}', [OrderController::class, 'updateInfor'])->name('updateinfor');
     Route::delete('/deletedetail', [OrderController::class, 'deleteDetail'])->name('deletedetail');
     Route::post('/update-order', [OrderController::class, 'updateOrder'])->name('updateorder');
     Route::get('/reject', [OrderController::class, 'rejectUpdate'])->name('reject');
+    Route::get('/updatestatus', [OrderController::class, 'updateStatus'])->name('updatestatus');
 });
 Route::group([
     'as'     => 'auth.',
@@ -92,7 +97,21 @@ Route::group([
 Route::group([
     'as'     => 'user.',
     'prefix' => 'user',
+    'middleware' => 'auth'
 ], static function () {
-    Route::get('/', [UserController::class, 'index'])->name('index')->middleware('auth');
-    Route::get('/updateinfo', [UserController::class, 'updateInfo'])->name('updateinfo')->middleware('auth');
+    Route::post('/', [UserController::class, 'index'])->name('index');
+    Route::put('/updateinfo', [UserController::class, 'updateInfo'])->name('updateinfo');
+});
+Route::group([
+    'as'     => 'test.',
+    'prefix' => 'test',
+], static function () {
+    Route::get('/', function () {
+        $user = User::where('id', 8)->first();
+        RegisterEvent::dispatch($user);
+    })->name('index');
+    Route::get('/put', function () {
+        $user = User::where('id', 8)->get();
+        SendEmail::dispatch('chay ngay di', $user);
+    })->name('put');
 });

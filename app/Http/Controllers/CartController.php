@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Discount;
 use App\Models\ProductDetail;
 use App\Models\Products;
+use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -13,10 +14,15 @@ use PDO;
 
 class CartController extends Controller
 {
+    public function __construct()
+    {
+        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+            ->get()->toArray();
+    }
     public function index(Request $request)
     {
         $cart = Session('cart') ? Session('cart') : null;
-        return view('orders.cart', ['cart' => $cart]);
+        return view('orders.cart', ['typenav' => $this->typenav, 'cart' => $cart]);
     }
     public function AddToCart(Request $request)
     {
@@ -116,6 +122,6 @@ class CartController extends Controller
     public function checkout(Request $request)
     {
         $cart = Session('cart') ? Session('cart') : null;
-        return view('orders.checkout', ['cart' => $cart]);
+        return view('orders.checkout', ['typenav' => $this->typenav, 'cart' => $cart]);
     }
 }

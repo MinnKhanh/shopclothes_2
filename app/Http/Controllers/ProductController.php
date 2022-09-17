@@ -48,7 +48,8 @@ class ProductController extends Controller
     public function getProductBy(Request $request)
     {
         $product = Products::with('Img', 'BrandProduct')
-            ->join('categories', 'categories.id', 'products.category');
+            ->join('categories', 'categories.id', 'products.category')
+            ->leftjoin('rate', 'rate.id_product', 'products.id');
 
         if ($request->input('type')) {
             $types = explode('-', $request->input('type'));
@@ -75,8 +76,16 @@ class ProductController extends Controller
         if ($request->input('search')) {
             $product->where('products.name', 'like', '%' . $request->get('search') . '%');
         }
+        $product = $product->select(DB::raw('products.*,rate.number_stars'));
+        if ($request->input('sort')) {
+            if ($request->input('sort') == 'rate') {
+                $product->orderBy('rate.number_stars', 'DESC');
+            } else if ($request->input('sort') == 'created_at') {
+                $product->orderBy('products.created_at', 'DESC');
+            }
+        }
         //  dd($product->get()->toArray());
-        return $product->select(DB::raw('products.*'))->get()->toArray();
+        return $product->get()->toArray();
     }
     public function getProductDetail(Request $request)
     {

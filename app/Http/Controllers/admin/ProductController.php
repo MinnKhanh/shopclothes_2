@@ -26,11 +26,16 @@ use Throwable;
 class ProductController extends Controller
 {
     use ResponseTrait;
+    public function __construct()
+    {
+        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+            ->get()->toArray();
+    }
     public function index()
     {
         $data = Products::with('Img', 'TypeProduct')->get()->toArray();
         //dd($data);
-        return view('admin.product.product', ['products' => $data]);
+        return view('admin.product.product', ['typenav' => $this->typenav, 'products' => $data]);
     }
     public function create()
     {
@@ -38,12 +43,13 @@ class ProductController extends Controller
         // DB::enableQueryLog();
         // dd(Type::with(['Categories' => fn ($query) => $query->where('id', 1)])->where('id', 1)->get()->first()->toArray()['categories'][0]['name']);
         // dd(DB::getQueryLog());
-        return view('admin.product.addproduct', ['type' => Type::query(), 'brand' => Brand::query(), 'typenav' => $typenav]);
+        return view('admin.product.addproduct', ['typenav' => $this->typenav, 'type' => Type::query(), 'brand' => Brand::query(), 'typenav' => $typenav]);
     }
     public function update(Request $request)
     {
         //dd(Products::with('Img', 'BrandProduct', 'TypeProduct')->where('id', $request->get('id'))->first()->toArray());
         return view('admin.product.addproduct', [
+            'typenav' => $this->typenav,
             'type' => Type::query(), 'brand' => Brand::query(),
             'edit' => 1, 'product' => Products::with('Img')->where('id', $request->get('id'))->first()->toArray(),
         ]);
@@ -67,6 +73,7 @@ class ProductController extends Controller
             $product->status = $request->get('status');
             $product->featured = $request->get('featured');
             $product->description = $request->get('description');
+            $product->gender = $request->get('gender');
             $product->quantity = $request->get('quantity') ? $request->get('quantity') : 0;
             $product->save();
             if ($request->file('photo')) {
@@ -95,7 +102,8 @@ class ProductController extends Controller
     public function createDetail(Request $request)
     {
         //dd(ProductDetail::with('sizeProduct', 'colorProduct')->where('id_product', $request->get('id'))->get()->toArray());
-        return view('admin.category', [
+        return view('admin.product.category', [
+            'typenav' => $this->typenav,
             'id' => $request->get('id'),
             'list' => ProductDetail::with(['sizeProduct', 'colorProduct', 'ProductSizeDetail' => function ($query) {
                 $query->select('id_productdetail', DB::raw('sum(quantity) as sum'))->groupBy('id_productdetail');

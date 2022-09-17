@@ -79,7 +79,7 @@ class OrderController extends Controller
     }
     public function index(Request $request)
     {
-        $orders = Orders::get()->toArray();
+        $orders = Orders::where('id_customer', $request->input('id'))->get()->toArray();
         return view('orders.listorder', ['orders' => $orders, 'typenav' => $this->typenav]);
     }
     public function OrderDetail(Request $request)
@@ -192,5 +192,26 @@ class OrderController extends Controller
     public function rejectUpdate(Request $request)
     {
         return redirect()->route('orders.index');
+    }
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'status' => 'required',
+        ]);
+        try {
+            DB::beginTransaction();
+            $order = Orders::where('id', $request->input('id'))->first();
+            if ($order) {
+                $order->update([
+                    'status' => $request->input('status')
+                ]);
+                DB::commit();
+            }
+            return response()->json(['success' => 'Thay đổi thanh công'], 200);
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Xóa thất bại'], 404);
+        }
     }
 }

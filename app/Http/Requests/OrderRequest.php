@@ -31,7 +31,8 @@ class OrderRequest extends FormRequest
             'city' => ['required', 'string'],
             'district' => ['required', 'string'],
             'country' => ['required', 'string'],
-            'ship' => ['required']
+            'ship' => ['required'],
+            'payment' => ['required']
         ];
     }
 }

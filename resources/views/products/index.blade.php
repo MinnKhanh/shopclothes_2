@@ -143,31 +143,6 @@
                         @empty
                             
                         @endforelse
-                        {{-- <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-1">
-                            <label class="custom-control-label" for="size-1">XS</label>
-                            <span class="badge border font-weight-normal">150</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-2">
-                            <label class="custom-control-label" for="size-2">S</label>
-                            <span class="badge border font-weight-normal">295</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-3">
-                            <label class="custom-control-label" for="size-3">M</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-4">
-                            <label class="custom-control-label" for="size-4">L</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="size-5">
-                            <label class="custom-control-label" for="size-5">XL</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div> --}}
                     </form>
                   
                 </div>
@@ -250,19 +225,18 @@
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Sorting</button>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#">Latest</a>
-                                        <a class="dropdown-item" href="#">Popularity</a>
-                                        <a class="dropdown-item" href="#">Best Rating</a>
+                                        <div class="dropdown-item sort" data-sort='created_at'>Latest</div>
+                                        <div class="dropdown-item sort" data-sort='rate' >Best Rating</div>
                                     </div>
                                 </div>
-                                <div class="btn-group ml-2">
+                                {{-- <div class="btn-group ml-2">
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Showing</button>
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a class="dropdown-item" href="#">10</a>
                                         <a class="dropdown-item" href="#">20</a>
                                         <a class="dropdown-item" href="#">30</a>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -573,13 +547,19 @@
         var Maphanloai=''
         var categories=''
         var search=''
+        var sort=''
+        $('.sort').click(function(){
+            sort=$(this).attr('data-sort')
+            getProduct()
+        })
          getProduct()
          $("#price-all").change(function(){
              console.log('cha nha')
-            categories=""
+            rangePrice=""
             if($('#price-all').is(':checked')){
                 $(".inputPriceitem").prop( "checked", false );
             }
+            getProduct()
         })
         $('.inputPriceitem').change(function(){
             console.log($(".inputPriceitem:checked"))
@@ -649,7 +629,7 @@
   }
         function getProduct(){
               $.ajax({
-                url: "{{route('product.listproduct')}}"+'?type='+Maphanloai+'&category='+categories+'&price='+rangePrice+'&search='+search,
+                url: "{{route('product.listproduct')}}"+'?type='+Maphanloai+'&category='+categories+'&price='+rangePrice+'&search='+search+'&sort='+sort,
                 method: 'GET',
                 success: function (response) {
                     console.log(response);

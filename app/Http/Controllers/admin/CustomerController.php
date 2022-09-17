@@ -19,4 +19,9 @@ class CustomerController extends Controller
         $customers = User::with('Img')->get()->toArray();
         return view('admin.customers.index', ['typenav' => $this->typenav, 'customers' => $customers]);
     }
+    public function deletecustomer(Request $request)
+    {
+        if ($request->input('id')) {
+        }
+    }
 }

@@ -1,11 +1,18 @@
 @extends('layout.master')
 @push('css')
+
+     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
     body {
     background: whitesmoke;
     font-family: 'Open Sans', sans-serif;
 }
-
+       .select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    height: 36px;
+    border-radius: 0px;
+}
 .container {
     max-width: 960px;
     margin: 30px auto;
@@ -96,8 +103,10 @@ h1 small {
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-8">
-            <form action="{{route('user.updateinfo')}}" method="POST" class="d-flex row">
+            <form action="{{route('user.updateinfo')}}" method="POST" class="d-flex row forminfo">
                 @csrf
+                @method('PUT')
+                <input type="text" class="d-none" name='id' value={{$user['id']}}>
                 <div class="col-12">
                         <div class="avatar-upload col-6">
                             <div class="avatar-edit">
@@ -115,7 +124,7 @@ h1 small {
                 
                     <div class="col-6">
                         <label for="">Tên</label>
-                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{auth()->user()->name}}"  id="name" name="name" placeholder="Tên người dùng" type="text" value="" /> 
+                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{$user['name']}}"  id="name" name="name" placeholder="Tên người dùng" type="text" /> 
                         <div class="field-validation-valid text-danger mb-3"> 
                             @if($errors->has('name'))
                                 {{ $errors->first('name') }}
@@ -125,10 +134,10 @@ h1 small {
                      <div class="col-6">
                         <label for="">Giới tính</label>
                         <select class="form-control rounded-0 shadow-none text-box single-line"  id="gender" name="gender">
-                            <option value="0" {{auth()->user()->gender==null?'selected':''}}>--Chọn--</option> 
-                            <option value="1" {{auth()->user()->gender==1?'selected':''}}>Nam</option>    
-                            <option value="2" {{auth()->user()->gender==2?'selected':''}}>Nữ</option>    
-                            <option value="3" {{auth()->user()->gender==3?'selected':''}}>Khác</option>    
+                            <option value="0" {{$user['gender']==null?'selected':''}}>--Chọn--</option> 
+                            <option value="1" {{$user['gender']==1?'selected':''}}>Nam</option>    
+                            <option value="2" {{$user['gender']==2?'selected':''}}>Nữ</option>    
+                            <option value="3" {{$user['gender']==3?'selected':''}}>Khác</option>    
                         </select> 
                         <div class="field-validation-valid text-danger mb-3"> 
                             @if($errors->has('gender'))
@@ -138,7 +147,7 @@ h1 small {
                     </div>
                     <div class="col-6">
                         <label for="">Tuổi</label>
-                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{auth()->user()->age}}"  id="age" name="age" /> 
+                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{$user['age']}}"  id="age" name="age" /> 
                         <div class="field-validation-valid text-danger mb-3"> 
                             @if($errors->has('age'))
                                 {{ $errors->first('age') }}
@@ -147,7 +156,7 @@ h1 small {
                     </div>
                      <div class="col-6">
                         <label for="">Email</label>
-                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{auth()->user()->email}}"  id="email" name="email" placeholder="Email người dùng" type="text" value="" /> 
+                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{$user['email']}}"  id="email" name="email" placeholder="Email người dùng" type="text" value="" /> 
                         <div class="field-validation-valid text-danger mb-3"> 
                             @if($errors->has('email'))
                                 {{ $errors->first('email') }}
@@ -156,7 +165,7 @@ h1 small {
                     </div>
                     <div class="col-6">
                         <label for="">Số điện thoại</label>
-                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{auth()->user()->phone}}"  id="phone" name="phone" placeholder="Số điện thoại người dùng" type="text" value="" /> 
+                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{$user['phone']}}"  id="phone" name="phone" placeholder="Số điện thoại người dùng" type="text" value="" /> 
                         <div class="field-validation-valid text-danger mb-3"> 
                             @if($errors->has('phone'))
                                 {{ $errors->first('phone') }}
@@ -165,7 +174,7 @@ h1 small {
                     </div>
                     <div class="col-6">
                         <label for="">Địa chỉ</label>
-                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{auth()->user()->address}}"  id="address" name="address" placeholder="Đia chỉ" type="text" value="" /> 
+                        <input class="form-control rounded-0 shadow-none text-box single-line" value="{{$user['address']}}"  id="address"        name="address" placeholder="Đia chỉ" type="text" value="" /> 
                         <div class="field-validation-valid text-danger mb-3"> 
                             @if($errors->has('address'))
                                 {{ $errors->first('address') }}
@@ -174,24 +183,24 @@ h1 small {
                     </div>
                     <div class="col-6">
                         <label for="">Thành phố</label>
-                        <input class="form-control rounded-0 shadow-none text-box single-line"  id="city" name="city" type="text" value="" /> 
-                        <div class="field-validation-valid text-danger mb-3"> 
+                        <select class="form-control city" name="city"></select>
+                        <div class="field-validation-valid text-danger mb-3">
                             @if($errors->has('city'))
                                 {{ $errors->first('city') }}
                             @endif
-                        </div> 
+                        </div>
                     </div>
                     <div class="col-6">
                         <label for="">Quận/Huyện</label>
-                        <input class="form-control rounded-0 shadow-none text-box single-line"  id="district" name="district" type="text" value="" /> 
-                        <div class="field-validation-valid text-danger mb-3"> 
+                        <select class="form-control district" name="district"></select>
+                        <div class="field-validation-valid text-danger mb-3">
                             @if($errors->has('district'))
                                 {{ $errors->first('district') }}
                             @endif
-                        </div> 
+                        </div>
                     </div>
                     <div class="col-6">
-                        <button type="button" class="btn btn-primary btn-sm mb-2 d-block buttonchange">Lưu</button>
+                        <button type="button" class="btn btn-primary btn-sm mb-2 d-block buttonchange save">Lưu</button>
                     </div>
             </form>
         </div>
@@ -199,20 +208,102 @@ h1 small {
 </div>
 @endsection
 @push('js')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.all.min.js"></script>
     <script>
         function readURL(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            $('#imagePreview').css('background-image', 'url('+e.target.result +')');
-            $('#imagePreview').hide();
-            $('#imagePreview').fadeIn(650);
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
         }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-$("#imageUpload").change(function() {
-    readURL(this);
-});
+        $("#imageUpload").change(function() {
+            readURL(this);
+        });
+          var check=true;
+         async function loadDistrict(path) {
+            $(".district").empty()
+            const response = await fetch('{{ asset("location/data") }}'+'/' + path);
+
+            const districts = await response.json();
+             let string = '';
+             const selectedValue = "{{$user['district']}}" ;
+            
+            $.each(districts.district, function(index, each) {
+                if (each.pre === 'Quận' || each.pre === 'Huyện') {
+                    console.log(selectedValue === each.name)
+                    //string += ;
+                    // if (selectedValue == each.name) {
+                    //     string += ` selected `;
+                    // }
+                    string += `<option ${each.name==selectedValue?'selected':''}>${each.name}</option>`;
+                }
+            })
+            $(".district").append(string);
+            if(!check){
+            $('.district').val(null).trigger('change');
+            }else check=false
+        }
+
+            async function insertCity(){
+            const response = await fetch('{{ asset('location/index.json') }}');
+                const cities = await response.json();
+                console.log(cities)
+                $.each(cities, function(index, each) {
+                    $(".city").append(`
+                    <option data-path='${each.file_path}' ${index=="{{$user['city']}}"?'selected':''}>
+                        ${index}
+                    </option>`)
+                })
+                if($('.city').val){
+                let path=$(".city option:selected").data('path')
+                let array=path.split("/");
+                loadDistrict(array[2])
+                }
+            }
+           insertCity()
+            $(".city").select2();
+            $(".district").select2();
+            $(document).on('change','.city',function(){
+                if($(this).val()){
+                    console.log($('.city').parent().find(".city option:selected").data('path'))
+                    let path=$('.city').parent().find(".city option:selected").data('path')
+                    let array=path.split("/");
+                    loadDistrict(array[2])
+                }
+            })
+            $('.save').click(function(){
+                var form = $('.forminfo');
+                var actionUrl = form.attr('action');     
+               $.ajax({
+                    type: "PUT",
+                    url: actionUrl,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                         Swal.fire({
+                            icon: 'success',
+                            title: 'Lưu thành công',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                            console.log(data)
+                    },error: function(data)
+                    {
+                         console.log(data)
+                         Swal.fire({
+                            icon: 'error',
+                            title: 'Lưu thất bại',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                    }
+                });
+            })
     </script>
 @endpush

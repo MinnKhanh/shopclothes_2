@@ -93,4 +93,11 @@ Route::group([
     Route::get('/', [CustomerController::class, 'index'])->name('index');
     Route::get('/create', [CustomerController::class, 'create'])->name('create');
     Route::post('/store', [CustomerController::class, 'store'])->name('store');
+    Route::post('/deleteCustomer', [CustomerController::class, 'deletecustomer'])->name('deletecustomer');
+});
+Route::group([
+    'as'     => 'custom.',
+    'prefix' => 'custom',
+], static function () {
+    Route::get('/banner', [CustomerController::class, 'index'])->name('banner');
 });

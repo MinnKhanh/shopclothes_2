@@ -31,6 +31,7 @@ class ProductRequest extends FormRequest
             'category' => ['required', 'numeric'],
             'priceImport' => ['required', 'numeric', 'min:1', 'lte:priceSell'],
             'priceSell' => ['required', 'numeric', 'min:1', 'gte:priceImport'],
+            'gender' => ['required', 'numeric'],
             'type' => ['required', 'numeric'],
             'brand' => ['required', 'numeric'],
             'photo' => request('id') ? '' : ['required', 'file'],

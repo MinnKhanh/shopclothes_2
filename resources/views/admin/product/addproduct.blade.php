@@ -76,18 +76,30 @@
                         <div class="error">{{ $errors->first('name') }}</div>
                     @endif
                 </div>
-                <div class="col-md-6 form-group">
+                <div class="col-md-4 form-group">
                     <label>Giá nhập</label>
                      <input name="priceImport" id="" class = "form-control shadow-none rounded-0" value="{{isset($edit)?$product['priceImport']:old('priceImport')}}" placeholder = "100000">
                      @if($errors->has('priceImport'))
                         <div class="error">{{ $errors->first('priceImport') }}</div>
                     @endif
                 </div>
-                <div class="col-md-6 form-group">
+                <div class="col-md-4 form-group">
                     <label>Giá bán</label>
                      <input name="priceSell" id="" class = "form-control shadow-none rounded-0" value="{{isset($edit)?$product['priceSell']:old('priceSell')}}" placeholder = "300000">
                      @if($errors->has('priceSell'))
                         <div class="error">{{ $errors->first('priceSell') }}</div>
+                    @endif
+                </div>
+                <div class="col-md-4 form-group">
+                    <label>Giới Tính</label>
+                     <select name="gender" id="" class = "form-control shadow-none rounded-0">
+                        <option>--Chọn--</option>
+                        <option {{(isset($edit)?$product['gender']:old('gender'))==1?'selected':''}} value=1>Nam</option>
+                        <option {{(isset($edit)?$product['gender']:old('gender'))==2?'selected':''}} value=2>Nữ</option>
+                        <option {{(isset($edit)?$product['gender']:old('gender'))==3?'selected':''}} value=3>Không phân biệt giới tính</option>
+                     </select>
+                     @if($errors->has('gender'))
+                        <div class="error">{{ $errors->first('gender') }}</div>
                     @endif
                 </div>
                 <div class="col-md-6 form-group">

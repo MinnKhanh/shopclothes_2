@@ -250,7 +250,7 @@
                                     <div class="d-flex my-3">
                                         <p class="mb-0 mr-2">Your Rating * :</p>
                                         <div id="starrate"></div>
-                                        <input type="number" class="" id="rate" name="rate">
+                                        <input type="number" class="d-none" id="rate" name="rate">
                                     </div>
                                     <div>
                                         <div class="form-group row">
