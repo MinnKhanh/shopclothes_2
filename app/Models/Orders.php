@@ -32,7 +32,7 @@ class Orders extends Model
     ];
     protected $casts = [
         'created_at' => 'date:Y-m-d',
-        'updated-at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
     ];
     public function DiscountProduct()
     {

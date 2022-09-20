@@ -181,7 +181,7 @@
         <div class="row px-xl-5 pb-3">
             @forelse ($typenav as $item)
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <a class="text-decoration-none" href="">
+                <a class="text-decoration-none" href="{{route('product.index',['maphanloai'=>$item['id']])}}">
                     <div class="cat-item d-flex align-items-center mb-4">
                         <div class="overflow-hidden" style="width: 100px; height: 100px;">
                            <img class="img-fluid imgtype" src='{{ asset("storage/".$item['img'][0]['path'])}}' alt="">

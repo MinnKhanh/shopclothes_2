@@ -11,6 +11,7 @@ use App\Http\Controllers\Testcontroller;
 use App\Http\Controllers\UserController;
 use App\Jobs\SendEmail;
 use App\Models\Img;
+use App\Models\Orders;
 use App\Models\ProductDetail;
 use App\Models\Products;
 use App\Models\ProductSize;
@@ -107,8 +108,9 @@ Route::group([
     'prefix' => 'test',
 ], static function () {
     Route::get('/', function () {
-        $user = User::where('id', 8)->first();
-        RegisterEvent::dispatch($user);
+        $user = Orders::get();
+        dd($user->toArray());
+        // RegisterEvent::dispatch($user);
     })->name('index');
     Route::get('/put', function () {
         $user = User::where('id', 8)->get();

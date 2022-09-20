@@ -83,12 +83,12 @@
             <!-- Shop Sidebar Start -->
             <div class="col-lg-3 col-md-4">
                 <!-- Price Start -->
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by price</span></h5>
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Lọc theo giá</span></h5>
                 <div class="bg-light p-4 mb-30">
                     <form>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
                             <input type="checkbox" class="custom-control-input inputPrice" checked id="price-all">
-                            <label class="custom-control-label priceall" for="price-all">All Price</label>
+                            <label class="custom-control-label priceall" for="price-all">Tất cả các giá</label>
                             <span class="badge border font-weight-normal">100.000Đ</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
@@ -126,12 +126,12 @@
                 <!-- Price End -->
                 
                 <!-- Color Start -->
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by type</span></h5>
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Lọc theo loại</span></h5>
                 <div class="bg-light p-4 mb-30">
                       <form>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input type="checkbox" class="custom-control-input typeall" value=0 checked id="type-all">
-                            <label class="custom-control-label" for="type-all">All Type</label>
+                            <label class="custom-control-label" for="type-all">Tất cả</label>
                             <span class="badge border font-weight-normal">1000</span>
                         </div>
                         @forelse ($type as $item)
@@ -149,12 +149,12 @@
                 <!-- Color End -->
 
                 <!-- Size Start -->
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by category</span></h5>
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Lọc theo phân loại</span></h5>
                 <div class="bg-light p-4 mb-30">
                     <form>
                          <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input type="checkbox" class="custom-control-input categoryall" checked id="category-all">
-                            <label class="custom-control-label" for="category-all">All Category</label>
+                            <label class="custom-control-label" for="category-all">Tất cả</label>
                             <span class="badge border font-weight-normal">1000</span>
                         </div>
                         @forelse ($categories as $item)
@@ -225,8 +225,8 @@
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Sorting</button>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <div class="dropdown-item sort" data-sort='created_at'>Latest</div>
-                                        <div class="dropdown-item sort" data-sort='rate' >Best Rating</div>
+                                        <div class="dropdown-item sort" data-sort='created_at'>Mới nhất</div>
+                                        <div class="dropdown-item sort" data-sort='rate' >Đánh giá cao nhất</div>
                                     </div>
                                 </div>
                                 {{-- <div class="btn-group ml-2">
@@ -552,7 +552,7 @@
             sort=$(this).attr('data-sort')
             getProduct()
         })
-         getProduct()
+       //  getProduct()
          $("#price-all").change(function(){
              console.log('cha nha')
             rangePrice=""
@@ -581,52 +581,66 @@
         getProduct()
         })
 
-          function showproduct(response){
-    $('#pagination').pagination({
-    dataSource: response,
-    pageSize: 3,
-    formatResult: function(data) {
-       
-    },
-    callback: function(response, pagination) {
-        console.log("respon",response)
-        let inner=''
-        response.forEach(element => {
-                inner+=`  <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100 imgProduct" src="{{asset('storage/')}}/${element['img'][0]['path']}" alt="">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+        function showproduct(response){
+            $('#pagination').pagination({
+            dataSource: response,
+            pageSize: 3,
+            formatResult: function(data) {
+            
+            },
+            callback: function(response, pagination) {
+                console.log("respon",response)
+                let inner=''
+                response.forEach(element => {
+                        inner+=`  <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100 imgProduct" src="{{asset('storage/')}}/${element['img'][0]['path']}" alt="">
+                            <div class="product-action">
+                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                            </div>
+                        </div>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate" href="{{route('product.productdetail')}}?id=${element['id']}">${element['name']}</a>
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                <h5>${element['priceSell']}Đ</h5>
+                            </div>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                <h5>${element['brand_product']['name']}</h5>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center mb-1">
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                {{-- <small>(99)</small> --}}
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="{{route('product.productdetail')}}?id=${element['id']}">${element['name']}</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>${element['priceSell']}Đ</h5>
-                    </div>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>${element['brand_product']['name']}</h5>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        {{-- <small>(99)</small> --}}
-                    </div>
-                </div>
-            </div>
-        </div>`
-        });
-         document.getElementById('list-products').innerHTML = inner;
-          
-    }
-})
-     
-  }
+                </div>`
+                });
+                document.getElementById('list-products').innerHTML = inner;
+                
+                }
+            })
+            
+        }
+        function checkUrl(){
+            const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+            });
+            Maphanloai = params.maphanloai;
+            getProduct()
+            console.log(Maphanloai)
+            if(params.maphanloai){
+                $('.type[value="'+params.maphanloai+'"]').attr('checked',true)
+                document.getElementById("type-all").checked = false;
+             console.log($('.type[value="'+params.maphanloai+'"]'))
+            }
+        }
+        checkUrl()
         function getProduct(){
               $.ajax({
                 url: "{{route('product.listproduct')}}"+'?type='+Maphanloai+'&category='+categories+'&price='+rangePrice+'&search='+search+'&sort='+sort,
@@ -686,7 +700,7 @@
              getProduct()
         })
          $(".typeall").change(function(){
-            categories=""
+            Maphanloai=""
             if($('.typeall').is(':checked')){
                 $(".type").prop( "checked", false );
             }

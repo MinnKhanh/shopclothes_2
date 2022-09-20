@@ -5,6 +5,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\CustomerController;
+use App\Http\Controllers\admin\CustomizeController;
+use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -96,8 +98,19 @@ Route::group([
     Route::post('/deleteCustomer', [CustomerController::class, 'deletecustomer'])->name('deletecustomer');
 });
 Route::group([
-    'as'     => 'custom.',
-    'prefix' => 'custom',
+    'as'     => 'customize.',
+    'prefix' => 'customize',
 ], static function () {
-    Route::get('/banner', [CustomerController::class, 'index'])->name('banner');
+    Route::get('/banner', [CustomizeController::class, 'banner'])->name('banner');
+    Route::get('/edit', [CustomizeController::class, 'edit'])->name('edit');
+});
+Route::group([
+    'as'     => 'statistical.',
+    'prefix' => 'statistical',
+], static function () {
+    Route::get('/', [StatisticalController::class, 'index'])->name('index');
+    Route::get('/product-categories', [StatisticalController::class, 'productCategories'])->name('productcategories');
+    Route::get('/byproduct', [StatisticalController::class, 'byProduct'])->name('byproduct');
+    Route::get('/bycustomer', [StatisticalController::class, 'byCustomer'])->name('bycustomer');
+    Route::get('/bycategories', [StatisticalController::class, 'byCategories'])->name('bycategories');
 });

@@ -18,4 +18,8 @@ class Discount extends Model
         'code',
     ];
     protected $table = 'discount';
+    public function Img()
+    {
+        return $this->morphMany(Img::class, 'product', 'type');
+    }
 }
