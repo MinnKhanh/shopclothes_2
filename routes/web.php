@@ -19,6 +19,8 @@ use App\Models\Size;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -94,6 +96,8 @@ Route::group([
     Route::post('/registering', [AuthController::class, 'registering'])->name('registering');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
+    Route::get('/update-account', [AuthController::class, 'updateAccont'])->name('updateaccont');
+    Route::put('/update', [AuthController::class, 'update'])->name('update');
 });
 Route::group([
     'as'     => 'user.',
@@ -108,9 +112,8 @@ Route::group([
     'prefix' => 'test',
 ], static function () {
     Route::get('/', function () {
-        $user = Orders::get();
-        dd($user->toArray());
-        // RegisterEvent::dispatch($user);
+        $user = User::where('username', 'hse001_10010')->first();
+        dd(bcrypt('123'));
     })->name('index');
     Route::get('/put', function () {
         $user = User::where('id', 8)->get();

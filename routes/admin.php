@@ -6,6 +6,7 @@ use App\Http\Controllers\ColorController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\CustomerController;
 use App\Http\Controllers\admin\CustomizeController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Http\Request;
@@ -113,4 +114,10 @@ Route::group([
     Route::get('/byproduct', [StatisticalController::class, 'byProduct'])->name('byproduct');
     Route::get('/bycustomer', [StatisticalController::class, 'byCustomer'])->name('bycustomer');
     Route::get('/bycategories', [StatisticalController::class, 'byCategories'])->name('bycategories');
+});
+Route::group([
+    'as'     => 'discount.',
+    'prefix' => 'discount',
+], static function () {
+    Route::get('/', [DiscountController::class, 'index'])->name('index');
 });

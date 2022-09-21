@@ -7,50 +7,43 @@
     <div class="row justify-content-center">
         <div class="col-4">
             <h2 class="text-center my-4">Cập nhật tài khoản</h2>
-    <form action="{{route('auth.registering')}}" method="POST" class = "d-flex flex-column">
+            <span class="field-validation-valid text-danger mb-3"> 
+                @if($errors->has('msg'))
+                    {{ $errors->first('msg') }}
+                @endif
+            </span> 
+    <form action="{{route('auth.update')}}" method="POST" class = "d-flex flex-column">
                 @csrf
-            <input class="form-control rounded-0 shadow-none text-box single-line"  id="username" name="username" placeholder="Tên đăng nhập" type="text" value="" />
+            @method('PUT')
+            <label for="">Tên tài khoản</label>
+            <input class="form-control rounded-0 shadow-none text-box single-line" disabled value="{{auth()->user()->username}}"  id="username" name="username" placeholder="Tên đăng nhập" type="text" value="" />
             <span class="field-validation-valid text-danger mb-3"> 
                 @if($errors->has('username'))
                     {{ $errors->first('username') }}
                 @endif
             </span> 
-            <input class="form-control rounded-0 shadow-none text-box single-line" id="name" name="name" placeholder="Tên người dùng" type="text" value="" />
-            <span class="field-validation-valid text-danger mb-3"> 
-                @if($errors->has('name'))
-                    {{ $errors->first('name') }}
-                @endif
-            </span> 
-            <input class="form-control rounded-0 shadow-none text-box single-line" id="email" name="email" placeholder="Email" type="text" value="" />
-            <span class="field-validation-valid text-danger mb-3"> 
-                @if($errors->has('email'))
-                    {{ $errors->first('email') }}
-                @endif
-            </span> 
-            <input class="form-control rounded-0 shadow-none text-box single-line" id="phone" name="phone" placeholder="Số điện thoại" type="text" value="" />
-            <span class="field-validation-valid text-danger mb-3"> 
-                    @if($errors->has('phone'))
-                        {{ $errors->first('phone') }}
-                    @endif
-                </span> 
+            <label for="">Mật khẩu cũ</label>
             <input class="form-control rounded-0 shadow-none" id="password" name="password" placeholder="Mật khẩu" type="password" value="" />
             <span class="field-validation-valid text-danger mb-3"> 
                     @if($errors->has('password'))
                         {{ $errors->first('password') }}
                     @endif
-                </span>         
-            <select class="form-control rounded-0 shadow-none {{auth()->check()?(auth()->user()->hasDirectPermission('Admin')?'':'d-none'):'d-none'}}" id="role" name="role" placeholder="Vai Trò" type="text"
-           > 
-                @foreach ($listroles as $key => $item)
-                    <option value={{$key}} {{ $key==2 ? 'selected="selected"' : '' }}>{{ $item}}</option>
-                @endforeach
-            </select>
+                </span> 
+            <label for="">Mật khẩu mới</label>
+            <input class="form-control rounded-0 shadow-none" id="password" name="newpassword" placeholder="Mật khẩu" type="password" value="" />
             <span class="field-validation-valid text-danger mb-3"> 
-                    @if($errors->has('permiss'))
-                        {{ $errors->first('permiss') }}
+                    @if($errors->has('password'))
+                        {{ $errors->first('password') }}
                     @endif
-                </span>    
-            <button class="btn btn-primary rounded-0 shadow-none mb-3">Đăng ký</button>
+                </span> 
+            <label for="">Xác nhận mật khẩu mới</label> 
+            <input class="form-control rounded-0 shadow-none" id="passwordconfirm" name="newpassword_confirmation" placeholder="Mật khẩu" type="passwordconfirm" value="" />
+            <span class="field-validation-valid text-danger mb-3"> 
+                    @if($errors->has('password_confirmation'))
+                        {{ $errors->first('password_confirmation') }}
+                    @endif
+                </span>          
+            <button class="btn btn-primary rounded-0 shadow-none mb-3">Câp nhật</button>
     </form>
             <p class="text-center">Bạn đã có tài khoản? <a href="{{route('auth.login')}}" class="text-primary">Đăng nhập</a></p>
         </div>

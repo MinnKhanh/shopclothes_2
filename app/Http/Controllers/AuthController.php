@@ -84,4 +84,21 @@ class AuthController extends Controller
         // Auth::login();
 
     }
+    public function updateAccont(Request $request)
+    {
+        return view('auth.changeaccount', ['typenav' => $this->typenav]);
+    }
+    public function update(Request $request)
+    {
+        $user = auth()->user();
+        if (Hash::check($request->input('password'), $user->password)) {
+            $password = Hash::make($request->input('password'));
+            User::where('id', $user->id)->update([
+                'password' => $password
+            ]);
+            return redirect()->route('auth.login');
+        } else {
+            return Redirect::back()->withErrors(['msg' => 'Thất bại']);
+        }
+    }
 }

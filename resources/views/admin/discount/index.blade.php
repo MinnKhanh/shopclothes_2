@@ -13,18 +13,19 @@
                         <th>Ngày bắt đầu</th>
                         <th>Ngày kết thúc</th>
                         <th>Phần trăm giảm</th>
+                        <th>Mô tả</th>
                     </tr>
                 </thead>
                 <tbody class="align-middle">
-                    @foreach (var couponItem in ViewBag.CouponList)
-                    {
-                        <tr>
-                            <td>MaKM</td>
-                            <td>NgayBatDau.ToString("dd/MM/yyyy")</td>
-                            <td>NgayKetThuc.ToString("dd/MM/yyyy")</td>
-                            <td>PhanTramGiam</td>
-                        </tr>
-                    }
+                  @forelse ($discount as $item)
+                    <th>{{$item['code']}}</th>
+                    <th>{{$item['begin']}}</th>
+                    <th>{{$item['end']}}</th>
+                    <th>{{$item['persent']}}</th>
+                    <th>{{$item['discription']}}</th>
+                  @empty
+                      
+                  @endforelse
                 </tbody>
             </table>
         </div>
