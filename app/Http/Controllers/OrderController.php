@@ -214,4 +214,14 @@ class OrderController extends Controller
             return response()->json(['error' => 'Xóa thất bại'], 404);
         }
     }
+    public function orderImport(Request $request)
+    {
+    }
+    public function storeImportOrder(Request $request)
+    {
+    }
+    public function createImportOrder(Request $request)
+    {
+        return view('admin.orderimport.order', ['typenav' => $this->typenav]);
+    }
 }

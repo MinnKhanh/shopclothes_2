@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Color;
+use App\Models\Products;
 use Illuminate\Http\Request;
 
 class ColorController extends Controller
@@ -24,6 +25,20 @@ class ColorController extends Controller
             $data = Color::where('name', 'like', '%' . $request->get('q') . '%')->get()->toArray();
         } else {
             $data = Color::get()->toArray();
+        }
+        return $data;
+    }
+    public function getColorOfProduct(Request $request)
+    {
+        $data = [];
+        if ($request->input('id')) {
+            $data = Products::where('products.id', $request->input('id'))
+                ->join('product_detail', 'product_detail.id_product', 'products.id')
+                ->join('color', 'color.id', 'product_detail.id_color');
+            if ($request->input('q')) {
+                $data->where('color.name', 'like', '%' . $request->get('q') . '%');
+            }
+            $data = $data->select('product_detail.id', 'color.name')->get()->toArray();
         }
         return $data;
     }

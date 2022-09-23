@@ -40,6 +40,18 @@ class Products extends Model
     {
         return $this->belongsTo(Type::class, 'type', 'id');
     }
+    public function CategoryProduct()
+    {
+        return $this->belongsTo(Categories::class, 'category', 'id');
+    }
+    public function ColorProduct()
+    {
+        return $this->belongsTo(Color::class, 'category', 'id');
+    }
+    public function SizeProduct()
+    {
+        return $this->hasManyThrough(ProductSize::class, ProductDetail::class, 'id_product', 'id_productdetail', 'id', 'id');
+    }
     public function ProductDetail()
     {
         return $this->hasMany(ProductDetail::class, 'id_product', 'id');

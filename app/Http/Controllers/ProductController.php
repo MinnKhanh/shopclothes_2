@@ -8,6 +8,7 @@ use App\Models\Color;
 use App\Models\favorite;
 use App\Models\ProductDetail;
 use App\Models\Products;
+use App\Models\ProductSize;
 use App\Models\Rate;
 use App\Models\Type;
 use Carbon\Carbon;
@@ -87,6 +88,13 @@ class ProductController extends Controller
         //  dd($product->get()->toArray());
         return $product->get()->toArray();
     }
+    public function getProduct(Request $request)
+    {
+        $data = $data = Products::with(['TypeProduct', 'BrandProduct', 'CategoryProduct', 'SizeProduct' => function ($q) {
+            return $q->join('size', 'size.id', 'product_size.size')->select('size.id', 'size.name');
+        }])->where('id', $request->input('id'))->first();
+        return $data;
+    }
     public function getProductDetail(Request $request)
     {
         $type = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();
@@ -158,5 +166,49 @@ class ProductController extends Controller
             ],
             $dataupdate
         );
+    }
+    public function getListProduct(Request $request)
+    {
+        $data = Products::query();
+        if ($request->input('code')) {
+            $data->where('code', $request->input('code'));
+        } else {
+            if ($request->input('type')) {
+                $data->where('type', $request->input('type'));
+            }
+            if ($request->input('catetory')) {
+                $data->where('catetory', $request->input('catetory'));
+            }
+            if ($request->input('brand')) {
+                $data->where('brand', $request->input('brand'));
+            }
+            if ($request->input('gender')) {
+                $data->where('gender', $request->input('gender'));
+            }
+            if ($request->input('q')) {
+                $data = Products::where('name', 'like', '%' . $request->get('q') . '%')->get()->toArray();
+            }
+        }
+        $data = $data->get()->toArray();
+        return $data;
+    }
+    public function getListCode(Request $request)
+    {
+        $data = [];
+        if ($request->input('q')) {
+            $data = Products::where('code', 'like', '%' . $request->get('q') . '%')->get()->toArray();
+        } else {
+            $data = Products::get()->toArray();
+        }
+        return $data;
+    }
+    public function quantityProduct(Request $request)
+    {
+        $quantity = 0;
+        if ($request->input('product_detail') && $request->input('size')) {
+            $quantity = ProductSize::where('id_productdetail', $request->input('product_detail'))->where('size', $request->input('size'))->first()->quantity;
+            // dd(ProductSize::where('id_productdetail', $request->input('product_detail'))->where('size', $request->input('size'))->first());
+        }
+        return [$quantity];
     }
 }

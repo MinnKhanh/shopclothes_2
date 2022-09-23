@@ -56,6 +56,7 @@ class ProductController extends Controller
     }
     public function store(ProductRequest $request)
     {
+        //dd($request->all());
         DB::beginTransaction();
         try {
 
@@ -94,8 +95,11 @@ class ProductController extends Controller
                     return redirect()->route('admin.product.createdetail', ['id' => $product->id]);
                 }
             }
+            DB::commit();
+            return redirect()->route('admin.product.index');
         } catch (Throwable $e) {
             DB::rollBack();
+            dd($e);
             return Redirect::back()->withInput($request->input())->withErrors(['msg' => $e->getMessage()]);
         }
     }
@@ -182,6 +186,11 @@ class ProductController extends Controller
             Color::where('id', $request->input('color'))->first()->name,
             ProductDetail::with('sizeProduct')->where('id', $productDetail->id)->get()->toArray()
         ];
+    }
+    public function getProduct(Request $request)
+    {
+        $data = Products::with('TypeProduct', 'BrandProduct', 'CategoryProduct')->where('id', $request->input('id'))->first();
+        return $data;
     }
     public function getDetailProduct(Request $request)
     {

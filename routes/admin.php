@@ -7,8 +7,10 @@ use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\CustomerController;
 use App\Http\Controllers\admin\CustomizeController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\TypeController;
+use App\Models\Orders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -120,4 +122,16 @@ Route::group([
     'prefix' => 'discount',
 ], static function () {
     Route::get('/', [DiscountController::class, 'index'])->name('index');
+    Route::delete('/delete', [DiscountController::class, 'delete'])->name('delete');
+    Route::get('/edit', [DiscountController::class, 'edit'])->name('edit');
+    Route::get('/create', [DiscountController::class, 'create'])->name('create');
+    Route::get('/store', [DiscountController::class, 'store'])->name('store');
+});
+Route::group([
+    'as'     => 'orderimport.',
+    'prefix' => 'orderimport',
+], static function () {
+    Route::get('/', [OrderController::class, 'orderImport'])->name('index'); //->middleware('checkapplicant');
+    Route::get('/create_order_import', [OrderController::class, 'createImportOrder'])->name('createImportOrder'); //->middleware('checkapplicant');
+    Route::get('/store_order_import', [OrderController::class, 'storeImportOrder'])->name('storeimportorder');
 });
