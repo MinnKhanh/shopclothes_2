@@ -23,10 +23,11 @@ class SizeController extends Controller
     public function getSizeOfProductDetail(Request $request)
     {
         $data = [];
-        if ($request->input('id_detail')) {
-            $data = ProductDetail::where('product_detail.id', $request->input('id_detail'))
+        if ($request->input('color') && $request->input('id')) {
+            $data = Products::where('products.id', $request->input('id'))
+                ->join('product_detail', 'product_detail.id_product', 'products.id')
                 ->join('product_size', 'product_size.id_productdetail', 'product_detail.id')
-                ->join('size', 'size.id', 'product_size.size');
+                ->join('size', 'size.id', 'product_size.size')->where('product_detail.id_color', $request->input('color'));
             if ($request->input('q')) {
                 $data->where('size.name', 'like', '%' . $request->input('q') . '%');
             }

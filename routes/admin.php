@@ -8,9 +8,11 @@ use App\Http\Controllers\admin\CustomerController;
 use App\Http\Controllers\admin\CustomizeController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderImportController;
 use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\TypeController;
 use App\Models\Orders;
+use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -131,7 +133,21 @@ Route::group([
     'as'     => 'orderimport.',
     'prefix' => 'orderimport',
 ], static function () {
-    Route::get('/', [OrderController::class, 'orderImport'])->name('index'); //->middleware('checkapplicant');
-    Route::get('/create_order_import', [OrderController::class, 'createImportOrder'])->name('createImportOrder'); //->middleware('checkapplicant');
-    Route::get('/store_order_import', [OrderController::class, 'storeImportOrder'])->name('storeimportorder');
+    Route::get('/', [OrderImportController::class, 'index'])->name('index'); //->middleware('checkapplicant');
+    Route::get('/create', [OrderImportController::class, 'create'])->name('create'); //->middleware('checkapplicant');
+    Route::get('/store', [OrderImportController::class, 'store'])->name('store');
+    Route::get('/addtocart', [OrderImportController::class, 'AddToCart'])->name('addtocart');
+    Route::delete('/removeproductincart', [OrderImportController::class, 'removeProductInCart'])->name('removeproductincart');
+    Route::get('/changequantity', [OrderImportController::class, 'changeCart'])->name('changequantity');
+    Route::get('/checkcart', [OrderImportController::class, 'checkCart'])->name('checkcart');
+    Route::get('/checkout', [OrderImportController::class, 'checkOut'])->name('checkout');
+    Route::post('/create-order', [OrderImportController::class, 'CreateOrder'])->name('createorder');
+    Route::get('/orderdetail', [OrderImportController::class, 'orderDetail'])->name('orderdetail');
+    Route::delete('/delete', [OrderImportController::class, 'delete'])->name('delete');
+});
+
+Route::get('/', function () {
+    $typenav = Type::with('Img', 'Categories')->withCount('Product')
+        ->get()->toArray();
+    return view('admin.index', ['typenav' => $typenav]);
 });

@@ -11,6 +11,7 @@ use App\Models\Type;
 use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Blade::directive('money', function ($amount) {
+            return "<?php echo number_format($amount, 0); ?>";
+        });
         Relation::enforceMorphMap([
             1 => Products::class,
             5 => Brand::class,

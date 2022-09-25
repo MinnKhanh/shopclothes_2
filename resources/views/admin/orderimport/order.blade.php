@@ -15,8 +15,7 @@
     </style>
 @endpush
 @section('content')
-    <form action="{{ route('admin.orderimport.storeimportorder') }}" class="row px-xl-3" method="POST"
-        enctype="multipart/form-data">
+    <form action="" class="row px-xl-3" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="col-12">
             <h5 class="title position-relative text-dark text-uppercase mb-3">
@@ -100,7 +99,7 @@
                         @endif
                     </div>
                     <div class="col-md-4 form-group">
-                        <label>Tên sản phẩm</label>
+                        <label>Sản phẩm</label>
                         <select name="name" id="tensp" class="form-control shadow-none rounded-0">
                             @if (old('name') != null)
                                 <option value="{{ old('name') }}">
@@ -173,13 +172,17 @@
                         @endif
                     </div>
                     <div class="col-md-6 mt-3">
-                        <button class="btn btn-primary rounded-0 shadow-none mt-3">Thêm</button>
-                        <button class="btn btn-primary rounded-0 shadow-none mt-3">Lamf</button>
+                        <button type="button" class="btn btn-primary rounded-0 shadow-none mt-3 reset">Làm mới</button>
+                        <button type="button" class="btn btn-primary rounded-0 shadow-none mt-3 addtocart"
+                            disabled>Thêm</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
+    @php
+        // dd($cart);
+    @endphp
     <table class="table mt-1" style="width:97.5% !important; margin:0 auto;">
         <thead class="thead-dark">
             <tr>
@@ -191,17 +194,32 @@
                 <th scope="col">Thao tác</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Tên sản phẩm</th>
-                <th scope="col">Màu</th>
-                <th scope="col">Kích cỡ</th>
-                <th scope="col">Số lượng</th>
-                <th scope="col">Thao tác</th>
-            </tr>
+        <tbody class="bodytable">
+            @forelse ($cart?$cart->getProductInCart():[] as $item)
+                <tr id='sp_{{ $item['productInfo']['idProductDetail'] . '-' . $item['productInfo']['idsize'] }}'>
+                    <th scope="col">-</th>
+                    <th scope="col">{{ $item['productInfo']['name'] }}</th>
+                    <th scope="col">{{ $item['productInfo']['namecolor'] }}</th>
+                    <th scope="col">{{ $item['productInfo']['namesize'] }}</th>
+                    <th scope="col"><input type="number" class="countimport" value={{ $item['quantity'] }} /></th>
+                    <th scope="col"><button type="button" data-id={{ $item['productInfo']['idProductDetail'] }}
+                            data-size={{ $item['productInfo']['idsize'] }}
+                            class="btn btn-danger btn-sm mb-2 d-block buttonchange remove">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                            </svg> Xóa
+                        </button> </th>
+                </tr>
+            @empty
+            @endforelse
         </tbody>
     </table>
+    <div class="row mt-5 border-top">
+        <button type="button" class="btn btn-primary rounded-0 shadow-none mt-3 ml-5 checkout">Tạo hóa
+            đơn</button>
+    </div>
 @endsection
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -408,8 +426,8 @@
                 data: function(params) {
                     const queryParameters = {
                         q: params.term,
-                        // id: $('#tensp').val(),
-                        id_detail: $('#color').val()
+                        id: $('#tensp').val(),
+                        color: $('#color').val()
                     };
 
                     return queryParameters;
@@ -428,20 +446,22 @@
         });
         $('#tensp').on('change', function() {
             console.log('chayng')
-            let id = $(this).val()
-            $.ajax({
-                url: "{{ route('api.getproduct') }}",
-                type: 'GET',
-                data: {
-                    id: id
-                },
-                success: function(response) {
-                    setValueInput(response)
-                },
-                error: function(response) {
+            if ($(this).val()) {
+                let id = $(this).val()
+                $.ajax({
+                    url: "{{ route('api.getproduct') }}",
+                    type: 'GET',
+                    data: {
+                        id: id
+                    },
+                    success: function(response) {
+                        setValueInput(response)
+                    },
+                    error: function(response) {
 
-                }
-            });
+                    }
+                });
+            }
         })
 
         function insetOption(data, name, obj) {
@@ -463,6 +483,19 @@
                 $('#salesprice').val(data['priceSell'])
                 $('#gender').find(":selected").attr('selected', false)
                 $('#gender').find("option[value=" + data['gender'] + "]").attr('selected', true)
+            } else {
+                $('#color').val(null).trigger('change');
+                $('#type').val(null).trigger('change');
+                $('#brand').val(null).trigger('change');
+                $('#category').val(null).trigger('change');
+                $('#code').val(null).trigger('change');
+                $('#tensp').val(null).trigger('change');
+                $('#size').val(null).trigger('change');
+                $('#importprice').val(null);
+                $('#salesprice').val(null);
+                $('#quantityimport').val(null);
+                $('#quantity').val(null);
+                $('#gender').find("option[value=" + 0 + "]").attr('selected', true)
             }
         }
 
@@ -472,19 +505,167 @@
                 e.val(data).trigger('change');
             }
         }
+        $('.remove').click(function() {
+            let dataidProduct = $(this).attr('data-id')
+            let datasize = $(this).attr('data-size')
+            let e = $(this)
+            console.log(dataidProduct, datasize)
+            $.ajax({
+                url: "{{ route('admin.orderimport.removeproductincart') }}",
+                type: 'DELETE',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'idProduct': dataidProduct,
+                    'size': datasize
+                },
+                success: function(response) {
+                    e.parent().parent().remove()
+                },
+                error: function(response) {
+
+                }
+            });
+        })
         $('#color').on('change', function() {
             $('#size').val(null).trigger('change');
         })
         $('#size').on('change', function() {
+            if ($(this).val()) {
+                $.ajax({
+                    url: "{{ route('api.quantityproduct') }}",
+                    type: 'GET',
+                    data: {
+                        id: $('#tensp').val(),
+                        color: $('#color').val(),
+                        size: $('#size').val()
+                    },
+                    success: function(response) {
+                        $('#quantity').val(response[0])
+                    },
+                    error: function(response) {
+
+                    }
+                });
+            }
+        })
+        $('.reset').click(function() {
+            setValueInput()
+        })
+        $('#quantityimport').change(function() {
+            if ($(this).val() && parseInt($(this).val()) != 0 && $('#size').val()) {
+                $('.addtocart').attr('disabled', false)
+            } else {
+                $('.addtocart').attr('disabled', true)
+            }
+        })
+        $('.addtocart').click(function() {
+            let id = $('#tensp').val()
+            let product_detail = $('#color').val()
+            let size = $('#size').val()
             $.ajax({
-                url: "{{ route('api.quantityproduct') }}",
+                url: "{{ route('admin.orderimport.addtocart') }}",
                 type: 'GET',
                 data: {
-                    product_detail: $('#color').val(),
-                    size: $('#size').val()
+                    id: id,
+                    color: $('#color').val(),
+                    size: size,
+                    quantity: $('#quantityimport').val()
                 },
                 success: function(response) {
-                    $('$quantity').val(response[0])
+                    console.log(response)
+                    if (!$(`#sp_${response[2]['idProductDetail']+'-'+response[2]['idsize']}`).length) {
+                        let ten = $('#tensp').text()
+                        let color = $('#color').text()
+                        let size = $('#size').text()
+                        let quantity = $('#quantityimport').val()
+                        let item = `<tr id='sp_${response[2]['idProductDetail']+'-'+response[2]['idsize']}'> 
+                        <th scope = "col"></th> 
+                        <th scope = "col">${ten}</th> 
+                        <th scope = "col">${color} </th> 
+                        <th scope = "col"> ${size} </th> 
+                        <th scope = "col"><input type="number" class="countimport" value=${quantity} /> </th> 
+                        <th scope = "col"> <button type="button" class="btn btn-danger btn-sm mb-2 d-block buttonchange remove"  
+                            data-id=${ response[2]['idProductDetail'] }
+                            data-size=${  response[2]['idsize']  }>
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                </svg> Xóa
+                                </button> 
+                        </th> 
+                        </tr>`
+                        $('.bodytable').append(item);
+                        $('.countimport').unbind('change')
+                        $('.countimport').change(function() {
+                            let idProduct = $(this).parent().next().find('.remove').attr(
+                                'data-id')
+                            let size = $(this).parent().next().find('.remove').attr('data-size')
+                            let quantity = $(this).val()
+                            $.ajax({
+                                url: "{{ route('admin.orderimport.changequantity') }}",
+                                type: 'GET',
+                                data: {
+                                    idProduct: idProduct,
+                                    size: size,
+                                    quantity: quantity
+                                },
+                                success: function(response) {
+
+                                },
+                                error: function(response) {
+
+                                }
+                            });
+                        })
+                    } else {
+                        let oldquantity = $(
+                            `#sp_${response[2]['idProductDetail']+'-'+response[2]['idsize']}`).find(
+                            '.countimport').val()
+                        $(`#sp_${response[2]['idProductDetail']+'-'+response[2]['idsize']}`).find(
+                            '.countimport').val(parseInt(oldquantity) + parseInt($(
+                            '#quantityimport').val()))
+                    }
+                },
+                error: function(response) {
+
+                }
+            });
+        })
+        $('.countimport').change(function() {
+            let idProduct = $(this).parent().next().find('.remove').attr('data-id')
+            let size = $(this).parent().next().find('.remove').attr('data-size')
+            let quantity = $(this).val()
+            $.ajax({
+                url: "{{ route('admin.orderimport.changequantity') }}",
+                type: 'GET',
+                data: {
+                    idProduct: idProduct,
+                    size: size,
+                    quantity: quantity
+                },
+                success: function(response) {
+
+                },
+                error: function(response) {
+
+                }
+            });
+        })
+        $('.checkout').click(function() {
+            $.ajax({
+                url: "{{ route('admin.orderimport.checkcart') }}",
+                type: 'GET',
+                success: function(response) {
+                    console.log('kkk: ', response)
+                    if (parseInt(response) != 0) {
+                        window.location.replace("{{ route('admin.orderimport.checkout') }}");
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Vui lòng thêm sản phẩm',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
                 },
                 error: function(response) {
 

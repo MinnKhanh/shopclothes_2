@@ -79,7 +79,7 @@ class OrderController extends Controller
     }
     public function index(Request $request)
     {
-        $orders = Orders::where('id_customer', $request->input('id'))->get()->toArray();
+        $orders = Orders::where('id_customer', $request->input('id'))->where('type', OrderTypeEnum::OrderSell)->get()->toArray();
         return view('orders.listorder', ['orders' => $orders, 'typenav' => $this->typenav]);
     }
     public function OrderDetail(Request $request)
@@ -213,15 +213,5 @@ class OrderController extends Controller
             DB::rollBack();
             return response()->json(['error' => 'Xóa thất bại'], 404);
         }
-    }
-    public function orderImport(Request $request)
-    {
-    }
-    public function storeImportOrder(Request $request)
-    {
-    }
-    public function createImportOrder(Request $request)
-    {
-        return view('admin.orderimport.order', ['typenav' => $this->typenav]);
     }
 }

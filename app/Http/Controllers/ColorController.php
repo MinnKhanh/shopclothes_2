@@ -38,7 +38,7 @@ class ColorController extends Controller
             if ($request->input('q')) {
                 $data->where('color.name', 'like', '%' . $request->get('q') . '%');
             }
-            $data = $data->select('product_detail.id', 'color.name')->get()->toArray();
+            $data = $data->select('color.id', 'color.name')->get()->toArray();
         }
         return $data;
     }

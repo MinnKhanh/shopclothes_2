@@ -15,7 +15,7 @@ class Cart
             $this->totalQuantity = $cart->totalQuantity;
         }
     }
-    public function AddCart($product, $id, $quantity)
+    public function AddCart($product, $id, $quantity, $isImport = 0)
     {
         if ($quantity > 0) {
             // $oldquantity = 0;
@@ -29,7 +29,7 @@ class Cart
                 }
             }
             $newProduct['quantity'] += $quantity;
-            if (floatval($newProduct['quantity']) > floatval($product['quantity'])) {
+            if (floatval($newProduct['quantity']) > floatval($product['quantity']) && $isImport == 0) {
                 $newProduct['quantity'] = floatval($product['quantity']);
             }
             $newProduct['price'] = $newProduct['quantity'] * $product['price'];
@@ -40,7 +40,7 @@ class Cart
             return $this->products[$id . '_' . $product['idsize']]['inventoryNumber'] - $this->products[$id . '_' . $product['idsize']]['quantity'];
         }
     }
-    public function ChangeProduct($id, $quantity, $size)
+    public function ChangeProduct($id, $quantity, $size, $isImport = 0)
     {
         if ($this->products) {
             if (array_key_exists($id . '_' . $size, $this->products)) {
@@ -53,7 +53,7 @@ class Cart
                     unset($this->products[$id . '_' . $size]);
                     return 0;
                 } else {
-                    if (floatval($this->products[$id . '_' . $size]['quantity']) > floatval($this->products[$id . '_' . $size]['inventoryNumber'])) {
+                    if (floatval($this->products[$id . '_' . $size]['quantity']) > floatval($this->products[$id . '_' . $size]['inventoryNumber']) && $isImport == 0) {
                         $this->products[$id . '_' . $size]['quantity'] = floatval($this->products[$id . '_' . $size]['inventoryNumber']);
                     }
 
@@ -66,7 +66,7 @@ class Cart
             }
         }
     }
-    public function changeQuantityProduct($id, $quantity, $size)
+    public function changeQuantityProduct($id, $quantity, $size, $isImport = 0)
     {
 
         if ($this->products) {
@@ -80,7 +80,7 @@ class Cart
                     unset($this->products[$id . '_' . $size]);
                     return 0;
                 } else {
-                    if (floatval($this->products[$id . '_' . $size]['quantity']) > floatval($this->products[$id . '_' . $size]['inventoryNumber'])) {
+                    if (floatval($this->products[$id . '_' . $size]['quantity']) > floatval($this->products[$id . '_' . $size]['inventoryNumber']) && $isImport == 0) {
                         $this->products[$id . '_' . $size]['quantity'] = floatval($this->products[$id . '_' . $size]['inventoryNumber']);
                     }
                     $this->products[$id . '_' . $size]['price'] = floatval($this->products[$id . '_' . $size]['quantity']) * floatval($this->products[$id . '_' . $size]['productInfo']['price']);

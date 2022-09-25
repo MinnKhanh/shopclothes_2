@@ -1,14 +1,18 @@
 @extends('layout.master')
 @push('css')
-     <style>
-        .img-fluid{
+    <style>
+        .img-fluid {
             height: 260px;
-            
+
         }
-        .priceitem{
-                font-size: .9rem
+
+        .priceitem {
+            font-size: .9rem
         }
-        .paginationjs-page > a,.paginationjs-prev >a,.paginationjs-next > a {
+
+        .paginationjs-page>a,
+        .paginationjs-prev>a,
+        .paginationjs-next>a {
             position: relative;
             display: block;
             padding: 0.5rem 0.75rem;
@@ -19,28 +23,36 @@
             border: 1px solid #dee2e6;
 
         }
-        .active >a{
-            background-color:  #ffc107;
+
+        .active>a {
+            background-color: #ffc107;
             color: white !important;
         }
-        .paginationjs-page > a:hover,.paginationjs-prev >a:hover,.paginationjs-next > a:hover {
+
+        .paginationjs-page>a:hover,
+        .paginationjs-prev>a:hover,
+        .paginationjs-next>a:hover {
             z-index: 2;
             color: #FFD333 !important;
             text-decoration: none;
             background-color: #e9ecef;
             border-color: #dee2e6;
         }
-        li{
+
+        li {
             list-style: none;
         }
-        .paginationjs-pages > ul{
+
+        .paginationjs-pages>ul {
             display: flex;
             justify-content: center;
         }
-        .autoComplete_list_1{
+
+        .autoComplete_list_1 {
             position: relative;
         }
-         #autoComplete_list_1{
+
+        #autoComplete_list_1 {
             position: absolute;
             /* transform: translate(0, 20px); */
             z-index: 1;
@@ -50,33 +62,37 @@
             padding-left: 10px;
             width: 100%;
         }
-        #autoComplete_list_1 > li{
+
+        #autoComplete_list_1>li {
             margin-top: 8px;
-             margin-bottom: 8px;
+            margin-bottom: 8px;
         }
-        #autoComplete_list_1 > li:hover{
+
+        #autoComplete_list_1>li:hover {
             background-color: #f8f8f8
         }
-        .imgtype{
-                width: 100%;
-    height: 100%;
+
+        .imgtype {
+            width: 100%;
+            height: 100%;
         }
-    .emptyproduct{
-        position: absolute;
-        z-index: 1;
-        background: #6c6c6c;
-        color: #fafafa;
-        top: 8px;
-        right: 6px;
-        padding: 1px 10px;
-        font-size: .8rem;
-        border-radius: 1px;
-    }
+
+        .emptyproduct {
+            position: absolute;
+            z-index: 1;
+            background: #6c6c6c;
+            color: #fafafa;
+            top: 8px;
+            right: 6px;
+            padding: 1px 10px;
+            font-size: .8rem;
+            border-radius: 1px;
+        }
     </style>
 @endpush
 
 @section('content')
-<!-- Carousel Start -->
+    <!-- Carousel Start -->
     <div class="container-fluid mb-3">
         <div class="row px-xl-5">
             <div class="col-lg-8">
@@ -91,9 +107,12 @@
                             <img class="position-absolute w-100 h-100" src="img/carousel-1.jpg" style="object-fit: cover;">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                                 <div class="p-3" style="max-width: 700px;">
-                                    <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Men Fashion</h1>
-                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
-                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">Shop Now</a>
+                                    <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Men Fashion
+                                    </h1>
+                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
+                                        magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
+                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
+                                        href="#">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -101,9 +120,12 @@
                             <img class="position-absolute w-100 h-100" src="img/carousel-2.jpg" style="object-fit: cover;">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                                 <div class="p-3" style="max-width: 700px;">
-                                    <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Women Fashion</h1>
-                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
-                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">Shop Now</a>
+                                    <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Women
+                                        Fashion</h1>
+                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
+                                        magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
+                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
+                                        href="#">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -111,9 +133,12 @@
                             <img class="position-absolute w-100 h-100" src="img/carousel-3.jpg" style="object-fit: cover;">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                                 <div class="p-3" style="max-width: 700px;">
-                                    <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Kids Fashion</h1>
-                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
-                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">Shop Now</a>
+                                    <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Kids Fashion
+                                    </h1>
+                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
+                                        magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
+                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
+                                        href="#">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -149,25 +174,25 @@
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                 <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
                     <h1 class="fa fa-check text-primary m-0 mr-3"></h1>
-                    <h5 class="font-weight-semi-bold m-0">Quality Product</h5>
+                    <h5 class="font-weight-semi-bold m-0">Sản Phẩm Chất Lượng</h5>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                 <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
                     <h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
-                    <h5 class="font-weight-semi-bold m-0">Free Shipping</h5>
+                    <h5 class="font-weight-semi-bold m-0">Miễn Phí Vận Chuyển</h5>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                 <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
                     <h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
-                    <h5 class="font-weight-semi-bold m-0">14-Day Return</h5>
+                    <h5 class="font-weight-semi-bold m-0">Đôi Trả Trong 14 Ngày</h5>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                 <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
                     <h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
-                    <h5 class="font-weight-semi-bold m-0">24/7 Support</h5>
+                    <h5 class="font-weight-semi-bold m-0">Hỗ Trợ 24/7</h5>
                 </div>
             </div>
         </div>
@@ -177,24 +202,25 @@
 
     <!-- Categories Start -->
     <div class="container-fluid pt-5">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Categories</span></h2>
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Phân
+                Loại</span></h2>
         <div class="row px-xl-5 pb-3">
             @forelse ($typenav as $item)
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <a class="text-decoration-none" href="{{route('product.index',['maphanloai'=>$item['id']])}}">
-                    <div class="cat-item d-flex align-items-center mb-4">
-                        <div class="overflow-hidden" style="width: 100px; height: 100px;">
-                           <img class="img-fluid imgtype" src='{{ asset("storage/".$item['img'][0]['path'])}}' alt="">
+                    <a class="text-decoration-none" href="{{ route('product.index', ['maphanloai' => $item['id']]) }}">
+                        <div class="cat-item d-flex align-items-center mb-4">
+                            <div class="overflow-hidden" style="width: 100px; height: 100px;">
+                                <img class="img-fluid imgtype" src='{{ asset('storage/' . $item['img'][0]['path']) }}'
+                                    alt="">
+                            </div>
+                            <div class="flex-fill pl-3">
+                                <h6>{{ $item['name'] }}</h6>
+                                <small class="text-body">{{ $item['product_count'] }} Sản Phẩm</small>
+                            </div>
                         </div>
-                        <div class="flex-fill pl-3">
-                            <h6>{{$item['name']}}</h6>
-                            <small class="text-body">{{$item['product_count']}} Product</small>
-                        </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
             @empty
-                
             @endforelse
         </div>
     </div>
@@ -203,46 +229,48 @@
 
     <!-- Products Start -->
     <div class="container-fluid pt-5 pb-3">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Recent Products</span></h2>
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Sẩn Phẩm
+                Mới</span></h2>
         <div class="row px-xl-5">
             @forelse ($product as $item)
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("storage/".$item['img'][0]['path'])}} alt="">
-                        @if ($item['quantity']<=0)
-                             <div class="emptyproduct">hết hàng</div>
-                        @endif
-                       
-                        <div class="product-action">
-                           <a class="btn btn-outline-dark btn-square addtocart" data-id={{$item['id']}} href="{{route('product.productdetail',['id'=>$item['id']])}}"><i class="fa fa-shopping-cart"></i></a>
-                           @if (auth()->check())
-                            <a class="btn btn-outline-dark btn-square addpavorite" data-id={{$item['id']}}><i class="far fa-heart"></i></a>
-                           @endif
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src={{ asset('storage/' . $item['img'][0]['path']) }}
+                                alt="">
+                            @if ($item['quantity'] <= 0)
+                                <div class="emptyproduct">hết hàng</div>
+                            @endif
+
+                            <div class="product-action">
+                                <a class="btn btn-outline-dark btn-square addtocart" data-id={{ $item['id'] }}
+                                    href="{{ route('product.productdetail', ['id' => $item['id']]) }}"><i
+                                        class="fa fa-shopping-cart"></i></a>
+                                @if (auth()->check())
+                                    <a class="btn btn-outline-dark btn-square addpavorite" data-id={{ $item['id'] }}><i
+                                            class="far fa-heart"></i></a>
+                                @endif
+                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                        class="fa fa-sync-alt"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                        class="fa fa-search"></i></a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">{{$item['name']}}</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>{{$item['priceSell']}}</h5><h6 class="text-muted ml-2"></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate"
+                                href="{{ route('product.productdetail', ['id' => $item['id']]) }}">{{ $item['name'] }}</a>
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                <h5>{{ number_format($item['priceSell'], 0, ',', ',') }} Đ</h5>
+                                <h6 class="text-muted ml-2"></h6>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center mb-1">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             @empty
-                
             @endforelse
-            
+
 
         </div>
     </div>
@@ -256,9 +284,9 @@
                 <div class="product-offer mb-30" style="height: 300px;">
                     <img class="img-fluid" src="img/offer-1.jpg" alt="">
                     <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
+                        <h6 class="text-white text-uppercase">Tiết Kiệm 20%</h6>
+                        <h3 class="text-white mb-3">Đơn Hàng Đặc Biệt</h3>
+                        <a href="" class="btn btn-primary">Mua Ngay</a>
                     </div>
                 </div>
             </div>
@@ -279,261 +307,52 @@
 
     <!-- Products Start -->
     <div class="container-fluid pt-5 pb-3">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Featured Products</span></h2>
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Sản Phẩm
+                Nổi Bật</span></h2>
         <div class="row px-xl-5">
-                 @forelse ($productfeatured as $item)
+            @forelse ($productfeatured as $item)
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("storage/".$item['img'][0]['path'])}} alt="">
-                        @if ($item['quantity']<=0)
-                             <div class="emptyproduct">hết hàng</div>
-                        @endif
-                       
-                        <div class="product-action">
-                           <a class="btn btn-outline-dark btn-square addtocart" data-id={{$item['id']}} href="{{route('product.productdetail',['id'=>$item['id']])}}"><i class="fa fa-shopping-cart"></i></a>
-                           @if (auth()->check())
-                            <a class="btn btn-outline-dark btn-square addpavorite" data-id={{$item['id']}}><i class="far fa-heart"></i></a>
-                           @endif
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src={{ asset('storage/' . $item['img'][0]['path']) }}
+                                alt="">
+                            @if ($item['quantity'] <= 0)
+                                <div class="emptyproduct">hết hàng</div>
+                            @endif
+
+                            <div class="product-action">
+                                <a class="btn btn-outline-dark btn-square addtocart" data-id={{ $item['id'] }}
+                                    href="{{ route('product.productdetail', ['id' => $item['id']]) }}"><i
+                                        class="fa fa-shopping-cart"></i></a>
+                                @if (auth()->check())
+                                    <a class="btn btn-outline-dark btn-square addpavorite" data-id={{ $item['id'] }}><i
+                                            class="far fa-heart"></i></a>
+                                @endif
+                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                        class="fa fa-sync-alt"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                        class="fa fa-search"></i></a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">{{$item['name']}}</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>{{$item['priceSell']}}</h5><h6 class="text-muted ml-2"></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate"
+                                href="{{ route('product.productdetail', ['id' => $item['id']]) }}">{{ $item['name'] }}</a>
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                <h5>{{ number_format($item['priceSell'], 0, ',', ',') }} Đ</h5>
+                                <h6 class="text-muted ml-2"></h6>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center mb-1">
+                                {{-- <div class="review" data-rating-value="{{ $item['number'] }}"></div> --}}
+                                <div id="dataReadonlyReview" data-rating-half="true" data-rating-stars="5"
+                                    data-rating-readonly="true" data-rating-value={{ $item['number'] }}
+                                    data-rating-input="#dataReadonlyInput">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             @empty
-                
             @endforelse
-            {{-- <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("img/product-1.jpg")}} alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("img/product-2.jpg")}} alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("img/product-3.jpg")}} alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("img/product-4.jpg")}} alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("img/product-5.jpg")}} alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("img/product-6.jpg")}} alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("img/product-7.jpg")}} alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src={{ asset("img/product-8.jpg")}} alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
         </div>
     </div>
     <!-- Products End -->
@@ -545,14 +364,13 @@
             <div class="col">
                 <div class="owl-carousel vendor-carousel">
                     @forelse ($brand as $item)
-                    <div class="bg-light p-4">
-                        <img src={{ asset("storage/".$item['img'][0]['path'])}} alt="">
-                    </div>
+                        <div class="bg-light p-4">
+                            <img src={{ asset('storage/' . $item['img'][0]['path']) }} alt="">
+                        </div>
                     @empty
-                        
                     @endforelse
-                   
-                    
+
+
                 </div>
             </div>
         </div>
@@ -560,23 +378,24 @@
     <!-- Vendor End -->
 @endsection
 @push('js')
+    <script src="{{ asset('js/rating-star-icons/dist/rating.js') }}"></script>
     <script>
-        $('.addpavorite').click(function(){
-            let id=$(this).attr('data-id')
-              $.ajax({
-                    url: "{{route('product.addfaverite')}}",
-                    type: 'GET',
-                    data:{
-                        id:id,
-                    },
-                    success: function(response) {
-                        $('.faverite').text(response[0]['quantity'])
-                        console.log(response)
-                    },
-                    error: function(response) {
-                    
-                    }
-                });
+        $('.addpavorite').click(function() {
+            let id = $(this).attr('data-id')
+            $.ajax({
+                url: "{{ route('product.addfaverite') }}",
+                type: 'GET',
+                data: {
+                    id: id,
+                },
+                success: function(response) {
+                    $('.faverite').text(response[0]['quantity'])
+                    console.log(response)
+                },
+                error: function(response) {
+
+                }
+            });
         })
-    </script>    
+    </script>
 @endpush

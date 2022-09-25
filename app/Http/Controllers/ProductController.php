@@ -205,9 +205,15 @@ class ProductController extends Controller
     public function quantityProduct(Request $request)
     {
         $quantity = 0;
-        if ($request->input('product_detail') && $request->input('size')) {
-            $quantity = ProductSize::where('id_productdetail', $request->input('product_detail'))->where('size', $request->input('size'))->first()->quantity;
-            // dd(ProductSize::where('id_productdetail', $request->input('product_detail'))->where('size', $request->input('size'))->first());
+        if ($request->input('color') && $request->input('size') && $request->input('id')) {
+            $quantity = Products::where('products.id', $request->input('id'))
+                ->join('product_detail', 'product_detail.id_product', 'products.id')
+                ->where('id_color', $request->input('color'))
+                ->join('product_size', 'product_size.id_productdetail', 'product_detail.id')
+                ->where('product_size.size', $request->input('size'))->first();
+            if ($quantity)
+                $quantity = $quantity->quantity;
+            else $quantity = 0;
         }
         return [$quantity];
     }
