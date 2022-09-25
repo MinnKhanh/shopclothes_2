@@ -379,6 +379,7 @@
                   getProduct()
               })
 
+
               function showproduct(response) {
                   $('#pagination').pagination({
                       dataSource: response,
@@ -390,6 +391,7 @@
                           console.log("respon", response)
                           let inner = ''
                           response.forEach(element => {
+                              let price = Intl.NumberFormat('en-VN').format(element['priceSell'])
                               inner += `  <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
                     <div class="product-item bg-light mb-4">
                         <div class="product-img position-relative overflow-hidden">
@@ -402,7 +404,7 @@
                         <div class="text-center py-4">
                             <a class="h6 text-decoration-none text-truncate" href="{{ route('product.productdetail') }}?id=${element['id']}">${element['name']}</a>
                             <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>${element['priceSell']}Đ</h5>
+                                <h5>${price} Đ</h5>
                             </div>
                                 <div class="d-flex align-items-center justify-content-center mt-2">
                                 <h5>${element['brand_product']['name']}</h5>

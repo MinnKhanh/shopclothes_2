@@ -127,7 +127,7 @@ Route::group([
     Route::delete('/delete', [DiscountController::class, 'delete'])->name('delete');
     Route::get('/edit', [DiscountController::class, 'edit'])->name('edit');
     Route::get('/create', [DiscountController::class, 'create'])->name('create');
-    Route::get('/store', [DiscountController::class, 'store'])->name('store');
+    Route::post('/store', [DiscountController::class, 'store'])->name('store');
 });
 Route::group([
     'as'     => 'orderimport.',

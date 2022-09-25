@@ -19,8 +19,12 @@ class DiscountController extends Controller
     }
     public function index(Request $request)
     {
-        $discount = Discount::get()->toArray();
+        $discount = Discount::with('Img')->get()->toArray();
         return view('admin.discount.index', ['discount' => $discount, 'typenav' => $this->typenav]);
+    }
+    public function edit(Request $request)
+    {
+        return view('admin.discount.CreateOrUpdate', ['typenav' => $this->typenav, 'discount' => Discount::with('Img')->where('id', $request->input('id'))->first()->toArray(), 'isedit' => $request->input('id')]);
     }
     public function delete(Request $request)
     {
@@ -34,7 +38,7 @@ class DiscountController extends Controller
     }
     public function create(Request $request)
     {
-        return view('admin.discount.CreateOrUpdate');
+        return view('admin.discount.CreateOrUpdate', ['typenav' => $this->typenav]);
     }
     public function update(Request $request)
     {
@@ -42,33 +46,43 @@ class DiscountController extends Controller
         if ($request->input('id')) {
             $discount = Discount::where('id', $request->input('id'));
         }
-        return view('admin.discount.CreateOrUpdate', ['isedit' => 1, 'id' => $request->input('id'), 'discount' => $discount]);
+        return view('admin.discount.CreateOrUpdate', ['isedit' => 1, 'id' => $request->input('id'), 'discount' => $discount, 'typenav' => $this->typenav]);
     }
     public function store(Request $request)
     {
-        $discount = new Discount();
-        if ($request->input('id')) {
-            $discount = Discount::where('id', $request->input('id'))->first();
-        }
-        $discount->persent = $request->input('persent');
-        $discount->type = $request->input('type');
-        $discount->begin = $request->input('begin');
-        $discount->end = $request->input('end');
-        $discount->name = $request->input('name');
-        $discount->code = $request->input('code');
-        $discount->description = $request->input('description');
-        $discount->save();
-        if ($request->file('photo')) {
-            $logo = optional($request->file('photo'))->store('public/discount_img');
-            $logo = str_replace("public/", "", $logo);
-            Img::updateOrCreate(
-                [
-                    'product_id' => $discount->id,
-                    'type' => 7,
-                    'img_index' => 1
-                ],
-                ['path' => $logo]
-            );
+        DB::beginTransaction();
+        try {
+            $discount = new Discount();
+            if ($request->input('id')) {
+                $discount = Discount::where('id', $request->input('id'))->first();
+            }
+            $discount->persent = $request->input('persent');
+            $discount->type = $request->input('type');
+            $discount->begin = $request->input('begin');
+            $discount->end = $request->input('end');
+            $discount->name = $request->input('name');
+            $discount->code = $request->input('code');
+            $discount->discription = $request->input('description');
+            $discount->unit = $request->input('unit');
+            $discount->save();
+            if ($request->file('photo')) {
+                $logo = optional($request->file('photo'))->store('public/discount_img');
+                $logo = str_replace("public/", "", $logo);
+                Img::updateOrCreate(
+                    [
+                        'product_id' => $discount->id,
+                        'type' => 7,
+                        'img_index' => 1
+                    ],
+                    ['path' => $logo]
+                );
+            }
+            DB::commit();
+            return Redirect::route('admin.discount.index');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            dd($e);
+            return Redirect::back()->withInput($request->input())->withErrors(['msg' => $e->getMessage()]);
         }
     }
 }

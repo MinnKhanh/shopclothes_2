@@ -40,15 +40,18 @@ class TypeController extends Controller
             'photo.*' => $request->input('id') ? '' : ['required', 'image'],
         ]);
         $type = new Type();
+        $logo = null;
         if ($request->file('photo')) {
             $logo = optional($request->file('photo'))->store('public/type_img');
             $logo = str_replace("public/", "", $logo);
         }
         if ($request->input('id')) {
             $type = Type::where('id', $request->input('id'))->first();
-            Img::where('product_id', $request->input('id'))->where('type', 3)->where('img_index', 1)->update([
-                'path' => $logo,
-            ]);
+            if ($logo) {
+                Img::where('product_id', $request->input('id'))->where('type', 3)->where('img_index', 1)->update([
+                    'path' => $logo,
+                ]);
+            }
             $type->name = $request->input('name');
             $type->save();
         } else {

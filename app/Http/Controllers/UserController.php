@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Img;
 use App\Models\Type;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if (auth()->check()) {
-            $user = User::where('id', $request->input('id'))->get()->toArray();
+            $user = User::with('Img')->where('id', $request->input('id'))->get()->toArray();
             return view('customer.userinfo', ['typenav' => $this->typenav, 'user' => $user[0]]);
         }
     }
@@ -37,6 +38,18 @@ class UserController extends Controller
                 'gender' => $request->input('gender'),
                 'phone' => $request->input('phone')
             ]);
+            if ($request->file('photo')) {
+                $logo = optional($request->file('photo'))->store('public/user_img');
+                $logo = str_replace("public/", "", $logo);
+                Img::updateOrCreate(
+                    [
+                        'product_id' => $request->input('id'),
+                        'type' => 6,
+                        'img_index' => 1
+                    ],
+                    ['path' => $logo]
+                );
+            }
             DB::commit();
             return 0;
         } catch (Throwable $e) {

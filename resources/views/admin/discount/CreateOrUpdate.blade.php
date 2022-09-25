@@ -9,7 +9,7 @@
 @endpush
 @section('content')
     @php
-        use BenSampo\Enum\Enum\DiscountTypeEnum;
+        use App\Enums\DiscountTypeEnum;
     @endphp
     <div class="row px-xl-3">
         <div class="col-12">
@@ -21,24 +21,29 @@
                     enctype="multipart/form-data">
                     @csrf
                     @if (isset($isedit))
-                        <input type="text" class="d-none" name="id" value={{ $id }}>
+                        <input type="text" class="d-none" name="id" value={{ $isedit }}>
                     @endif
                     <div class="row col-12">
                         <div class="col-md-6 form-group mb-4">
-                            <label>Tên</label>
-                            <input class="form-control shadow-none rounded-0" id="name" type="text" name="name"
-                                value={{ isset($discount) ? $discount['name'] : '' }}>
-                            <span class="text-danger errorname"></span>
+                            <label>Mã</label>
+                            <input class="form-control shadow-none rounded-0" id="code" type="text" name="code"
+                                value={{ isset($discount) ? $discount['code'] : '' }}>
+                            @if ($errors->has('code'))
+                                <div class="error">{{ $errors->first('code') }}</div>
+                            @endif
                         </div>
                         <div class="col-md-6 form-group mb-4">
                             <label>Loại</label>
-                            <select class="form-control shadow-none rounded-0" id="country" name="country">
-                                @forelse (DiscountTypeEnum::getKey() as $item)
-                                    <option value="">{{ $item }}</option>
+                            <select class="form-control shadow-none rounded-0" id="type" name="type">
+                                @forelse (DiscountTypeEnum::getValues() as $item)
+                                    <option value={{ $item }}>{{ DiscountTypeEnum::getTypesOfDiscount($item) }}
+                                    </option>
                                 @empty
                                 @endforelse
                             </select>
-                            <span class="text-danger errorname"></span>
+                            @if ($errors->has('type'))
+                                <div class="error">{{ $errors->first('type') }}</div>
+                            @endif
                         </div>
                     </div>
                     <div class="row col-12">
@@ -46,27 +51,47 @@
                             <label>Thời điểm bắt đầu</label>
                             <input class="form-control shadow-none rounded-0" type="date" id="begin" type="text"
                                 name="begin" value={{ isset($discount) ? $discount['begin'] : '' }}>
-                            <span class="text-danger errorname"></span>
+                            @if ($errors->has('begin'))
+                                <div class="error">{{ $errors->first('begin') }}</div>
+                            @endif
                         </div>
                         <div class="col-md-6 form-group mb-4">
                             <label>Thời điểm kết thúc</label>
                             <input class="form-control shadow-none rounded-0" type="date" id="end" name="end"
                                 value={{ isset($discount) ? $discount['end'] : '' }}>
-                            <span class="text-danger errorname"></span>
+                            @if ($errors->has('end'))
+                                <div class="error">{{ $errors->first('end') }}</div>
+                            @endif
                         </div>
                     </div>
                     <div class="row col-12">
                         <div class="col-md-6 form-group mb-4">
-                            <label>Mã</label>
-                            <input class="form-control shadow-none rounded-0" id="namecategory" type="text"
-                                name="name" value={{ isset($discount) ? $discount['code'] : '' }}>
-                            <span class="text-danger errorname"></span>
+                            <label>Tên</label>
+                            <input class="form-control shadow-none rounded-0" id="name" type="text" name="name"
+                                value={{ isset($discount) ? $discount['name'] : '' }}>
+                            @if ($errors->has('name'))
+                                <div class="error">{{ $errors->first('name') }}</div>
+                            @endif
                         </div>
-                        <div class="col-md-6 form-group mb-4">
-                            <label>Loại</label>
+                        <div class="col-md-3 form-group mb-4">
+                            <label>Số tiền khuyến mãi</label>
                             <input class="form-control shadow-none rounded-0" type="number" id="persent" name="persent"
                                 value={{ isset($discount) ? $discount['persent'] : '' }}>
-                            <span class="text-danger errorname"></span>
+                            @if ($errors->has('persent'))
+                                <div class="error">{{ $errors->first('persent') }}</div>
+                            @endif
+                        </div>
+                        <div class="col-md-3 form-group mb-4">
+                            <label>Đơn vị</label>
+                            <select class="form-control shadow-none rounded-0" type="number" id="unit" name="unit">
+                                <option {{ isset($discount) ? ($discount['unit'] == 1 ? 'selected' : '') : '' }} value=1>%
+                                </option>
+                                <option {{ isset($discount) ? ($discount['unit'] == 2 ? 'selected' : '') : '' }} value=2>Đ
+                                </option>
+                            </select>
+                            @if ($errors->has('unit'))
+                                <div class="error">{{ $errors->first('unit') }}</div>
+                            @endif
                         </div>
                     </div>
                     <div class="row col-12">
@@ -74,7 +99,9 @@
                             <div class="col-md-6 form-group">
                                 <label>Ảnh</label>
                                 <input class="form-control file-img" name="photo" id="photocategory" type="file">
-                                <span class="text-danger errorphoto"></span>
+                                @if ($errors->has('photo'))
+                                    <div class="error">{{ $errors->first('photo') }}</div>
+                                @endif
                             </div>
                             <div class="col-md-6">
 
@@ -85,12 +112,11 @@
                         </div>
                         <div class="col-md-6 form-group mb-4">
                             <label>Mô tả</label>
-                            <textarea class="form-control shadow-none rounded-0" rows="8" id="namecategory" type="text" name="description">
-                                @if (isset($discount))
-{{ isset($discount['img'][0]) ? $discount['description'] : '' }}
-@endif
+                            <textarea class="form-control shadow-none rounded-0" rows="8" id="namecategory" type="text" name="description">{{ isset($discount['discription']) ? $discount['discription'] : '' }}
                             </textarea>
-                            <span class="text-danger errorname"></span>
+                            @if ($errors->has('description'))
+                                <div class="error">{{ $errors->first('description') }}</div>
+                            @endif
                         </div>
                     </div>
                     <div class="modal-footer">

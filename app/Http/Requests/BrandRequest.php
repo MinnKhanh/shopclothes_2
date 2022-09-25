@@ -25,7 +25,7 @@ class BrandRequest extends FormRequest
     {
         return [
             'name' => ['required',],
-            'photo' => ['required', 'file'],
+            'photo' => request('id') ? '' : ['required', 'file'],
             'description' => ['required',],
             'country' => ['required',],
         ];

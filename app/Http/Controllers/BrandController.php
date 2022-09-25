@@ -8,6 +8,9 @@ use App\Models\Img;
 use App\Models\Products;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Throwable;
 
 class BrandController extends Controller
 {
@@ -28,27 +31,35 @@ class BrandController extends Controller
     }
     public function store(BrandRequest $request)
     {
-        $brand = new Brand();
-        if ($request->input('id')) {
-            $brand = Brand::where('id', $request->input('id'))->first();
+        DB::beginTransaction();
+        try {
+            $brand = new Brand();
+            if ($request->input('id')) {
+                $brand = Brand::where('id', $request->input('id'))->first();
+            }
+            $brand->name = $request->input('name');
+            $brand->country = $request->input('country');
+            $brand->description = $request->input('description');
+            $brand->save();
+            if ($request->file('photo')) {
+                $logo = optional($request->file('photo'))->store('public/brand_img');
+                $logo = str_replace("public/", "", $logo);
+                Img::updateOrCreate(
+                    [
+                        'product_id' => $brand->id,
+                        'type' => 5,
+                        'img_index' => 1
+                    ],
+                    ['path' => $logo]
+                );
+            }
+            DB::commit();
+            return Redirect::route('admin.brand.index');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            dd($e);
+            return Redirect::back()->withInput($request->input())->withErrors(['msg' => $e->getMessage()]);
         }
-        $brand->name = $request->input('name');
-        $brand->country = $request->input('country');
-        $brand->description = $request->input('description');
-        $brand->save();
-        if ($request->file('photo')) {
-            $logo = optional($request->file('photo'))->store('public/brand_img');
-            $logo = str_replace("public/", "", $logo);
-            Img::updateOrCreate(
-                [
-                    'product_id' => $brand->id,
-                    'type' => 5,
-                    'img_index' => 1
-                ],
-                ['path' => $logo]
-            );
-        }
-        return $brand;
     }
     public function update(Request $request)
     {
