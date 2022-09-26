@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Brand;
 use App\Models\Categories;
 use App\Models\Discount;
+use App\Models\Introduce;
 use App\Models\ProductDetail;
 use App\Models\Products;
 use App\Models\Type;
@@ -42,7 +43,8 @@ class AppServiceProvider extends ServiceProvider
             3 => Type::class,
             4 => Categories::class,
             6 => User::class,
-            7 => Discount::class
+            7 => Discount::class,
+            8 => Introduce::class
         ]);
     }
 }

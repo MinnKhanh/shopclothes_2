@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAccountRequest extends FormRequest
+class ChangePassAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,12 @@ class UpdateAccountRequest extends FormRequest
      */
     public function rules()
     {
+        // dd('day la use dang ki: ', request()->all());
         return [
             'username' => ['required',],
             'password' => ['required',],
             'newpassword' => ['required',],
-            'newpassword_confirmation' => ['required', 'same:password',]
+            'newpassword_confirmation' => ['required',],
         ];
     }
 }

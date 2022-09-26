@@ -16,7 +16,7 @@ class TypeController extends Controller
     {
         $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
             ->get()->toArray();
-            parent::__construct();
+        parent::__construct();
     }
     public function getListType(Request $request)
     {
@@ -25,6 +25,15 @@ class TypeController extends Controller
             $data = Type::where('name', 'like', '%' . $request->get('q') . '%')->get()->toArray();
         } else {
             $data = Type::get()->toArray();
+        }
+        return $data;
+    }
+    public function getTypeById(Request $request)
+    {
+        $data = [];
+        if ($request->input('id')) {
+            $data = Type::where('id', $request->input('id'))->first()->toArray();
+            return $data;
         }
         return $data;
     }

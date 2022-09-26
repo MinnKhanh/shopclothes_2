@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\View;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-    protected $typenav;
-       public function __construct()
-    {
-       View::share('numerberOfcart',Session('cart') ? Session('cart')->getTotalQuantity() : 0);
-    }
+   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+   protected $typenav;
+   public function __construct()
+   {
+      View::share('numerberOfcart', Session('cart') ? Session('cart')->getTotalQuantity() : 0);
+   }
 }

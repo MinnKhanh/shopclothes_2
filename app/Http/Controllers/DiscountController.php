@@ -16,7 +16,7 @@ class DiscountController extends Controller
     {
         $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
             ->get()->toArray();
-            parent::__construct();
+        parent::__construct();
     }
     public function index(Request $request)
     {
@@ -85,5 +85,24 @@ class DiscountController extends Controller
             dd($e);
             return Redirect::back()->withInput($request->input())->withErrors(['msg' => $e->getMessage()]);
         }
+    }
+    public function getList(Request $request)
+    {
+        $data = [];
+        if ($request->input('q')) {
+            $data = Discount::where('name', 'like', '%' . $request->get('q') . '%')->get()->toArray();
+        } else {
+            $data = Discount::get()->toArray();
+        }
+        return $data;
+    }
+    public function getDiscountById(Request $request)
+    {
+        $data = [];
+        if ($request->input('id')) {
+            $data = Discount::with('Img')->where('id', $request->input('id'))->first()->toArray();
+            return $data;
+        }
+        return $data;
     }
 }

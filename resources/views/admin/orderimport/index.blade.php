@@ -42,6 +42,9 @@ use App\Enums\StatusOrderEnum;
             <h1 class="font-weight-semi-bold text-uppercase">Hóa Đơn</h1>
         </div>
     </div>
+    <div class="container-fluid bg-secondary">
+        <a href="{{ route('admin.orderimport.create') }}" type="submit" class="btn btn-primary mb-3 ml-5">Thêm</a>
+    </div>
     <!-- Page Header End -->
     <table class="table container">
         <thead class="thead-dark">

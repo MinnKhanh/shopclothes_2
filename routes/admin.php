@@ -7,6 +7,7 @@ use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\CustomerController;
 use App\Http\Controllers\admin\CustomizeController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\admin\IntroducesController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderImportController;
 use App\Http\Controllers\StatisticalController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\TypeController;
 use App\Models\Orders;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +32,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'as'     => 'product.',
     'prefix' => 'product',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [ProductController::class, 'index'])->name('index');
     Route::get('/create', [ProductController::class, 'create'])->name('create');
@@ -49,6 +52,7 @@ Route::group([
 Route::group([
     'as'     => 'type.',
     'prefix' => 'type',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [TypeController::class, 'index'])->name('index');
     Route::get('/create', [TypeController::class, 'create'])->name('create');
@@ -59,6 +63,7 @@ Route::group([
 Route::group([
     'as'     => 'category.',
     'prefix' => 'category',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [CategoryController::class, 'index'])->name('index');
     Route::get('/create', [CategoryController::class, 'create'])->name('create');
@@ -70,6 +75,7 @@ Route::group([
 Route::group([
     'as'     => 'brand.',
     'prefix' => 'brand',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [BrandController::class, 'index'])->name('index');
     Route::get('/create', [BrandController::class, 'create'])->name('create');
@@ -80,6 +86,7 @@ Route::group([
 Route::group([
     'as'     => 'color.',
     'prefix' => 'color',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [BrandController::class, 'index'])->name('index');
     Route::get('/create', [BrandController::class, 'create'])->name('create');
@@ -88,6 +95,7 @@ Route::group([
 Route::group([
     'as'     => 'order.',
     'prefix' => 'order',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [BrandController::class, 'index'])->name('index');
     Route::get('/create', [BrandController::class, 'create'])->name('create');
@@ -96,6 +104,7 @@ Route::group([
 Route::group([
     'as'     => 'customers.',
     'prefix' => 'customers',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [CustomerController::class, 'index'])->name('index');
     Route::get('/create', [CustomerController::class, 'create'])->name('create');
@@ -103,15 +112,19 @@ Route::group([
     Route::post('/deleteCustomer', [CustomerController::class, 'deletecustomer'])->name('deletecustomer');
 });
 Route::group([
-    'as'     => 'customize.',
-    'prefix' => 'customize',
+    'as'     => 'introduce.',
+    'prefix' => 'introduce',
+    'middleware' => 'checkadmin'
 ], static function () {
-    Route::get('/banner', [CustomizeController::class, 'banner'])->name('banner');
-    Route::get('/edit', [CustomizeController::class, 'edit'])->name('edit');
+    Route::get('/banner', [IntroducesController::class, 'banner'])->name('banner');
+    Route::get('/edit-discont', [IntroducesController::class, 'editIntroDiscount'])->name('editdiscount');
+    Route::get('/edit-main', [IntroducesController::class, 'editIntroMain'])->name('editmain');
+    Route::post('/store', [IntroducesController::class, 'store'])->name('store');
 });
 Route::group([
     'as'     => 'statistical.',
     'prefix' => 'statistical',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [StatisticalController::class, 'index'])->name('index');
     Route::get('/product-categories', [StatisticalController::class, 'productCategories'])->name('productcategories');
@@ -122,6 +135,7 @@ Route::group([
 Route::group([
     'as'     => 'discount.',
     'prefix' => 'discount',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [DiscountController::class, 'index'])->name('index');
     Route::delete('/delete', [DiscountController::class, 'delete'])->name('delete');
@@ -132,6 +146,7 @@ Route::group([
 Route::group([
     'as'     => 'orderimport.',
     'prefix' => 'orderimport',
+    'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/', [OrderImportController::class, 'index'])->name('index'); //->middleware('checkapplicant');
     Route::get('/create', [OrderImportController::class, 'create'])->name('create'); //->middleware('checkapplicant');
@@ -147,7 +162,8 @@ Route::group([
 });
 
 Route::get('/', function () {
+    View::share('numerberOfcart', Session('cart') ? Session('cart')->getTotalQuantity() : 0);
     $typenav = Type::with('Img', 'Categories')->withCount('Product')
         ->get()->toArray();
     return view('admin.index', ['typenav' => $typenav]);
-});
+})->name('index')->middleware('checkadmin');

@@ -33,22 +33,6 @@ use Illuminate\Support\Facades\Hash;
 */
 
 Route::get('/', [MainController::class, 'index'])->name('index');
-
-// Route::get('products', function () {
-//     return view('products.index');
-// });
-// Route::get('products/detail', function () {
-//     return view('products.detail');
-// });
-// Route::get('customer/contact', function () {
-//     return view('auth.register');
-// });
-// Route::get('orders/cart', function () {
-//     return view('orders.cart');
-// });
-// Route::get('orders/checkout', function () {
-//     return view('orders.checkout');
-// });
 Route::group([
     'as'     => 'product.',
     'prefix' => 'product',
@@ -97,7 +81,7 @@ Route::group([
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
     Route::get('/update-account', [AuthController::class, 'updateAccont'])->name('updateaccont');
-    Route::put('/update', [AuthController::class, 'update'])->name('update');
+    Route::post('/update', [AuthController::class, 'update'])->name('update');
 });
 Route::group([
     'as'     => 'user.',
@@ -111,7 +95,7 @@ Route::group([
     'as'     => 'test.',
     'prefix' => 'test',
 ], static function () {
-    Route::get('/', [Testcontroller::class,'index']);
+    Route::get('/', [Testcontroller::class, 'index']);
     Route::get('/put', function () {
         $user = User::where('id', 8)->get();
         SendEmail::dispatch('chay ngay di', $user);

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\RegisterEvent;
+use App\Http\Requests\ChangePassAccountRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Jobs\SendEmail;
 use App\Models\Type;
@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\URL;
-use PDO;
 
 class AuthController extends Controller
 {
@@ -22,14 +19,14 @@ class AuthController extends Controller
     {
         $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
             ->get()->toArray();
-            parent::__construct();
+        parent::__construct();
     }
     public function login(Request $request)
     {
         $loginPath  = url('auth/register');
         $previous   = url()->previous();
         $myPath = url('/');
-        if ($previous == $loginPath || $previous == url('auth/')) {
+        if ($previous == $loginPath || $previous == url('auth/') || $previous == url('auth/update-account')) {
             session(['link' => $myPath]);
         } else {
             session(['link' => $previous]);
@@ -68,7 +65,7 @@ class AuthController extends Controller
 
         $request->session()->invalidate();
 
-        return redirect('/');
+        return redirect()->route('index');
     }
     public function username()
     {
@@ -79,27 +76,26 @@ class AuthController extends Controller
         if (Auth::attempt(['username' => $request->input('email'), 'password' => $request->password])) {
             return redirect(session('link'));
         } else
-            return redirect()->route('auth.login');
-        // $user = User::where('email', $request->input('email'))->first();
+            return Redirect::back()->withErrors(['msg' => 'Đăng nhập thất bại, có thể bạn đã nhập sai tài khoản hoặc mật khẩu vui lòng thử lại']);
+        // $user = User::where('username', $request->input('email'))->first();
         // dd(Hash::check($request->input('password'), $user->password));
-        // Auth::login();
-
+        //Auth::login();
     }
     public function updateAccont(Request $request)
     {
-        return view('auth.changeaccount', ['typenav' => $this->typenav]);
+        return view('auth.changepassword', ['typenav' => $this->typenav]);
     }
-    public function update(Request $request)
+    public function update(ChangePassAccountRequest $request)
     {
         $user = auth()->user();
         if (Hash::check($request->input('password'), $user->password)) {
-            $password = Hash::make($request->input('password'));
+            $password = Hash::make($request->input('newpassword'));
             User::where('id', $user->id)->update([
                 'password' => $password
             ]);
             return redirect()->route('auth.login');
         } else {
-            return Redirect::back()->withErrors(['msg' => 'Thất bại']);
+            return Redirect::back()->withInput($request->input())->withErrors(['msg' => 'Thất bại, có thể sai mật khẩu hoặc tài khoản hãy thử lại']);
         }
     }
 }

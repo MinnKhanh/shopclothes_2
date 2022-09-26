@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ProductController as ControllersProductController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\TypeController;
@@ -42,3 +43,6 @@ Route::get('/getproduct', [ControllersProductController::class, 'getProduct'])->
 Route::get('/getcolorofproduct', [ColorController::class, 'getColorOfProduct'])->name('getcolorofproduct');
 Route::get('/getsizeofproduct', [SizeController::class, 'getSizeOfProductDetail'])->name('getsizeofproduct');
 Route::get('/quantityproduct', [ControllersProductController::class, 'quantityProduct'])->name('quantityproduct');
+Route::get('/get-type-by-id', [TypeController::class, 'getTypeById'])->name('gettypebyid');
+Route::get('/discounts', [DiscountController::class, 'getList'])->name('discounts');
+Route::get('/discountbyid', [DiscountController::class, 'getDiscountById'])->name('discountbyid');
