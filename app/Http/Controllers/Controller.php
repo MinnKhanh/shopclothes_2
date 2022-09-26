@@ -14,6 +14,6 @@ class Controller extends BaseController
     protected $typenav;
        public function __construct()
     {
-       // View::share('numerberOfcart',Session('cart') ? Session('cart')->getTotalQuantity() : 0);
+       View::share('numerberOfcart',Session('cart') ? Session('cart')->getTotalQuantity() : 0);
     }
 }

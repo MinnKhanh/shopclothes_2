@@ -15,6 +15,8 @@ class MainController extends Controller
 {
       public function __construct()
     {
+        // View::share('numerberOfcart',Session('cart') ? Session('cart')->getTotalQuantity() : 0);
+        parent::__construct();
     }
     public function index(Request $request)
     {
