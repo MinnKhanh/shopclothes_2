@@ -10,6 +10,7 @@ use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
 use PDO;
 
 class CartController extends Controller
@@ -18,6 +19,7 @@ class CartController extends Controller
     {
         $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
             ->get()->toArray();
+           parent::__construct();
     }
     public function index(Request $request)
     {

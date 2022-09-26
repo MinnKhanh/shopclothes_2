@@ -22,6 +22,7 @@ class AuthController extends Controller
     {
         $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
             ->get()->toArray();
+            parent::__construct();
     }
     public function login(Request $request)
     {

@@ -111,10 +111,7 @@ Route::group([
     'as'     => 'test.',
     'prefix' => 'test',
 ], static function () {
-    Route::get('/', function () {
-        $user = User::where('username', 'hse001_10010')->first();
-        dd(bcrypt('123'));
-    })->name('index');
+    Route::get('/', [Testcontroller::class,'index']);
     Route::get('/put', function () {
         $user = User::where('id', 8)->get();
         SendEmail::dispatch('chay ngay di', $user);

@@ -11,6 +11,9 @@ use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
+    public function __construct(){
+parent::__construct();
+    }
     public function getListCategories(Request $request)
     {
         $data = [];

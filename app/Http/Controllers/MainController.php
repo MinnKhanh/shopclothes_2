@@ -9,9 +9,13 @@ use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 
 class MainController extends Controller
 {
+      public function __construct()
+    {
+    }
     public function index(Request $request)
     {
         $type = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();

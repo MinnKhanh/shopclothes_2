@@ -18,6 +18,7 @@ class StatisticalController extends Controller
     {
         $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
             ->get()->toArray();
+            parent::__construct();
     }
     public function productCategories(Request $request)
     {
@@ -25,7 +26,7 @@ class StatisticalController extends Controller
     }
     public function index(Request $request)
     {
-        return view('admin.statistical.StatisticsByProduct', ['typenav' => $this->typenav]);
+        return view('admin.statistical.index', ['typenav' => $this->typenav]);
     }
     public function byProduct(Request $request)
     {

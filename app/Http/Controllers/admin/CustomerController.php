@@ -13,8 +13,9 @@ class CustomerController extends Controller
     {
         $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
             ->get()->toArray();
+           parent::__construct();
     }
-    public function index(Request $request)
+    public function index(Request $request)zzzz
     {
         $customers = User::with('Img')->get()->toArray();
         return view('admin.customers.index', ['typenav' => $this->typenav, 'customers' => $customers]);

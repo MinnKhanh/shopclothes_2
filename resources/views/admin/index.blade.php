@@ -84,7 +84,7 @@
                     <i class="fas fa-coins"></i>
                 </div>
                 <div class="card-footer d-flex align-items-center justify-content-center">
-                    <a class="text-white" href="/Admin/Revenue">
+                    <a class="text-white" href="{{ route('admin.statistical.index') }}">
                         Xem chi tiết
                         <i class="fas fa-arrow-alt-circle-right"></i>
                     </a>
