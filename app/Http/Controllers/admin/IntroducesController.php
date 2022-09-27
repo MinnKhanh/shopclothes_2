@@ -22,16 +22,19 @@ class IntroducesController extends Controller
     }
     public function banner(Request $request)
     {
-        return view('admin.introduce.banner', ['typenav' => $this->typenav]);
+        $main = Introduce::with('Img')->where('type', 2)->get()->toArray();
+        $discount = Introduce::with('Img')->where('type', 1)->get()->toArray();
+        return view('admin.introduce.banner', ['typenav' => $this->typenav, 'main' => $main, 'discount' => $discount]);
     }
-    public function editIntroDiscount(Request $request)
+    public function edit(Request $request)
     {
         $discount = Discount::get()->toArray();
-        return view('admin.introduce.edit', ['typenav' => $this->typenav, 'discount' => $discount, 'type' => 1, 'index' => $request->input('index')]);
-    }
-    public function editIntroMain(Request $request)
-    {
-        return view('admin.introduce.edit', ['typenav' => $this->typenav, 'type' => 2, 'index' => $request->input('index')]);
+        $index = 0;
+        if ($request->input('index'))
+            $index = $request->input('index');
+        else
+            $index = intval(Introduce::where('type', $request->input('type'))->get()->count()) + 1;
+        return view('admin.introduce.edit', ['typenav' => $this->typenav, 'discount' => $discount, 'type' => $request->input('type'), 'index' => $index]);
     }
     public function store(Request $request)
     {
@@ -40,7 +43,7 @@ class IntroducesController extends Controller
             'index' => 'required',
             'description' => 'required',
             'type' => 'required',
-            'photo' => 'required',
+            'photo' => $request->input('id') ? '' : 'required',
         ]);
         // dd($request->all());
         DB::beginTransaction();
@@ -56,6 +59,8 @@ class IntroducesController extends Controller
             $introduce->type = $request->input('type');
             if ($request->input('relate_id'))
                 $introduce->relate_id = $request->input('relate_id');
+            if ($request->input('link'))
+                $introduce->link = $request->input('link');
             $introduce->save();
             if ($request->file('photo')) {
                 $logo = optional($request->file('photo'))->store('public/introduct_img');
@@ -75,5 +80,15 @@ class IntroducesController extends Controller
             DB::rollBack();
             return Redirect::back()->withInput($request->input())->withErrors(['msg' => $e->getMessage()]);
         }
+    }
+    public function update(Request $request)
+    {
+        if ($request->input('id')) {
+            $discount = Discount::get()->toArray();
+            $introduce = Introduce::with('Img')->where('id', $request->input('id'))->get()->toArray()[0];
+            //dd($introduce);
+            return view('admin.introduce.edit', ['typenav' => $this->typenav, 'discount' => $discount, 'type' => $introduce['type'], 'index' => $introduce['index'], 'olddata' => $introduce, 'isedit' => 1]);
+        }
+        return Redirect::route('admin.introduce.banner');
     }
 }

@@ -11,7 +11,7 @@ class Introduce extends Model
     use HasFactory;
     public $timestamps = false;
     protected $fillable = [
-        'title', 'description', 'index', 'relate_id', 'type'
+        'title', 'description', 'index', 'relate_id', 'type', 'link'
     ];
     protected $table = 'introduces';
     public function Img()

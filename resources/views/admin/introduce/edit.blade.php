@@ -19,6 +19,9 @@
         @csrf
         <input type="text" name="type" class="d-none" value={{ $type }}>
         <input type="text" name="index" class="d-none" value={{ $index }}>
+        @if (isset($isedit))
+            <input type="text" name="id" class="d-none" value={{ $olddata['id'] }} />
+        @endif
         <div class="col-12">
             <h5 class="title position-relative text-dark text-uppercase mb-3">
                 <span class="bg-secondary pe-3">Thông tin chung</span>
@@ -37,7 +40,8 @@
                             <select name="relate_id" id="discount" class="form-control">
                                 <option value=0>--Chọn--</option>
                                 @forelse ($discount as $item)
-                                    <option {{ old('relate_id') == $item['id'] ? 'selected' : '' }}
+                                    <option
+                                        {{ isset($olddata) ? ($olddata['relate_id'] == $item['id'] ? 'selected' : '') : (old('relate_id') == $item['id'] ? 'selected' : '') }}
                                         value={{ $item['id'] }}>
                                         {{ $item['name'] }}</option>
                                 @empty
@@ -51,16 +55,25 @@
 
                     <div class="col-md-4 form-group">
                         <label>Tiêu Đề</label>
-                        <input name="title" id="title" class="form-control" value="{{ old('title') }}" />
+                        <input name="title" id="title" class="form-control"
+                            value="{{ isset($olddata) ? $olddata['title'] : old('title') }}" />
                         @if ($errors->has('title'))
                             <div class="error">{{ $errors->first('title') }}</div>
                         @endif
                     </div>
                     <div class="col-md-4 form-group">
                         <label>Mô Tả</label>
-                        <textarea name="description" class="form-control" id="description">{{ old('description') }}</textarea>
+                        <textarea name="description" class="form-control" id="description">{{ isset($olddata) ? $olddata['description'] : old('description') }}</textarea>
                         @if ($errors->has('description'))
                             <div class="error">{{ $errors->first('description') }}</div>
+                        @endif
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label>Link</label>
+                        <input name="link" id="link" class="form-control"
+                            value="{{ isset($olddata) ? $olddata['link'] : old('link') }}" />
+                        @if ($errors->has('link'))
+                            <div class="error">{{ $errors->first('link') }}</div>
                         @endif
                     </div>
                     <div class="col-md-4 form-group row mt-3">
@@ -73,7 +86,8 @@
                             @endif
                         </div>
                         <div class="col-md-4 form-group">
-                            <img style="width:100px; height:100%;" class="imgchange" id="imgdiscount" />
+                            <img style="width:100px; height:100%;" class="imgchange" id="imgdiscount"
+                                src="{{ asset('storage') . '/' . (isset($olddata['img'][0]) ? $olddata['img'][0]['path'] : '') }}" />
                         </div>
                     </div>
                     <div class="col-md-6">

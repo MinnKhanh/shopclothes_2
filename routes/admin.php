@@ -117,9 +117,9 @@ Route::group([
     'middleware' => 'checkadmin'
 ], static function () {
     Route::get('/banner', [IntroducesController::class, 'banner'])->name('banner');
-    Route::get('/edit-discont', [IntroducesController::class, 'editIntroDiscount'])->name('editdiscount');
-    Route::get('/edit-main', [IntroducesController::class, 'editIntroMain'])->name('editmain');
+    Route::get('/edit', [IntroducesController::class, 'edit'])->name('edit');
     Route::post('/store', [IntroducesController::class, 'store'])->name('store');
+    Route::get('/update', [IntroducesController::class, 'update'])->name('update');
 });
 Route::group([
     'as'     => 'statistical.',
