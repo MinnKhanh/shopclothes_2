@@ -98,50 +98,36 @@
             <div class="col-lg-12">
                 <div id="header-carousel" class="carousel slide carousel-fade mb-30 mb-lg-0" data-ride="carousel">
                     <ol class="carousel-indicators">
-                        <li data-target="#header-carousel" data-slide-to="0" class="active"></li>
-                        <li data-target="#header-carousel" data-slide-to="1"></li>
-                        <li data-target="#header-carousel" data-slide-to="2"></li>
+                        @php
+                            $i = 0;
+                        @endphp
+                        @foreach ($introduce as $item)
+                            <li data-target="#header-carousel" data-slide-to="{{ $i++ }}"
+                                class="{{ $loop->first ? 'active' : '' }}">
+                            </li>
+                        @endforeach
                     </ol>
                     <div class="carousel-inner">
-                        <div class="carousel-item position-relative active" style="height: 430px;">
-                            <img class="position-absolute w-100 h-100" src="img/carousel-1.jpg" style="object-fit: cover;">
-                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                                <div class="p-3" style="max-width: 700px;">
-                                    <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Men Fashion
-                                    </h1>
-                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
-                                        magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
-                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                        href="#">Shop Now</a>
+                        @forelse ($introduce as $item)
+                            <div class="carousel-item position-relative {{ $loop->first ? 'active' : '' }}"
+                                style="height: 430px;">
+                                <img class="position-absolute w-100 h-100"
+                                    src="{{ asset('storage') . '/' . (isset($item['img'][0]) ? $item['img'][0]['path'] : '') }}"
+                                    style="object-fit: cover;">
+                                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                                    <div class="p-3" style="max-width: 700px;">
+                                        <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">
+                                            {{ $item['title'] }}
+                                        </h1>
+                                        <p class="mx-md-5 px-5 animate__animated animate__bounceIn">
+                                            {{ $item['description'] }}</p>
+                                        <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
+                                            href="{{ route('product.index') }}">Mua Ngay</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="carousel-item position-relative" style="height: 430px;">
-                            <img class="position-absolute w-100 h-100" src="img/carousel-2.jpg" style="object-fit: cover;">
-                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                                <div class="p-3" style="max-width: 700px;">
-                                    <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Women
-                                        Fashion</h1>
-                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
-                                        magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
-                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                        href="#">Shop Now</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item position-relative" style="height: 430px;">
-                            <img class="position-absolute w-100 h-100" src="img/carousel-3.jpg" style="object-fit: cover;">
-                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                                <div class="p-3" style="max-width: 700px;">
-                                    <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Kids Fashion
-                                    </h1>
-                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
-                                        magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
-                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                        href="#">Shop Now</a>
-                                </div>
-                            </div>
-                        </div>
+                        @empty
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -232,10 +218,8 @@
                                     <a class="btn btn-outline-dark btn-square addpavorite" data-id={{ $item['id'] }}><i
                                             class="far fa-heart"></i></a>
                                 @endif
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-search"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
                             </div>
                         </div>
                         <div class="text-center py-4">
@@ -262,7 +246,23 @@
     <!-- Offer Start -->
     <div class="container-fluid pt-5 pb-3">
         <div class="row px-xl-5">
-            <div class="col-md-6">
+            @forelse ($discountshow as $item)
+                <div class="col-md-6">
+                    <div class="product-offer mb-30" style="height: 300px;">
+                        <img class="img-fluid"
+                            src="{{ asset('storage') . '/' . (isset($item['img'][0]) ? $item['img'][0]['path'] : '') }}"
+                            alt="">
+                        <div class="offer-text">
+                            <h6 class="text-white text-uppercase">Tiết Kiệm
+                                {{ $item['persent'] }}{{ $item['unit'] == 1 ? '%' : 'Đ' }}</h6>
+                            <h3 class="text-white mb-3">{{ $item['title'] }}</h3>
+                            <a href="{{ route('product.index') }}" class="btn btn-primary">Mua Ngay</a>
+                        </div>
+                    </div>
+                </div>
+            @empty
+            @endforelse
+            {{-- <div class="col-md-6">
                 <div class="product-offer mb-30" style="height: 300px;">
                     <img class="img-fluid" src="img/offer-1.jpg" alt="">
                     <div class="offer-text">
@@ -281,7 +281,7 @@
                         <a href="" class="btn btn-primary">Shop Now</a>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
     <!-- Offer End -->

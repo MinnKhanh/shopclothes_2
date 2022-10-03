@@ -18,4 +18,8 @@ class Introduce extends Model
     {
         return $this->morphMany(Img::class, 'product', 'type');
     }
+    public function Discount()
+    {
+        return $this->belongsTo(Discount::class, 'relate_id', 'id');
+    }
 }

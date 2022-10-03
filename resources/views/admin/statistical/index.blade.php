@@ -88,7 +88,17 @@
             <div class="col-12 collapse" id="categories" data-parent="#accordion">
                 <div class="d-flex">
                     <input id="begin_category" class="ml-2" type="date">
-                    <input id="endn_category" class="ml-2" type="date">
+                    <input id="end_category" class="ml-2" type="date">
+                </div>
+                <div class="d-flex mt-3">
+                    <select id="option-category" class="ml-2">
+                        <option value="soluong">Theo số lượng</option>
+                        <option value="doanhthu">Theo giá</option>
+                    </select>
+                    <select id="option-type" class="ml-2">
+                        <option value=1>Theo %</option>
+                        <option value=2>Theo thông số</option>
+                    </select>
                     <button id="showchart_category" class="btn btn-info ml-2" type="button">Hiển thị biểu đồ</button>
                 </div>
                 <figure class="highcharts-figure">
@@ -102,6 +112,12 @@
                 <div class="d-flex">
                     <input id="begin_product" class="ml-2" type="date">
                     <input id="end_product" class="ml-2" type="date">
+                </div>
+                <div class="d-flex mt-3">
+                    <select id="option-product" class="ml-2">
+                        <option value="soluong">Theo số lượng</option>
+                        <option value="doanhthu">Theo giá</option>
+                    </select>
                     <button id="showchart_product" class="btn btn-info ml-2" type="button">Hiển thị biểu đồ</button>
                 </div>
                 <figure class="highcharts-figure">
@@ -127,19 +143,22 @@
         $('#showchart_category').click(function() {
             let begin = $('#begin_category').val()
             let end = $('#end_category').val()
-            showChartbyCategories(begin, end)
+            let option = $('#option-category').val()
+            let type = $('#option-type').val()
+            showChartbyCategories(begin, end, option, type)
         })
         $('#showchart_product').click(function() {
             let begin = $('#begin_product').val()
             let end = $('#end_product').val()
-            showChartbyProduct(begin, end)
+            let option = $('#option-product').val()
+            showChartbyProduct(begin, end, option)
         })
 
-        showChartbyCategories()
 
-        function showChartbyCategories(begin, end) {
+        function showChartbyCategories(begin, end, option, type) {
             $.ajax({
-                url: "{{ route('admin.statistical.bycategories') }}?" + 'begin=' + begin + '&end=' + end,
+                url: "{{ route('admin.statistical.bycategories') }}?" + 'begin=' + begin + '&end=' + end +
+                    '&data=' + option + '&type=' + type,
                 type: 'GET',
                 success: function(response) {
                     const arrX = Object.values(response[0])
@@ -150,6 +169,7 @@
                         e['data'] = Object.values(e.data)
                         arrDetail.push(e)
                     });
+                    console.log('dau la category: ', arrX, arrDetail)
                     //  console.log(arrX)
                     // Create the chart
                     Highcharts.chart('chartcategory', {
@@ -176,7 +196,9 @@
                             series: {
                                 dataLabels: {
                                     enabled: true,
-                                    format: '{point.name}: {point.y:.1f}%'
+                                    format: '{point.name}: {point.y:.1f}' + (type == 1 ? '%' :
+                                        (option === 'doanhthu' ? 'Đ' :
+                                            'Sản phẩm'))
                                 }
                             }
                         },
@@ -208,12 +230,16 @@
 
         today = mm + '/' + dd + '/' + yyyy;
         document.write(today);
-        showChartbyProduct(today, today)
+        let option = $('#option-product').val()
+        showChartbyProduct(today, today, option)
+        option = $('#option-category').val()
+        let type = $('#option-type').val()
+        showChartbyCategories(today, today, option, type)
 
-        function showChartbyProduct(begin, end) {
+        function showChartbyProduct(begin, end, option) {
             $.ajax({
                 url: "{{ route('admin.statistical.byproduct') }}?" + 'begin=' + begin + '&end=' + end +
-                    '&data=soluong',
+                    '&data=' + option,
                 type: 'GET',
                 success: function(response) {
                     const arrX = Object.values(response[0])
@@ -259,7 +285,8 @@
                                 borderWidth: 0,
                                 dataLabels: {
                                     enabled: true,
-                                    format: '{point.y:.1f} Sản phẩm'
+                                    format: '{point.y:.1f} ' + (option === 'doanhthu' ? 'Đ' :
+                                        'Sản phẩm')
                                 }
                             }
                         },

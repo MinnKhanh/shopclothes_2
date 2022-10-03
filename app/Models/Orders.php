@@ -38,4 +38,12 @@ class Orders extends Model
     {
         return $this->belongsTo(Discount::class, 'discount', 'id');
     }
+    public function OrderDetail()
+    {
+        return $this->hasMany(OrderDetails::class, 'id_order', 'id');
+    }
+    public function Customers()
+    {
+        return $this->belongsTo(User::class, 'id_customer', 'id');
+    }
 }

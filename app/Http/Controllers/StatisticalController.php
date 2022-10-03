@@ -16,9 +16,9 @@ class StatisticalController extends Controller
 {
     public function __construct()
     {
-        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
-            ->get()->toArray();
-            parent::__construct();
+        // $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+        //     ->get()->toArray();
+        parent::__construct();
     }
     public function productCategories(Request $request)
     {
@@ -47,11 +47,11 @@ class StatisticalController extends Controller
                 'products.name',
                 DB::raw("IFNULL(DATE_FORMAT(hoadon.created_at, '%Y-%m-%d'),0) as NgayDatHang"),
                 DB::raw('IFNULL(sum(hoadon.quantity),0) as soluong'),
-                DB::raw('IFNULL(sum(hoadon.totalPrice),0) as doanhthu')
+                DB::raw('IFNULL(sum(hoadon.totalPrice-products.priceImport),0) as doanhthu')
             )
             ->get()->toArray();
         // dd($data);
-        $dataget = 'soluong';
+        $dataget = 'doanhthu';
         $dataget = $request->input('data') ? $request->input('data') : 'soluong';
         $itemsp = [];
         foreach ($data as $item) {
@@ -120,21 +120,29 @@ class StatisticalController extends Controller
                 'typecate.nametype',
                 'typecate.namecategory',
                 DB::raw('IFNULL(sum(hoadon.quantity),0) as soluong'),
-                DB::raw('IFNULL(sum(hoadon.totalPrice),0) as doanhthu')
+                DB::raw('IFNULL(sum(hoadon.totalPrice-products.priceImport),0) as doanhthu')
             )
-            ->get()->toArray();
-        $dataget = 'soluong';
-        // $dataget = $request->input('data') ? $request->input('data') : 'soluong';
+            ->get();
+
+        $dataget = 'doanhthu';
+        $dataget = $request->input('data') ? $request->input('data') : 'doanhthu';
+        $type = 1;
+        $type = $request->input('type') ? $request->input('type') : 1;
+        $sum = $data->sum($dataget);
+        $data = $data->toArray();
+        // dd($sum);
         $itemsp = [];
         foreach ($data as $item) {
             if (empty($itemsp[$item['nametype']])) {
                 $itemsp[$item['nametype']] = [
                     'name' => $item['nametype'],
-                    'y' => intval($item[$dataget]),
-                    'drilldown' => $item['nametype']
+                    'data' => intval($item[$dataget]),
+                    'drilldown' => $item['nametype'],
+                    'y' => $type == 1 ? ($sum != 0 ? (intval($item[$dataget]) / floatval($sum)) * 100 : 0) : intval($item[$dataget])
                 ];
             } else {
-                $itemsp[$item['nametype']]['y'] += $item[$dataget];
+                $itemsp[$item['nametype']]['data'] += $item[$dataget];
+                $itemsp[$item['nametype']]['y'] = ($type == 1 ? ($sum != 0 ? (intval($itemsp[$item['nametype']]['data']) / floatval($sum)) * 100 : 0) : $itemsp[$item['nametype']]['data']);
             }
         }
         $arr = [];
@@ -152,12 +160,12 @@ class StatisticalController extends Controller
                     0
                 ];
             }
-            foreach ($data as $item) {
-                $arr[$item['nametype']]['data'][$item['namecategory']] = [
-                    $item['namecategory'],
-                    floatval($item[$dataget])
-                ];
-            }
+        }
+        foreach ($data as $item) {
+            $arr[$item['nametype']]['data'][$item['namecategory']] = [
+                $item['namecategory'],
+                $type == 1 ?  (floatval($itemsp[$item['nametype']]['data']) != 0 ? (floatval($item[$dataget]) / floatval($itemsp[$item['nametype']]['data'])) * 100 : 0) : floatval($item[$dataget]),
+            ];
         }
         return [$itemsp, $arr];
     }

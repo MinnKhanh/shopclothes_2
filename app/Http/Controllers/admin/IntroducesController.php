@@ -7,6 +7,7 @@ use App\Models\Discount;
 use App\Models\Img;
 use App\Models\Introduce;
 use App\Models\Type;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -29,11 +30,11 @@ class IntroducesController extends Controller
     public function edit(Request $request)
     {
         $discount = Discount::get()->toArray();
-        $index = 0;
-        if ($request->input('index'))
-            $index = $request->input('index');
-        else
-            $index = intval(Introduce::where('type', $request->input('type'))->get()->count()) + 1;
+        $index = 1;
+        // if ($request->input('index'))
+        //     $index = $request->input('index');
+        // else
+        //     $index = intval(Introduce::where('type', $request->input('type'))->get()->count()) + 1;
         return view('admin.introduce.edit', ['typenav' => $this->typenav, 'discount' => $discount, 'type' => $request->input('type'), 'index' => $index]);
     }
     public function store(Request $request)
@@ -90,5 +91,19 @@ class IntroducesController extends Controller
             return view('admin.introduce.edit', ['typenav' => $this->typenav, 'discount' => $discount, 'type' => $introduce['type'], 'index' => $introduce['index'], 'olddata' => $introduce, 'isedit' => 1]);
         }
         return Redirect::route('admin.introduce.banner');
+    }
+    public function updateActive(Request $request)
+    {
+        try {
+            if (!$request->input('id') || !$request->input('status')) {
+                throw new Exception("Thay đổi thất bại", 30);
+            } else {
+                Introduce::where('id', $request->input('id'))->update([
+                    'active' => $request->input('status')
+                ]);
+            }
+        } catch (Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
     }
 }

@@ -20,7 +20,9 @@
                 @if ($errors->has('msg'))
                     <div class="error">{{ $errors->first('msg') }}</div>
                 @endif
-                <p class="text-center">Bạn chưa có tài khoản? <a href="{{ route('auth.register') }}"
+
+                <p class="text-center"><a href="{{ route('auth.sendconfirm') }}" class="text-primary">Quên
+                        mật khẩu</a>Bạn chưa có tài khoản? <a href="{{ route('auth.register') }}"
                         class="text-primary">Đăng ký</a></p>
 
             </div>

@@ -120,6 +120,7 @@ Route::group([
     Route::get('/edit', [IntroducesController::class, 'edit'])->name('edit');
     Route::post('/store', [IntroducesController::class, 'store'])->name('store');
     Route::get('/update', [IntroducesController::class, 'update'])->name('update');
+    Route::put('/update-active', [IntroducesController::class, 'updateActive'])->name('updateactive');
 });
 Route::group([
     'as'     => 'statistical.',

@@ -14,8 +14,8 @@ class TypeController extends Controller
 {
     public function __construct()
     {
-        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
-            ->get()->toArray();
+        // $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+        //     ->get()->toArray();
         parent::__construct();
     }
     public function getListType(Request $request)
@@ -74,6 +74,7 @@ class TypeController extends Controller
                 'img_index' => 1
             ]);
         }
+        SystemConfigController::removeCache();
         return redirect()->route('admin.type.index');
     }
     public function index(Request $request)
@@ -88,6 +89,7 @@ class TypeController extends Controller
         // $typenav = Type::with('Img', 'Categories')->withCount('Product')
         //     ->get()->toArray();
         $type  = $this->typenav[array_search($request->input('id'), array_column($this->typenav, 'id'))];
+        SystemConfigController::removeCache();
         return view('admin.types.createorupdate', ['idtype' => $request->input('id'), 'typenav' => $this->typenav, 'type' => $type, 'isedit' => 1]);
     }
     public function delete(Request $request)
@@ -102,5 +104,6 @@ class TypeController extends Controller
                 return response()->json(['success' => 'Xóa thành công'], 200);
             }
         }
+        SystemConfigController::removeCache();
     }
 }

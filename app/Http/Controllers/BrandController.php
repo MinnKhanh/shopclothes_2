@@ -16,9 +16,9 @@ class BrandController extends Controller
 {
     public function __construct()
     {
-        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
-            ->get()->toArray();
-            parent::__construct();
+        // $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+        //     ->get()->toArray();
+        parent::__construct();
     }
     public function index()
     {

@@ -9,10 +9,11 @@
 </head>
 
 <body>
-    <form action="{{ route('test.import') }}" method="POST" enctype="multipart/form-data">
+    <h3>{{ $messenger }}</h3>
+    <form action="{{ route('auth.resetpassword') }}" method="GET">
         @csrf
-        <input type="file" name="file">
-        <button>Submit</button>
+        <input type="text" value='{{ $email }}' style="display: none;" name='email'>
+        <button class="btn btn-primary mb-3">Go</button>
     </form>
 </body>
 

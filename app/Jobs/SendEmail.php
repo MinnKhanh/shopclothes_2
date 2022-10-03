@@ -14,17 +14,21 @@ use Illuminate\Support\Facades\Mail;
 class SendEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    protected $data;
+    protected $messenger;
     protected $users;
+    protected $type;
+    protected $email;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($data, $users)
+    public function __construct($messenger, $data = null, $type = 1, $email = '')
     {
+        $this->messenger = $messenger;
         $this->data = $data;
-        $this->users = $users;
+        $this->type = $type;
+        $this->email = $email;
     }
     /**
      * Execute the job.
@@ -33,8 +37,12 @@ class SendEmail implements ShouldQueue
      */
     public function handle()
     {
-        foreach ($this->users as $user) {
-            Mail::to($user->email)->send(new MailNotify($this->data));
+        if ($this->type == 1) {
+            foreach ($this->data as $user) {
+                Mail::to($user->email)->send(new MailNotify($this->messenger, $this->type, $this->data));
+            }
+        } else {
+            Mail::to($this->email)->send(new MailNotify($this->messenger, $this->type, $this->email));
         }
     }
 }

@@ -57,7 +57,7 @@
                         <a href="{{ route('admin.introduce.edit', ['type' => 2]) }}" type="submit"
                             class="btn btn-primary mb-3">Thêm</a>
                     </div>
-                    <table class="table">
+                    <table class="table table-bordered">
                         <thead class="thead-dark">
                             <tr class="text-center">
                                 <th scope="col">Ảnh</th>
@@ -94,6 +94,11 @@
                                                     d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
                                             </svg> Xóa
                                         </a>
+                                        <select name="" id="" class="change-active custom-select"
+                                            data-id={{ $item['id'] }}>
+                                            <option {{ $item['active'] == 1 ? 'selected' : '' }} value=0>Ẩn</option>
+                                            <option {{ $item['active'] == 2 ? 'selected' : '' }} value=1>Hiện</option>
+                                        </select>
                                     </td>
                                 </tr>
                             @empty
@@ -107,7 +112,7 @@
                         <a href="{{ route('admin.introduce.edit', ['type' => 1]) }}" type="submit"
                             class="btn btn-primary mb-3">Thêm</a>
                     </div>
-                    <table class="table">
+                    <table class="table table-bordered">
                         <thead class="thead-dark">
                             <tr class="text-center">
                                 <th scope="col">Ảnh</th>
@@ -144,6 +149,11 @@
                                                     d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
                                             </svg> Xóa
                                         </a>
+                                        <select name="" id="" class="change-active custom-select"
+                                            data-id={{ $item['id'] }}>
+                                            <option {{ $item['active'] == 1 ? 'selected' : '' }} value=0>Ẩn</option>
+                                            <option {{ $item['active'] == 2 ? 'selected' : '' }} value=1>Hiện</option>
+                                        </select>
                                     </td>
                                 </tr>
                             @empty
@@ -156,5 +166,30 @@
     </div>
 @endsection
 @push('js')
-    <script></script>
+    <script>
+        $('.change-active').click(function() {
+            let id = $(this).attr('data-id')
+            let status = $(this).val()
+            $.ajax({
+                url: "{{ route('admin.introduce.updateactive') }}",
+                type: 'PUT',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id: id,
+                    status: status
+                },
+                success: function(response) {
+
+                },
+                error: function(response) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Đã xảy ra lỗi',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            });
+        })
+    </script>
 @endpush

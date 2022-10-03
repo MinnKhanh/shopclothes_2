@@ -56,7 +56,14 @@
                                  </a>
                              </div>
                          @endif
-
+                         @if (auth()->check())
+                             <form action="{{ route('orders.index') }}" method="POST" class="nav-item">
+                                 @csrf
+                                 <input type="text" class="d-none" value="{{ auth()->user()->id }}" name="id">
+                                 <input type="submit" href="{{ route('orders.index') }}"
+                                     style="background: none;border: none;" class="nav-link" value="Hóa Đơn">
+                             </form>
+                         @endif
                      </div>
                      <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
                          <a href="{{ route('cart.index') }}" class="btn px-0 ml-3">

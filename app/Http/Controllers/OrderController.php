@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderTypeEnum;
 use App\Enums\StatusOrderEnum;
+use App\Exports\OrderExport;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\OrderUpdate;
 use App\Models\OrderDetails;
@@ -16,15 +17,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class OrderController extends Controller
 {
     public function __construct()
     {
-        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
-            ->get()->toArray();
-            parent::__construct();
+        // $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+        //     ->get()->toArray();
+        parent::__construct();
     }
     public function CreateOrder(OrderRequest $request)
     {
@@ -214,5 +216,15 @@ class OrderController extends Controller
             DB::rollBack();
             return response()->json(['error' => 'Xóa thất bại'], 404);
         }
+    }
+    public function Export(Request $request)
+    {
+        $data = Orders::with('OrderDetail', 'Customers')->where('id_user', $request->input('id'))->where('type', 1)->get();
+        $product = Products::join('product_detail', 'product_detail.id_product', 'products.id')->pluck('products.name', 'product_detail.id')->toArray();
+        // dd($product);
+        return Excel::download(new OrderExport(
+            $data,
+            $product
+        ), 'DanhSachHoaDon' . date('Y-m-d-His') . '.xlsx');
     }
 }

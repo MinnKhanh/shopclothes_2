@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SystemConfigController;
 use App\Http\Controllers\Testcontroller;
 use App\Http\Controllers\UserController;
 use App\Jobs\SendEmail;
@@ -69,7 +70,8 @@ Route::group([
     Route::delete('/deletedetail', [OrderController::class, 'deleteDetail'])->name('deletedetail');
     Route::post('/update-order', [OrderController::class, 'updateOrder'])->name('updateorder');
     Route::get('/reject', [OrderController::class, 'rejectUpdate'])->name('reject');
-    Route::get('/updatestatus', [OrderController::class, 'updateStatus'])->name('updatestatus');
+    Route::put('/updatestatus', [OrderController::class, 'updateStatus'])->name('updatestatus');
+    Route::get('/export', [OrderController::class, 'Export'])->name('export');
 });
 Route::group([
     'as'     => 'auth.',
@@ -82,6 +84,10 @@ Route::group([
     Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
     Route::get('/update-account', [AuthController::class, 'updateAccont'])->name('updateaccont');
     Route::post('/update', [AuthController::class, 'update'])->name('update');
+    Route::post('/send-confirm', [AuthController::class, 'sendConfirm'])->name('sendconfirm');
+    Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('resetpassword');
+    Route::get('/fogotpassword', [AuthController::class, 'forgotPassword'])->name('fogotpassword');
+    Route::post('/update-by-email', [AuthController::class, 'updateByEmail'])->name('updatebyemail');
 });
 Route::group([
     'as'     => 'user.',
@@ -95,9 +101,12 @@ Route::group([
     'as'     => 'test.',
     'prefix' => 'test',
 ], static function () {
-    Route::get('/', [Testcontroller::class, 'index']);
-    Route::get('/put', function () {
-        $user = User::where('id', 8)->get();
-        SendEmail::dispatch('chay ngay di', $user);
+    // Route::get('/', [Testcontroller::class, 'index'])->name('index');
+    // Route::post('/import', [Testcontroller::class, 'import'])->name('import');
+    Route::get('/', function () {
+        DB::enableQueryLog();
+        $configs = SystemConfigController::getAndCache();
+        // dd($configs['type']);
+        dd(DB::getQueryLog());
     })->name('put');
 });

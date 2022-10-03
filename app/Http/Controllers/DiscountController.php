@@ -14,8 +14,8 @@ class DiscountController extends Controller
 {
     public function __construct()
     {
-        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
-            ->get()->toArray();
+        // $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+        //     ->get()->toArray();
         parent::__construct();
     }
     public function index(Request $request)

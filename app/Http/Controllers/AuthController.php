@@ -17,8 +17,8 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
-            ->get()->toArray();
+        // $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
+        //     ->get()->toArray();
         parent::__construct();
     }
     public function login(Request $request)
@@ -97,5 +97,37 @@ class AuthController extends Controller
         } else {
             return Redirect::back()->withInput($request->input())->withErrors(['msg' => 'Thất bại, có thể sai mật khẩu hoặc tài khoản hãy thử lại']);
         }
+    }
+    public function updateByEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required',
+            'newpassword' => 'required',
+            'newpassword_confirmation' => 'required',
+        ]);
+        $password = Hash::make($request->input('newpassword'));
+        User::where('email', $request->input('email'))->update([
+            'password' => $password
+        ]);
+        return redirect()->route('auth.login');
+    }
+    public function forgotPassword(Request $request)
+    {
+        return view('auth.sendmailtoconfirm', ['typenav' => $this->typenav]);
+    }
+    public function sendConfirm(Request $request)
+    {
+        if ($request->input('email')) {
+            $count = User::where('email', $request->input('email'))->get()->count();
+            if ($count) {
+                SendEmail::dispatch('Vui lòng nhấn vào đây để lấy lại mật khẩu', null, 2, $request->input('email'));
+                return Redirect::route('index');
+            }
+        }
+        return Redirect::back()->withInput($request->input())->withErrors(['email' => 'Email không hợp lệ vui lòng nhập lại email bạn đã đăng kí trong tài khoản của bạn!']);
+    }
+    public function resetPassword(Request $request)
+    {
+        return view('auth.resetpassword', ['email' => $request->input('email'), 'typenav' => $this->typenav]);
     }
 }
