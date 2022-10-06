@@ -39,7 +39,7 @@ use App\Enums\StatusOrderEnum;
     <!-- Page Header Start -->
     <div class="container-fluid bg-secondary">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 100px">
-            <h1 class="font-weight-semi-bold text-uppercase">Hóa Đơn</h1>
+            <h1 class="font-weight-semi-bold text-uppercase">Hóa Đơn Nhập</h1>
         </div>
     </div>
     <div class="container-fluid bg-secondary">

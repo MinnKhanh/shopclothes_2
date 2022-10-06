@@ -53,6 +53,12 @@ class OrderController extends Controller
                     'status' => StatusOrderEnum::Processing,
                     'ship' => $request->input('ship')
                 ]);
+                if ($request->input('iddiscount')) {
+                    DB::table('discount_user')->insert([
+                        'id_customer' => auth()->user()->id,
+                        'id_discount' => $request->input('iddiscount')
+                    ]);
+                }
                 foreach ($cart->getProductInCart() as $item) {
                     $productsize = ProductSize::where('size', $item['productInfo']['idsize'])->where('id_productdetail', $item['productInfo']['idProductDetail'])->first();
 
@@ -82,8 +88,11 @@ class OrderController extends Controller
     }
     public function index(Request $request)
     {
-        $orders = Orders::where('id_customer', $request->input('id'))->where('type', OrderTypeEnum::OrderSell)->get()->toArray();
-        return view('orders.listorder', ['orders' => $orders, 'typenav' => $this->typenav]);
+        if ($request->input('id')) {
+            $orders = Orders::where('id_customer', $request->input('id'))->where('type', OrderTypeEnum::OrderSell)->get()->toArray();
+            return view('orders.listorder', ['orders' => $orders, 'typenav' => $this->typenav, 'iduser' => $request->input('id')]);
+        }
+        return Redirect::route('index');
     }
     public function OrderDetail(Request $request)
     {
@@ -142,7 +151,7 @@ class OrderController extends Controller
                 ->join('size', 'size.id', 'product_size.size')
                 ->join('imgs', 'imgs.product_id', 'product_detail.id')->where('img_index', 1)
                 ->select('order_details.quantity', 'order_details.id_order', 'order_details.id_product', 'order_details.totalPrice', 'order_details.size', 'products.name', 'imgs.path', DB::raw('color.name as colorname'), DB::raw('size.name as sizename'))->get()->toArray();
-            return view('orders.updateorder', ['order' => $order, 'orderdetail' => $orderdetail, 'id' => $id, 'typenav' => $this->typenav]);
+            return view('orders.updateorder', ['iduser' => $request->input('iduser'), 'order' => $order, 'orderdetail' => $orderdetail, 'id' => $id, 'typenav' => $this->typenav]);
         }
     }
     public function deleteDetail(Request $request)
@@ -186,7 +195,7 @@ class OrderController extends Controller
                 'ship' => $request->input('ship')
             ]);
             DB::commit();
-            return Redirect::route('orders.index');
+            return Redirect::route('orders.redirecttolist', ['id' => $request->input('iduser')]);
         } catch (Throwable $e) {
             DB::rollBack();
             return Redirect::back()->withInput($request->input())->withErrors(['msg' => 'Cập nhật thất bại vui lòng thử lại']);
@@ -194,7 +203,7 @@ class OrderController extends Controller
     }
     public function rejectUpdate(Request $request)
     {
-        return redirect()->route('orders.index');
+        return redirect()->route('orders.redirecttolist', ['id' => $request->input('id')]);
     }
     public function updateStatus(Request $request)
     {
@@ -226,5 +235,9 @@ class OrderController extends Controller
             $data,
             $product
         ), 'DanhSachHoaDon' . date('Y-m-d-His') . '.xlsx');
+    }
+    public function redirectToList(Request $request)
+    {
+        return view('orders.redirect', ['id' => $request->input('id'), 'typenav' => $this->typenav]);
     }
 }

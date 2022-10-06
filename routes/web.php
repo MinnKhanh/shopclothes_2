@@ -66,12 +66,13 @@ Route::group([
     Route::post('/', [OrderController::class, 'index'])->name('index');
     Route::get('/detail', [OrderController::class, 'OrderDetail'])->name('detail');
     Route::delete('/delete', [OrderController::class, 'delete'])->name('delete');
-    Route::get('/updateinfor/{id}', [OrderController::class, 'updateInfor'])->name('updateinfor');
+    Route::post('/updateinfor/{id}', [OrderController::class, 'updateInfor'])->name('updateinfor');
     Route::delete('/deletedetail', [OrderController::class, 'deleteDetail'])->name('deletedetail');
     Route::post('/update-order', [OrderController::class, 'updateOrder'])->name('updateorder');
     Route::get('/reject', [OrderController::class, 'rejectUpdate'])->name('reject');
     Route::put('/updatestatus', [OrderController::class, 'updateStatus'])->name('updatestatus');
     Route::get('/export', [OrderController::class, 'Export'])->name('export');
+    Route::get('/redirect-to-list', [OrderController::class, 'redirectToList'])->name('redirecttolist');
 });
 Route::group([
     'as'     => 'auth.',

@@ -47,7 +47,7 @@ Route::group([
     Route::delete('/removesize', [ProductController::class, 'removeSize'])->name('removesize');
     Route::post('/changesize', [ProductController::class, 'changeSize'])->name('changesize');
     Route::get('/changstatus', [ProductController::class, 'changStatus'])->name('changstatus');
-    Route::post('/delete', [ProductController::class, 'delete'])->name('delete');
+    Route::delete('/delete', [ProductController::class, 'delete'])->name('delete');
 });
 Route::group([
     'as'     => 'type.',
@@ -109,7 +109,7 @@ Route::group([
     Route::get('/', [CustomerController::class, 'index'])->name('index');
     Route::get('/create', [CustomerController::class, 'create'])->name('create');
     Route::post('/store', [CustomerController::class, 'store'])->name('store');
-    Route::post('/deleteCustomer', [CustomerController::class, 'deletecustomer'])->name('deletecustomer');
+    Route::delete('/deleteCustomer', [CustomerController::class, 'deletecustomer'])->name('deletecustomer');
 });
 Route::group([
     'as'     => 'introduce.',

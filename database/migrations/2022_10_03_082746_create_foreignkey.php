@@ -13,29 +13,25 @@ class CreateForeignkey extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->foreign('id_user')->references('id')->on('users');
-            $table->foreign('id_customer')->references('id')->on('users');
-        });
-        Schema::table('order_details', function (Blueprint $table) {
-            $table->foreign('id_order')->references('id')->on('orders');
-            $table->foreign('id_product')->references('id')->on('product_detail');
-        });
-        Schema::table('products', function (Blueprint $table) {
-            $table->foreign('category')->references('id')->on('categories');
-            $table->foreign('type')->references('id')->on('type');
-            $table->foreign('brand')->references('id')->on('brands');
-            $table->foreign('supplier')->references('id')->on('suppliers');
-        });
-        Schema::table('product_detail', function (Blueprint $table) {
-            $table->foreign('id_product')->references('id')->on('products');
-            $table->foreign('id_color')->references('id')->on('color');
-        });
-        Schema::table('product_detail', function (Blueprint $table) {
-            $table->foreign('id_productdetail')->references('id')->on('product_detail');
-            $table->foreign('size')->references('id')->on('size');
-        });
-        Schema::table('product_detail', function (Blueprint $table) {
+        // Schema::table('orders', function (Blueprint $table) {
+        //     $table->foreign('id_user')->references('id')->on('users');
+        //     $table->foreign('id_customer')->references('id')->on('users');
+        // });
+        // Schema::table('order_details', function (Blueprint $table) {
+        //     $table->foreign('id_order')->references('id')->on('orders');
+        //     $table->foreign('id_product')->references('id')->on('product_detail');
+        // });
+        // Schema::table('products', function (Blueprint $table) {
+        //     $table->foreign('category')->references('id')->on('categories');
+        //     $table->foreign('type')->references('id')->on('type');
+        //     $table->foreign('brand')->references('id')->on('brands');
+        //     $table->foreign('supplier')->references('id')->on('suppliers');
+        // });
+        // Schema::table('product_detail', function (Blueprint $table) {
+        //     $table->foreign('id_product')->references('id')->on('products');
+        //     $table->foreign('id_color')->references('id')->on('color');
+        // });
+        Schema::table('product_size', function (Blueprint $table) {
             $table->foreign('id_productdetail')->references('id')->on('product_detail');
             $table->foreign('size')->references('id')->on('size');
         });

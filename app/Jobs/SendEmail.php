@@ -18,17 +18,19 @@ class SendEmail implements ShouldQueue
     protected $users;
     protected $type;
     protected $email;
+    protected $token;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($messenger, $data = null, $type = 1, $email = '')
+    public function __construct($messenger, $data = null, $type = 1, $email = '', $token = '')
     {
         $this->messenger = $messenger;
         $this->data = $data;
         $this->type = $type;
         $this->email = $email;
+        $this->token = $token;
     }
     /**
      * Execute the job.
@@ -39,10 +41,10 @@ class SendEmail implements ShouldQueue
     {
         if ($this->type == 1) {
             foreach ($this->data as $user) {
-                Mail::to($user->email)->send(new MailNotify($this->messenger, $this->type, $this->data));
+                Mail::to($user->email)->send(new MailNotify($this->messenger, $this->type, $this->data, $this->token));
             }
         } else {
-            Mail::to($this->email)->send(new MailNotify($this->messenger, $this->type, $this->email));
+            Mail::to($this->email)->send(new MailNotify($this->messenger, $this->type, $this->email, $this->token));
         }
     }
 }

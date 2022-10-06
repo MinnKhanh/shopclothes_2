@@ -19,7 +19,7 @@
         @csrf
         <div class="col-12">
             <h5 class="title position-relative text-dark text-uppercase mb-3">
-                <span class="bg-secondary pe-3">Thông tin chung</span>
+                <span class="bg-secondary pe-3">Nhập</span>
             </h5>
             <div class="bg-light p-30">
                 @if ($errors->has('msg'))

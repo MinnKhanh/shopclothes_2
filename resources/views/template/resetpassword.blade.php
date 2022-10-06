@@ -11,8 +11,8 @@
 <body>
     <h3>{{ $messenger }}</h3>
     <form action="{{ route('auth.resetpassword') }}" method="GET">
-        @csrf
         <input type="text" value='{{ $email }}' style="display: none;" name='email'>
+        <input type="text" value='{{ $token }}' style="display: none;" name='token'>
         <button class="btn btn-primary mb-3">Go</button>
     </form>
 </body>

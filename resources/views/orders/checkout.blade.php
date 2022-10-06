@@ -117,45 +117,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="collapse mb-5" id="shipping-address">
-                    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Shipping Address</span></h5>
-                    <div class="bg-light p-30">
-                     <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label>Name</label>
-                            <input class="form-control" name="name" type="text" placeholder="John">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Phone</label>
-                            <input class="form-control" name="phone" type="text" placeholder="Doe">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>E-mail</label>
-                            <input class="form-control" name="email" type="text" placeholder="example@email.com">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Address</label>
-                            <input class="form-control" name="address" type="text" placeholder="+123 456 789">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Note</label>
-                            <textarea class="form-control" name="note" type="text" placeholder="123 Street"></textarea>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Country</label>
-                            <input class="form-control" name="country" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>City</label>
-                            <input class="form-control" name="city" type="text" placeholder="New York">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>District</label>
-                            <input class="form-control" name="district" type="text" placeholder="New York">
-                        </div>
-                    </div>
-                    </div>
-                </div> --}}
+
             </div>
             <div class="col-4">
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Order
@@ -172,14 +134,6 @@
                         @empty
                         @endforelse
 
-                        {{-- <div class="d-flex justify-content-between">
-                            <p>Product Name 2</p>
-                            <p>$150</p>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <p>Product Name 3</p>
-                            <p>$150</p>
-                        </div> --}}
                     </div>
                     <div class="mb-30 mt-3 border-bottom" action="">
                         <div class="input-group">
@@ -206,6 +160,7 @@
                         <div class="d-flex justify-content-between mt-3">
                             <h6 class="font-weight-medium">Discount</h6>
                             <input id="discount" class="d-none" name="discount" value=0>
+                            <input id="iddiscount" class="d-none" name="iddiscount" value=0>
                             <h6 class="font-weight-medium "><span class="discount">0</span>Đ</h6>
                         </div>
                     </div>
@@ -255,6 +210,7 @@
 @endsection
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.all.min.js"></script>
     <script>
         var district = null
         $('.applydiscount').click(function() {
@@ -267,19 +223,32 @@
                         code: $('.inputdiscont').val(),
                     },
                     success: function(response) {
-                        console.log(response)
                         let total
-                        if (response[1] == 1) {
-                            $('.discount').text(Intl.NumberFormat('en-VN').format(parseFloat($(
-                                '#subtotal').val()) * (response[0]) / 100))
-                            $('#discount').val(parseFloat($('#subtotal').val()) * (response[0]) / 100)
-                            total = (parseFloat($('#subtotal').val()) * (100 - response[0]) / 100) -
-                                parseFloat($('.ship').text())
+                        if (response[2]) {
+                            if (response[1] == 1) {
+                                $('.discount').text(Intl.NumberFormat('en-VN').format(parseFloat($(
+                                    '#subtotal').val()) * (response[0]) / 100))
+                                $('#discount').val(parseFloat($('#subtotal').val()) * (response[0]) /
+                                    100)
+                                total = (parseFloat($('#subtotal').val()) * (100 - response[0]) / 100) -
+                                    parseFloat($('.ship').text())
+
+                            } else {
+                                $('.discount').text(response[0])
+                                $('#discount').val(response[0])
+                                total = parseFloat($('#subtotal').val()) - parseFloat(response[0]) -
+                                    parseFloat($('.ship').text())
+
+                            }
+                            $('#iddiscount').val(response[2])
+                            console.log('vao day ma sai rooif')
                         } else {
-                            $('.discount').text(response[0])
-                            $('#discount').val(response[0])
-                            total = parseFloat($('#subtotal').val()) - parseFloat(response[0]) -
-                                parseFloat($('.ship').text())
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Mã không tồn tại hoặc đã được dùng',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
                         }
                         console.log(total)
                         $('.total').text(total)

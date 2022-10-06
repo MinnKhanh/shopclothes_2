@@ -117,8 +117,9 @@ class CartController extends Controller
     {
         if ($request->input('code')) {
             $data = Discount::where('code', $request->input('code'))->first();
+            $count = DB::table('discount_user')->where('id_customer', auth()->user()->id)->where('id_discount', $data->id)->count();
             //  dd($data);
-            return $data ? [$data->persent, $data->unit] : 0;
+            return $data && !$count ? [$data->persent, $data->unit, $data->id] : 0;
         }
     }
     public function checkout(Request $request)

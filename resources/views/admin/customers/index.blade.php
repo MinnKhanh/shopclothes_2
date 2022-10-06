@@ -82,7 +82,7 @@
                                                 <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
                                                 <path
                                                     d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
-                                            </svg> Chỉnh sửa thông tin
+                                            </svg> Sửa
                                         </button>
                                     </form>
                                     <button type="button" class="btn btn-danger btn-sm mb-2 d-block buttonchange remove"
@@ -91,7 +91,7 @@
                                             fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                                             <path
                                                 d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                                        </svg> Xóa tài khoản
+                                        </svg> Xóa
                                     </button>
                                     <form action="{{ route('orders.index') }}" method="Post">
                                         @csrf
@@ -121,10 +121,12 @@
     <script>
         $('.remove').click(function() {
             let id = $(this).attr('data-id')
+            let ele = $(this)
             $.ajax({
                 type: "DELETE",
                 url: "{{ route('admin.customers.deletecustomer') }}",
                 data: {
+                    "_token": "{{ csrf_token() }}",
                     id: id
                 }, // serializes the form's elements.
                 success: function(data) {
@@ -134,10 +136,11 @@
                         showConfirmButton: false,
                         timer: 1500
                     })
+                    ele.parent().parent().remove()
                 },
                 error: function(data) {
                     Swal.fire({
-                        icon: 'success',
+                        icon: 'error',
                         title: 'Xóa thất bại',
                         showConfirmButton: false,
                         timer: 1500

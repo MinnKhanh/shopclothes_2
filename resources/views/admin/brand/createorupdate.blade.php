@@ -15,7 +15,7 @@
     <div class="row px-xl-3">
         <div class="col-12">
             <h5 class="title position-relative text-dark text-uppercase mb-3">
-                <span class="bg-secondary pe-3">Danh sách phân loại</span>
+                <span class="bg-secondary pe-3">Thông tin nhãn hàng</span>
             </h5>
             @if ($errors->has('msg'))
                 <div class="error">{{ $errors->first('msg') }}</div>

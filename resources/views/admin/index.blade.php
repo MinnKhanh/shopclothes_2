@@ -125,7 +125,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xxl-3 col-sm-4 col-12">
+        {{-- <div class="col-xxl-3 col-sm-4 col-12">
             <div class="card bg-info text-white">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div class="card-body__info">
@@ -141,13 +141,13 @@
                     </a>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-xxl-3 col-sm-4 col-12">
             <div class="card bg-success text-white">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div class="card-body__info">
-                        <h4>Import</h4>
-                        <span>Nhập Hàng</span>
+                        <h4>Introduce</h4>
+                        <span>Giơi Thiệu</span>
                     </div>
                     <i class="fas fa-coins"></i>
                 </div>

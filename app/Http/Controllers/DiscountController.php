@@ -82,7 +82,7 @@ class DiscountController extends Controller
             return Redirect::route('admin.discount.index');
         } catch (Throwable $e) {
             DB::rollBack();
-            dd($e);
+            // dd($e);
             return Redirect::back()->withInput($request->input())->withErrors(['msg' => $e->getMessage()]);
         }
     }

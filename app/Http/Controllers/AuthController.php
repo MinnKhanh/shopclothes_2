@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ChangePassAccountRequest;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Jobs\SendEmail;
 use App\Models\Type;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -26,7 +29,7 @@ class AuthController extends Controller
         $loginPath  = url('auth/register');
         $previous   = url()->previous();
         $myPath = url('/');
-        if ($previous == $loginPath || $previous == url('auth/') || $previous == url('auth/update-account')) {
+        if ($previous == $loginPath || $previous == url('auth/') || $previous == url('auth/update-account') || $previous == url('auth/reset-password') || $previous == url('auth/update-by-email')) {
             session(['link' => $myPath]);
         } else {
             session(['link' => $previous]);
@@ -71,9 +74,10 @@ class AuthController extends Controller
     {
         return 'username';
     }
-    public function signin(Request $request)
+    public function signin(LoginRequest $request)
     {
-        if (Auth::attempt(['username' => $request->input('email'), 'password' => $request->password])) {
+        $remember = $request->input('remember') ? true : false;
+        if (Auth::attempt(['username' => $request->input('email'), 'password' => $request->password], $remember)) {
             return redirect(session('link'));
         } else
             return Redirect::back()->withErrors(['msg' => 'Đăng nhập thất bại, có thể bạn đã nhập sai tài khoản hoặc mật khẩu vui lòng thử lại']);
@@ -104,15 +108,33 @@ class AuthController extends Controller
             'email' => 'required',
             'newpassword' => 'required',
             'newpassword_confirmation' => 'required',
+            'token_email' => 'required'
         ]);
-        $password = Hash::make($request->input('newpassword'));
-        User::where('email', $request->input('email'))->update([
-            'password' => $password
-        ]);
-        return redirect()->route('auth.login');
+        DB::beginTransaction();
+        try {
+            $exit = 0;
+            $exit = DB::table('password_resets')->where('token', $request->input('token_email'))->where('email', $request->input('email'))->count();
+            if ($exit) {
+                $password = Hash::make($request->input('newpassword'));
+                DB::enableQueryLog();
+                User::where('email', $request->input('email'))->update([
+                    'password' => $password
+                ]);
+                DB::table('password_resets')->where('token', $request->input('token_email'))->where('email', $request->input('email'))->delete();
+                // dd(User::where('email', $request->input('email'))->get()->toArray());
+                DB::commit();
+                return redirect()->route('auth.login');
+            } else {
+                throw new Exception("Thay đổi thất bại", 30);
+            }
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return Redirect::back()->withInput($request->input())->withErrors(['msg' => 'Thay đổi thất bại']);
+        }
     }
     public function forgotPassword(Request $request)
     {
+        //   dd(md5('kkk' . now()));
         return view('auth.sendmailtoconfirm', ['typenav' => $this->typenav]);
     }
     public function sendConfirm(Request $request)
@@ -120,7 +142,12 @@ class AuthController extends Controller
         if ($request->input('email')) {
             $count = User::where('email', $request->input('email'))->get()->count();
             if ($count) {
-                SendEmail::dispatch('Vui lòng nhấn vào đây để lấy lại mật khẩu', null, 2, $request->input('email'));
+                $token = md5($request->input('email') . now());
+                DB::table('password_resets')->insert([
+                    'email' => $request->input('email'),
+                    'token' => $token
+                ]);
+                SendEmail::dispatch('Vui lòng nhấn vào đây để lấy lại mật khẩu', null, 2, $request->input('email'), $token);
                 return Redirect::route('index');
             }
         }
@@ -128,6 +155,6 @@ class AuthController extends Controller
     }
     public function resetPassword(Request $request)
     {
-        return view('auth.resetpassword', ['email' => $request->input('email'), 'typenav' => $this->typenav]);
+        return view('auth.resetpassword', ['email' => $request->input('email'), 'typenav' => $this->typenav, 'token' => $request->input('token')]);
     }
 }

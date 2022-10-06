@@ -24,7 +24,7 @@
                         <input type="text" class="d-none" name="id" value={{ $isedit }}>
                     @endif
                     <div class="row col-12">
-                        <div class="col-md-6 form-group mb-4">
+                        <div class="col-md-12 form-group mb-4">
                             <label>Mã</label>
                             <input class="form-control shadow-none rounded-0" id="code" type="text" name="code"
                                 value={{ isset($discount) ? $discount['code'] : '' }}>
@@ -32,7 +32,7 @@
                                 <div class="error">{{ $errors->first('code') }}</div>
                             @endif
                         </div>
-                        <div class="col-md-6 form-group mb-4">
+                        <div class="col-md-6 form-group mb-4 d-none">
                             <label>Loại</label>
                             <select class="form-control shadow-none rounded-0" id="type" name="type">
                                 @forelse (DiscountTypeEnum::getValues() as $item)
@@ -134,5 +134,20 @@
     </div>
 @endsection
 @push('js')
-    <script></script>
+    <script>
+        var upload_img = '';
+        $(".file-img").change(function() {
+            let img = $(this).val()
+            let e = $(this)
+            console.log(img)
+            const reader = new FileReader();
+            reader.addEventListener("load", function() {
+                upload_img = reader.result;
+                console.log(upload_img)
+                $('.imgchange').attr("src", upload_img)
+            })
+            reader.readAsDataURL(this.files[0])
+            console.log($(this).val())
+        })
+    </script>
 @endpush

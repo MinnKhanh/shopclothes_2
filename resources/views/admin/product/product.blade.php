@@ -1,5 +1,6 @@
 @extends('layout.master')
 @push('css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .img {
             width: 100px;
@@ -45,8 +46,8 @@
                                 <td>{{ number_format($item['priceSell'], 0, ',', ',') }} Đ</td>
                                 <td> {{ $item['type_product']['name'] }}</td>
                                 <td class="align-middle d-flex flex-column">
-                                    <a href="{{ route('admin.product.createdetail', ['id' => $item['id']]) }}" type="button"
-                                        class="btn btn-primary btn-sm shadow-none rounded-0 mb-2">
+                                    <a href="{{ route('admin.product.createdetail', ['id' => $item['id']]) }}"
+                                        type="button" class="btn btn-primary btn-sm shadow-none rounded-0 mb-2">
                                         <i class="fas fa-plus me-2"></i>Thêm phân loại
                                     </a>
                                     <div>
@@ -88,6 +89,8 @@
     </div>
 @endsection
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.all.min.js"></script>
     <script>
         $('.changestatus').click(function() {
             let status = $(this).attr('data-status')
@@ -141,7 +144,7 @@
                         showConfirmButton: false,
                         timer: 1500
                     })
-                    ele.parent().parent().remove()
+                    ele.parent().parent().parent().remove()
                 },
                 error: function(response) {
                     Swal.fire({

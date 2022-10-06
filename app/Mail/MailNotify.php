@@ -13,16 +13,18 @@ class MailNotify extends Mailable
     protected $messenger;
     protected $type;
     protected $data;
+    protected $token;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($messenger, $type, $data)
+    public function __construct($messenger, $type, $data, $token)
     {
         $this->messenger = $messenger;
         $this->type = $type;
         $this->data = $data;
+        $this->token = $token;
     }
 
     /**
@@ -32,6 +34,6 @@ class MailNotify extends Mailable
      */
     public function build()
     {
-        return $this->from('khanh0704495681@gmail.com')->view($this->type == 1 ? 'template.email' : 'template.resetpassword', ['messenger' => $this->messenger, 'email' => $this->data]);
+        return $this->from('khanh0704495681@gmail.com')->view($this->type == 1 ? 'template.email' : 'template.resetpassword', ['messenger' => $this->messenger, 'email' => $this->data, 'token' => $this->token]);
     }
 }

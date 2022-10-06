@@ -610,7 +610,7 @@
                 success:  function(response) {
                     Swal.fire({
                     icon: 'success',
-                    title: 'Thêm thành công',
+                    title: 'Xóa thành công',
                     showConfirmButton: false,
                     timer: 1500
                     })
@@ -691,7 +691,7 @@
    })
    function resetValueColor(id,quantity,sizes){
     //console.log(response[1][0].sum)
-                $('.quantity'+id).text(quantity)
+                $('.quantity'+id).text(quantity?quantity:0)
                 let listsize=''
                 let i=true;
                 sizes.forEach(element => {
@@ -703,7 +703,7 @@
                     }
                     
                 });
-                $('.size'+id).text(listsize)
+                $('.size'+id).text(listsize?listsize:'Chưa Có Size')
    }
       
    function successAddSize(response){

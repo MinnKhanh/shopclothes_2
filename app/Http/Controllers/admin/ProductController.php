@@ -30,7 +30,7 @@ class ProductController extends Controller
     {
         $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
             ->get()->toArray();
-            parent::__construct();
+        parent::__construct();
     }
     public function index()
     {
@@ -299,10 +299,19 @@ class ProductController extends Controller
         $request->validate([
             'id' => 'required'
         ]);
-        if ($request->input('id')) {
-            Products::where('id', $request->input('id'))->delete();
-            return response()->json(['success' => "Xóa thành công"], 200);
+        DB::beginTransaction();
+        try {
+            if ($request->input('id')) {
+                Products::where('id', $request->input('id'))->delete();
+                $iddetail = ProductDetail::where('id_product', $request->input('id'))->get()->toArray();
+                ProductDetail::where('id_product', $request->input('id'))->delete();
+                ProductSize::whereIn('id_productdetail', $iddetail)->delete();
+                DB::commit();
+                return response()->json(['success' => "Xóa thành công"], 200);
+            }
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return response()->json(['eror' => "Xóa thất bại"], 400);
         }
-        return response()->json(['eror' => "Xóa thất bại"], 400);
     }
 }
