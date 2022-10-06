@@ -36,8 +36,8 @@
                             <tr>
                                 <td class="align-middle"><img src={{ asset('storage/' . $item['productInfo']['img']) }}
                                         alt="" style="width: 50px;"> {{ $item['productInfo']['name'] }}</td>
-                                <td>{{ $item['productInfo']['namecolor'] }}</td>
-                                <td>{{ $item['productInfo']['namesize'] }}</td>
+                                <td class="align-middle">{{ $item['productInfo']['namecolor'] }}</td>
+                                <td class="align-middle">{{ $item['productInfo']['namesize'] }}</td>
                                 <td class="align-middle">{{ $item['productInfo']['price'] }}</td>
                                 <td class="align-middle">
                                     <div class="input-group quantity mx-auto" style="width: 100px;">

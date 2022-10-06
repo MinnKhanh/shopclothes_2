@@ -117,14 +117,19 @@ class CartController extends Controller
     {
         if ($request->input('code')) {
             $data = Discount::where('code', $request->input('code'))->first();
-            $count = DB::table('discount_user')->where('id_customer', auth()->user()->id)->where('id_discount', $data->id)->count();
+            $count = DB::table('discount_user')->where('id_customer', auth()->user()->id)->where('id_discount', $data->id)->where('use', 0)->count();
             //  dd($data);
-            return $data && !$count ? [$data->persent, $data->unit, $data->id] : 0;
+            return $data && $count ? [$data->persent, $data->unit, $data->id] : 0;
         }
     }
     public function checkout(Request $request)
     {
         $cart = Session('cart') ? Session('cart') : null;
-        return view('orders.checkout', ['typenav' => $this->typenav, 'cart' => $cart]);
+        $listdiscount = DB::table('discount_user')->join('discount', 'discount.id', 'discount_user.id_discount')
+            ->whereDate('begin', '<=', date('Y-m-d'))->whereDate('end', '>=', date('Y-m-d'))
+            ->where('use', 0)
+            ->select('discount_user.id_customer', 'discount.id', 'discount.code', 'discount.name')->get()->toArray();
+        //dd($listdiscount);
+        return view('orders.checkout', ['typenav' => $this->typenav, 'cart' => $cart, 'listdiscount' => $listdiscount]);
     }
 }

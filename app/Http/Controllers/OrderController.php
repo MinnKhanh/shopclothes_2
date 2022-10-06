@@ -54,9 +54,8 @@ class OrderController extends Controller
                     'ship' => $request->input('ship')
                 ]);
                 if ($request->input('iddiscount')) {
-                    DB::table('discount_user')->insert([
-                        'id_customer' => auth()->user()->id,
-                        'id_discount' => $request->input('iddiscount')
+                    DB::table('discount_user')->where('id_customer', auth()->user()->id)->where('id_discount', $request->input('iddiscount'))->update([
+                        'use' => 1
                     ]);
                 }
                 foreach ($cart->getProductInCart() as $item) {

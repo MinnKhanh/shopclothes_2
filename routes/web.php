@@ -105,9 +105,9 @@ Route::group([
     // Route::get('/', [Testcontroller::class, 'index'])->name('index');
     // Route::post('/import', [Testcontroller::class, 'import'])->name('import');
     Route::get('/', function () {
-        DB::enableQueryLog();
-        $configs = SystemConfigController::getAndCache();
-        // dd($configs['type']);
-        dd(DB::getQueryLog());
+        $listdiscount = DB::table('discount_user')->join('discount', 'discount.id', 'discount_user.id_discount')
+            ->whereDate('begin', '<=', date('Y-m-d'))->whereDate('end', '>=', date('Y-m-d'))->get()->toArray();
+        // ->select('discount_user.id_customer', 'discount.id', 'discount.code', 'discount.name')->get()->toArray();
+        dd($count = DB::table('discount_user')->where('id_customer', auth()->user()->id)->where('id_discount', 2)->where('use', 0)->count());
     })->name('put');
 });

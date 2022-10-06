@@ -135,12 +135,19 @@
                         @endforelse
 
                     </div>
-                    <div class="mb-30 mt-3 border-bottom" action="">
+                    <div class="mb-30 mt-3 pb-1 border-bottom" action="">
                         <div class="input-group">
-                            <input type="text" class="form-control border-0 p-4 inputdiscont" placeholder="Coupon Code">
                             <div class="input-group-append">
                                 <button class="btn btn-primary applydiscount" type="button">Apply Coupon</button>
                             </div>
+                            <select class="form-control inputdiscont rounded ml-1">
+                                <option value="">--Không sử dụng--</option>
+                                @forelse ($listdiscount as $itemdiscount)
+                                    <option value="{{ $itemdiscount->code }}">{{ $itemdiscount->name }}</option>
+                                @empty
+                                @endforelse
+                            </select>
+
                         </div>
                     </div>
                     <div class="border-bottom pt-3 pb-2">
@@ -155,7 +162,8 @@
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
                             <input type="text" class="d-none" name="ship" value=10000>
-                            <h6 class="font-weight-medium "><span class="ship">10000</span>Đ</h6>
+                            <h6 class="font-weight-medium "><span
+                                    class="ship">{{ number_format(10000, 0, ',', ',') }}</span>Đ</h6>
                         </div>
                         <div class="d-flex justify-content-between mt-3">
                             <h6 class="font-weight-medium">Discount</h6>
@@ -224,6 +232,7 @@
                     },
                     success: function(response) {
                         let total
+                        console.log(response)
                         if (response[2]) {
                             if (response[1] == 1) {
                                 $('.discount').text(Intl.NumberFormat('en-VN').format(parseFloat($(
@@ -251,13 +260,21 @@
                             })
                         }
                         console.log(total)
-                        $('.total').text(total)
+                        $('.total').text(Intl.NumberFormat('en-VN').format(total))
+
                     },
                     error: function(response) {
 
                     }
                 });
+            } else {
+                $('.discount').text(0)
+                $('#discount').val(0)
+                $('#iddiscount').val(0)
+                total = parseFloat($('#subtotal').val()) - parseFloat($('.ship').text())
+                $('.total').text(total)
             }
+
         })
 
         function changeTotal() {
