@@ -34,6 +34,7 @@ class OrderController extends Controller
         try {
             $cart = Session::get('cart') ? Session::get('cart') : null;
             if ($cart != null) {
+                //dd($request->all());
                 $order = Orders::create([
                     'id_customer' => auth()->user()->id,
                     'price' => $cart->getTotalMoney(),

@@ -17,6 +17,7 @@ class CartController extends Controller
 {
     public function __construct()
     {
+        // View::share('numerberOfcart', Session('cart') ? Session('cart')->getTotalQuantity() : 0);
         // $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
         //     ->get()->toArray();
         parent::__construct();

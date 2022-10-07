@@ -45,7 +45,9 @@ Route::group([
     Route::get('/product-detail', [ProductController::class, 'getProductDetail'])->name('productdetail');
     Route::get('/getsizeandimg', [ProductController::class, 'getSizeAndImg'])->name('getsizeandimg');
     Route::get('/add-faverite', [ProductController::class, 'addFaverite'])->name('addfaverite');
+    Route::get('/remove-faverite', [ProductController::class, 'removeFaverite'])->name('removefaverite');
     Route::post('/rate-product', [ProductController::class, 'rateProduct'])->name('rateproduct');
+    Route::get('/view-favorite', [ProductController::class, 'viewFavorite'])->name('viewfavorite');
 });
 Route::group([
     'as'     => 'cart.',

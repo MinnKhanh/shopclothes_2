@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderImportController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\TypeController;
+use App\Models\favorite;
 use App\Models\Orders;
 use App\Models\Type;
 use Illuminate\Http\Request;
@@ -165,6 +166,7 @@ Route::group([
 
 Route::get('/', function () {
     View::share('numerberOfcart', Session('cart') ? Session('cart')->getTotalQuantity() : 0);
+    View::share('Favorite', favorite::get()->count());
     $typenav = Type::with('Img', 'Categories')->withCount('Product')
         ->get()->toArray();
     return view('admin.index', ['typenav' => $typenav]);

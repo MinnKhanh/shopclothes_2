@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Ship;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -22,7 +24,7 @@ class ShipController extends Controller
     public function index(Request $request)
     {
         $ship = $this->configs['ship'];
-        //dd($ship);
+        // dd($ship);
         return view('admin.ship.index', ['typenav' => $this->typenav, 'list' => $ship]);
     }
     public function update(Request $request)
@@ -36,6 +38,7 @@ class ShipController extends Controller
             Ship::where('id', $request->input('id'))->update([
                 'price' => $request->input('price')
             ]);
+            Cache::forget('configs');
             DB::commit();
             return response()->json(['message' => 'Cập nhật thành công'], 200);
         } catch (Throwable $e) {

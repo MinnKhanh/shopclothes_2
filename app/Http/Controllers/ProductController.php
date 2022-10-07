@@ -6,6 +6,7 @@ use App\Http\Requests\RateRequest;
 use App\Models\Categories;
 use App\Models\Color;
 use App\Models\favorite;
+use Illuminate\Support\Facades\View;
 use App\Models\ProductDetail;
 use App\Models\Products;
 use App\Models\ProductSize;
@@ -18,11 +19,14 @@ use Illuminate\Support\Facades\Session;
 
 class ProductController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
+        // View::share('numerberOfcart', Session('cart') ? Session('cart')->getTotalQuantity() : 0);
         parent::__construct();
     }
     public function index()
     {
+
         $typenav = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();
         // dd(Type::get()->toArray());
         $product = Products::join('product_detail', 'products.id', '=', 'product_detail.id_product')
@@ -146,6 +150,14 @@ class ProductController extends Controller
         }
         return response()->json(['error' => 'Thêm thất bại'], 400);
     }
+    public function removeFaverite(Request $request)
+    {
+        if ($request->input('id') && auth()->check()) {
+            DB::table('favorite')->where('id_product', $request->input('id'))->where('id_customer', auth()->user()->id)->delete();
+            return response()->json(['success' => 'Thành công'], 200);
+        }
+        return response()->json(['error' => 'Thêm thất bại'], 400);
+    }
     public function rateProduct(RateRequest $request)
     {
         $dataupdate = [
@@ -219,5 +231,22 @@ class ProductController extends Controller
             else $quantity = 0;
         }
         return [$quantity];
+    }
+    public function viewFavorite(Request $request)
+    {
+        $data = Products::with('Img', 'BrandProduct')
+            ->join('favorite', 'favorite.id_product', 'products.id')
+            ->leftjoin('rate', 'rate.id_product', 'products.id')
+            ->groupBy('products.id', 'products.name', 'products.priceSell')
+            ->select(
+                'products.id',
+                'products.name',
+                'products.priceSell',
+                'products.brand',
+                DB::raw('ifnull((sum(rate.number_stars)/count(rate.id_product)),0) as number')
+            )
+            ->get()->toArray();
+        //dd($data);
+        return view('products.favorite', ['typenav' => $this->typenav, 'data' => $data,]);
     }
 }

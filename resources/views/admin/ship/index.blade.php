@@ -42,7 +42,8 @@
                     <label for="shiptitle">Vùng vận chuyển</label>
                     <select name="shiptitle" class="form-control" id="shiptitle">
                         @forelse ($list as $item)
-                            <option value={{ $item['id'] }}>{{ TypeShipEnum::getType($item['location']) }}</option>
+                            <option data-price={{ $item['price'] }} value={{ $item['id'] }}>
+                                {{ TypeShipEnum::getType($item['location']) }}</option>
                         @empty
                         @endforelse
                     </select>
@@ -51,18 +52,47 @@
                     <label for="price">Giá</label>
                     <input type="text" id="price" class="form-control" value={{ $list[0]['price'] }}>
                 </div>
-                <button class="btn btn-primary mt-4 ml-2 col-1">Cập nhật</button>
+                <button type="button" class="btn btn-primary mt-4 ml-2 col-1 update">Cập nhật</button>
             </div>
         </div>
     @endsection
 
     @push('js')
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.all.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.all.min.js"></script>
         <script>
             $('#shiptitle').change(function() {
-                let list = "{{ $list }}"
-                console.log(list)
-                //let price =
+                let price = $(this).find(":selected").attr('data-price');
+                $('#price').val(price)
+            })
+            $('.update').click(function() {
+                $.ajax({
+                    url: "{{ route('admin.ship.update') }}",
+                    type: 'PUT',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id: $('#shiptitle').val(),
+                        price: $('#price').val(),
+                    },
+                    success: function(response) {
+                        console.log(response)
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cập nhật thành công',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        $('#shiptitle').find(":selected").attr('data-price', $('#price').val());
+                    },
+                    error: function(response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Cập nhật thất bại',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                });
             })
         </script>
     @endpush
