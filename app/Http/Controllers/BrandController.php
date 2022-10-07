@@ -58,7 +58,6 @@ class BrandController extends Controller
             return Redirect::route('admin.brand.index');
         } catch (Throwable $e) {
             DB::rollBack();
-            dd($e);
             return Redirect::back()->withInput($request->input())->withErrors(['msg' => $e->getMessage()]);
         }
     }

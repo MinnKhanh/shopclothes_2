@@ -218,7 +218,6 @@
                                     <a class="btn btn-outline-dark btn-square addpavorite" data-id={{ $item['id'] }}><i
                                             class="far fa-heart"></i></a>
                                 @endif
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
                             </div>
                         </div>
@@ -254,34 +253,17 @@
                             alt="">
                         <div class="offer-text">
                             <h6 class="text-white text-uppercase">Tiết Kiệm
-                                {{ $item['persent'] }}{{ $item['unit'] == 1 ? '%' : 'Đ' }}</h6>
+                                {{ number_format($item['persent'], 0, ',', ',') }}{{ $item['unit'] == 1 ? '%' : 'Đ' }}
+                            </h6>
                             <h3 class="text-white mb-3">{{ $item['title'] }}</h3>
-                            <a href="{{ route('product.index') }}" class="btn btn-primary">Mua Ngay</a>
+                            <a href="{{ route('product.index') }}" class="btn btn-primary" type="button"
+                                data-toggle="modal" data-target="#discount_{{ $item['id'] }}">Mua Ngay</a>
                         </div>
                     </div>
                 </div>
             @empty
             @endforelse
-            {{-- <div class="col-md-6">
-                <div class="product-offer mb-30" style="height: 300px;">
-                    <img class="img-fluid" src="img/offer-1.jpg" alt="">
-                    <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Tiết Kiệm 20%</h6>
-                        <h3 class="text-white mb-3">Đơn Hàng Đặc Biệt</h3>
-                        <a href="" class="btn btn-primary">Mua Ngay</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="product-offer mb-30" style="height: 300px;">
-                    <img class="img-fluid" src="img/offer-2.jpg" alt="">
-                    <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
-                    </div>
-                </div>
-            </div> --}}
+
         </div>
     </div>
     <!-- Offer End -->
@@ -310,8 +292,6 @@
                                     <a class="btn btn-outline-dark btn-square addpavorite" data-id={{ $item['id'] }}><i
                                             class="far fa-heart"></i></a>
                                 @endif
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-sync-alt"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-search"></i></a>
                             </div>
@@ -359,8 +339,59 @@
     </div>
     <!-- Vendor End -->
 @endsection
+@section('modal')
+    @forelse ($discountshow as $item)
+        <div class="modal fade" id="discount_{{ $item['id'] }}" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="border-radius: 1rem;padding: 0.5rem;">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center" id="exampleModalLabel"> Khuyến Mại</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="product-offer mb-30" style="height: 200px;border-radius: 0.5rem;">
+                                    <img class="img-fluid"
+                                        src="{{ asset('storage') . '/' . (isset($item['img'][0]) ? $item['img'][0]['path'] : '') }}"
+                                        alt="">
+                                    <div class="offer-text text-center">
+                                        <h3 class="text-white mb-3">{{ $item['title'] }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 text-center"> {{ $item['description'] }}</div>
+                            <div class="col-12 text-center"> {{ $item['discount']['begin'] }} -
+                                {{ $item['discount']['end'] }}</div>
+                        </div>
+                    </div>
+                    {{-- @php
+                        dd($item['discount']['discount_user'] ? '' : 'disabled');
+                    @endphp --}}
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        @if (auth()->check())
+                            <button type="button" class="btn btn-primary adddiscount"
+                                data-id="{{ $item['relate_id'] }}" data-user={{ auth()->user()->id }}
+                                {{ $item['discount']['discount_user'] ? 'disabled' : '' }}>
+                                {{ $item['discount']['discount_user'] ? 'Đã Nhận' : 'Nhận' }}
+                            </button>
+                        @else
+                            <a class="btn btn-primary" href="{{ route('auth.login') }}">Nhận</a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    @empty
+    @endforelse
+@endsection
 @push('js')
     <script src="{{ asset('js/rating-star-icons/dist/rating.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.all.min.js"></script>
     <script>
         $('.addpavorite').click(function() {
             let id = $(this).attr('data-id')
@@ -376,6 +407,38 @@
                 },
                 error: function(response) {
 
+                }
+            });
+        })
+        $('.adddiscount').click(function() {
+            let iduser = $(this).attr('data-user')
+            let iddiscount = $(this).attr('data-id')
+            let ele = $(this)
+            $.ajax({
+                url: "{{ route('discount.addtoaccount') }}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    iduser: iduser,
+                    iddiscount: iddiscount
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Nhận thành công',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    ele.attr('disabled'.true);
+                    ele.text('Đã Nhận')
+                },
+                error: function(response) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Đã nhận',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                 }
             });
         })

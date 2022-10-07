@@ -151,8 +151,8 @@
                                         </a>
                                         <select name="" id="" class="change-active custom-select"
                                             data-id={{ $item['id'] }}>
-                                            <option {{ $item['active'] == 1 ? 'selected' : '' }} value=0>Ẩn</option>
-                                            <option {{ $item['active'] == 2 ? 'selected' : '' }} value=1>Hiện</option>
+                                            <option {{ $item['active'] == 1 ? 'selected' : '' }} value=1>Ẩn</option>
+                                            <option {{ $item['active'] == 2 ? 'selected' : '' }} value=2>Hiện</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -166,8 +166,9 @@
     </div>
 @endsection
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.all.min.js"></script>
     <script>
-        $('.change-active').click(function() {
+        $('.change-active').change(function() {
             let id = $(this).attr('data-id')
             let status = $(this).val()
             $.ajax({

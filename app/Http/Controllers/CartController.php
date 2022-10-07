@@ -128,6 +128,7 @@ class CartController extends Controller
         $listdiscount = DB::table('discount_user')->join('discount', 'discount.id', 'discount_user.id_discount')
             ->whereDate('begin', '<=', date('Y-m-d'))->whereDate('end', '>=', date('Y-m-d'))
             ->where('use', 0)
+            ->where('id_customer', auth()->user()->id)
             ->select('discount_user.id_customer', 'discount.id', 'discount.code', 'discount.name')->get()->toArray();
         //dd($listdiscount);
         return view('orders.checkout', ['typenav' => $this->typenav, 'cart' => $cart, 'listdiscount' => $listdiscount]);

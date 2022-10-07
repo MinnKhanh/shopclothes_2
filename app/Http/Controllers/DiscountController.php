@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Discount;
+use App\Models\DiscountUser;
 use App\Models\Img;
 use App\Models\Type;
+use Facade\FlareClient\Http\Response;
+use Illuminate\Http\Client\Response as ClientResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\MessageBag;
+use Symfony\Contracts\Service\Attribute\Required;
 use Throwable;
 
 class DiscountController extends Controller
@@ -104,5 +109,23 @@ class DiscountController extends Controller
             return $data;
         }
         return $data;
+    }
+    public function addToAccount(Request $request)
+    {
+        $request->validate([
+            'iduser' => 'required',
+            'iddiscount' => 'required',
+        ]);
+        $count = DiscountUser::where('id_customer', $request->input('iduser'))->where('id_discount', $request->input('iddiscount'))->count();
+        if (!$count) {
+            DiscountUser::create([
+                'id_customer' => $request->input('iduser'),
+                'id_discount' => $request->input('iddiscount')
+            ]);
+            return 1;
+        }
+        return response()->json([
+            'message'   =>  "Tài khoản đã nhận hoặc lỗi, bạn có thể thử lại"
+        ], 401);
     }
 }

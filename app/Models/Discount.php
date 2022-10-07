@@ -22,4 +22,12 @@ class Discount extends Model
     {
         return $this->morphMany(Img::class, 'product', 'type');
     }
+    public function DiscountDetail()
+    {
+        return $this->hasOne(DiscountDetail::class, 'id_discount', 'id');
+    }
+    public function DiscountUser()
+    {
+        return $this->hasMany(DiscountUser::class, 'id_discount', 'id');
+    }
 }

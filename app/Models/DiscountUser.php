@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DiscountDetail extends Model
+class DiscountUser extends Model
 {
     use HasFactory, SoftDeletes;
+    public $timestamps = false;
     protected $fillable = [
+        'id_customer',
         'id_discount',
-        'condition',
+        'use'
     ];
-    protected $table = 'discount_detail';
+    protected $table = 'discount_user';
 }

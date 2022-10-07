@@ -4,6 +4,7 @@ use App\Events\RegisterEvent;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\SystemConfigController;
 use App\Http\Controllers\Testcontroller;
 use App\Http\Controllers\UserController;
 use App\Jobs\SendEmail;
+use App\Models\Discount;
 use App\Models\Img;
 use App\Models\Orders;
 use App\Models\ProductDetail;
@@ -97,6 +99,12 @@ Route::group([
 ], static function () {
     Route::post('/', [UserController::class, 'index'])->name('index');
     Route::put('/updateinfo', [UserController::class, 'updateInfo'])->name('updateinfo');
+});
+Route::group([
+    'as'     => 'discount.',
+    'prefix' => 'discount',
+], static function () {
+    Route::post('/add-to-account', [DiscountController::class, 'addToAccount'])->name('addtoaccount');
 });
 Route::group([
     'as'     => 'test.',

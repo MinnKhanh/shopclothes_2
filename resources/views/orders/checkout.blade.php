@@ -161,8 +161,8 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <input type="text" class="d-none" name="ship" value=10000>
-                            <h6 class="font-weight-medium "><span
+                            <input type="text" class="d-none ship" name="ship" id="ship" value=10000>
+                            <h6 class="font-weight-medium textship"><span
                                     class="ship">{{ number_format(10000, 0, ',', ',') }}</span>Đ</h6>
                         </div>
                         <div class="d-flex justify-content-between mt-3">
@@ -240,13 +240,13 @@
                                 $('#discount').val(parseFloat($('#subtotal').val()) * (response[0]) /
                                     100)
                                 total = (parseFloat($('#subtotal').val()) * (100 - response[0]) / 100) -
-                                    parseFloat($('.ship').text())
+                                    parseFloat($('#ship').val())
 
                             } else {
                                 $('.discount').text(response[0])
                                 $('#discount').val(response[0])
                                 total = parseFloat($('#subtotal').val()) - parseFloat(response[0]) -
-                                    parseFloat($('.ship').text())
+                                    parseFloat($('#ship').val())
 
                             }
                             $('#iddiscount').val(response[2])
@@ -271,8 +271,8 @@
                 $('.discount').text(0)
                 $('#discount').val(0)
                 $('#iddiscount').val(0)
-                total = parseFloat($('#subtotal').val()) - parseFloat($('.ship').text())
-                $('.total').text(total)
+                total = parseFloat($('#subtotal').val()) - parseFloat($('#ship').val())
+                $('.total').text(Intl.NumberFormat('en-VN').format(total))
             }
 
         })
@@ -280,11 +280,10 @@
         function changeTotal() {
             let total = 0
             if (parseFloat($('#subtotal').val()) != 0) {
-                console.log(parseFloat($('#subtotal').val()) * (100 - parseFloat($('#discount').val())) / 100) -
-                    parseFloat($('.ship').text())
-                total = (parseFloat($('#subtotal').val()) * (100 - parseFloat($('#discount').val())) / 100) -
-                    parseFloat(
-                        $('.ship').text())
+                console.log('tong: ', parseFloat($('#subtotal').val()) - parseFloat($('#discount').val()) -
+                    parseFloat($('#ship').val()))
+                total = parseFloat($('#subtotal').val()) - parseFloat($('#discount').val()) -
+                    parseFloat($('#ship').val())
                 //enableButton($('.checkout'),false)
             }
             console.log(total)
@@ -345,6 +344,31 @@
                 let path = $('.city').parent().find(".city option:selected").data('path')
                 let array = path.split("/");
                 loadDistrict(array[2])
+                let location = 1;
+                if ($(this).val() != 'Hà Nội') {
+                    location = 2;
+                }
+                $.ajax({
+                    url: "{{ route('api.ship') }}",
+                    type: 'GET',
+                    data: {
+                        location: location,
+                    },
+                    success: function(response) {
+                        $('.ship').val(response[0])
+                        $('.textship').text(Intl.NumberFormat('en-VN').format(response[0]))
+                        changeTotal()
+                        console.log('ship la:', $('.ship').val())
+                    },
+                    error: function(response) {
+
+                    }
+                });
+            } else {
+                $('.ship').val(10000)
+                $('.textship').text(Intl.NumberFormat('en-VN').format(10000))
+                changeTotal()
+                console.log('ship la:', $('.ship').val())
             }
         })
 

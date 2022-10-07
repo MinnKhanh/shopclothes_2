@@ -159,5 +159,22 @@
                 </div>
             </div>
         </div>
+        <div class="col-xxl-3 col-sm-4 col-12 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="card-body__info">
+                        <h4>Shipping Fee</h4>
+                        <span>Giá Vận Chuyển</span>
+                    </div>
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-center">
+                    <a class="text-white" href="{{ route('admin.ship.index') }}">
+                        Xem chi tiết
+                        <i class="fas fa-arrow-alt-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

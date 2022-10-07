@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ship;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -14,7 +15,7 @@ class SystemConfigController extends Controller
             $arr               = [];
             $arr['type'] = Type::with('Img', 'Categories')->withCount('Product')
                 ->get()->toArray();
-
+            $arr['ship'] = Ship::get()->toArray();
             return $arr;
         });
     }

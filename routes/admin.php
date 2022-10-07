@@ -10,6 +10,7 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\admin\IntroducesController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderImportController;
+use App\Http\Controllers\ShipController;
 use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\TypeController;
 use App\Models\Orders;
@@ -168,3 +169,11 @@ Route::get('/', function () {
         ->get()->toArray();
     return view('admin.index', ['typenav' => $typenav]);
 })->name('index')->middleware('checkadmin');
+Route::group([
+    'as'     => 'ship.',
+    'prefix' => 'ship',
+    'middleware' => 'checkadmin'
+], static function () {
+    Route::get('/', [ShipController::class, 'index'])->name('index');
+    Route::put('/update', [ShipController::class, 'update'])->name('update');
+});
