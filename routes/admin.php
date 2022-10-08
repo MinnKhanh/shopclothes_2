@@ -17,6 +17,7 @@ use App\Models\favorite;
 use App\Models\Orders;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 
@@ -165,11 +166,18 @@ Route::group([
 });
 
 Route::get('/', function () {
-    View::share('numerberOfcart', Session('cart') ? Session('cart')->getTotalQuantity() : 0);
-    View::share('Favorite', favorite::get()->count());
-    $typenav = Type::with('Img', 'Categories')->withCount('Product')
-        ->get()->toArray();
-    return view('admin.index', ['typenav' => $typenav]);
+    if (Cache::has('admin-index')) {
+        return Cache::get('admin-index');
+    } else {
+        View::share('numerberOfcart', Session('cart') ? Session('cart')->getTotalQuantity() : 0);
+        View::share('Favorite', favorite::get()->count());
+        $typenav = Type::with('Img', 'Categories')->withCount('Product')
+            ->get()->toArray();
+        //return view('admin.index', ['typenav' => $typenav]);
+        $cachedData = view('admin.index', ['typenav' => $typenav])->render();
+        Cache::put('admin-index', $cachedData);
+        return $cachedData;
+    }
 })->name('index')->middleware('checkadmin');
 Route::group([
     'as'     => 'ship.',

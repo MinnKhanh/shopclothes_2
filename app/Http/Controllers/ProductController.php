@@ -14,6 +14,8 @@ use App\Models\Rate;
 use App\Models\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -26,32 +28,46 @@ class ProductController extends Controller
     }
     public function index()
     {
-
-        $typenav = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();
-        // dd(Type::get()->toArray());
-        $product = Products::join('product_detail', 'products.id', '=', 'product_detail.id_product')
-            ->select('products.id', 'products.name', 'products.category', 'products.type');
-        $type = Type::leftjoinSub($product, 'product', function ($join) {
-            $join->on('type.id', '=', 'product.type');
-        })
-            ->groupBy('type.id', 'type.name')
-            ->select('type.id', 'type.name', DB::raw('count(product.id) as soluong'))
-            ->get()->toArray();
-        $categories = Categories::leftjoinSub($product, 'product', function ($join) {
-            $join->on('categories.id', '=', 'product.category');
-        })->join('type', 'type.id', '=', 'categories.type')
-            ->groupBy('categories.id', 'categories.name', 'type.id', 'type.name')
-            ->select('categories.id', 'categories.name', DB::raw('type.id as typeid'), DB::raw('type.name as typename'), DB::raw('count(product.id) as soluong'))
-            ->get()->toArray();
-        return view(
-            'products.index',
-            [
-                'list' => Products::with('Img', 'BrandProduct')->get()->toArray(),
-                'categories' => $categories,
-                'type' => $type,
-                'typenav' => $typenav
-            ]
-        );
+        if (Cache::has('products-index')) {
+            return Cache::get('products-index');
+        } else {
+            $typenav = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();
+            // dd(Type::get()->toArray());
+            $product = Products::join('product_detail', 'products.id', '=', 'product_detail.id_product')
+                ->select('products.id', 'products.name', 'products.category', 'products.type');
+            $type = Type::leftjoinSub($product, 'product', function ($join) {
+                $join->on('type.id', '=', 'product.type');
+            })
+                ->groupBy('type.id', 'type.name')
+                ->select('type.id', 'type.name', DB::raw('count(product.id) as soluong'))
+                ->get()->toArray();
+            $categories = Categories::leftjoinSub($product, 'product', function ($join) {
+                $join->on('categories.id', '=', 'product.category');
+            })->join('type', 'type.id', '=', 'categories.type')
+                ->groupBy('categories.id', 'categories.name', 'type.id', 'type.name')
+                ->select('categories.id', 'categories.name', DB::raw('type.id as typeid'), DB::raw('type.name as typename'), DB::raw('count(product.id) as soluong'))
+                ->get()->toArray();
+            // return view(
+            //     'products.index',
+            //     [
+            //         'list' => Products::with('Img', 'BrandProduct')->get()->toArray(),
+            //         'categories' => $categories,
+            //         'type' => $type,
+            //         'typenav' => $typenav
+            //     ]
+            // );
+            $cachedData = view(
+                'products.index',
+                [
+                    'list' => Products::with('Img', 'BrandProduct')->get()->toArray(),
+                    'categories' => $categories,
+                    'type' => $type,
+                    'typenav' => $typenav
+                ]
+            )->render();
+            Cache::put('products-index', $cachedData);
+            return $cachedData;
+        }
     }
     public function getProductBy(Request $request)
     {
@@ -152,6 +168,7 @@ class ProductController extends Controller
     }
     public function removeFaverite(Request $request)
     {
+        Artisan::call('cache:clear');
         if ($request->input('id') && auth()->check()) {
             DB::table('favorite')->where('id_product', $request->input('id'))->where('id_customer', auth()->user()->id)->delete();
             return response()->json(['success' => 'Thành công'], 200);
@@ -160,6 +177,7 @@ class ProductController extends Controller
     }
     public function rateProduct(RateRequest $request)
     {
+        Artisan::call('cache:clear');
         $dataupdate = [
             'number_stars' => $request->input('rate'),
             'review' => $request->input('review'),

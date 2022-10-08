@@ -8,6 +8,7 @@ use App\Models\ProductDetail;
 use App\Models\Products;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
@@ -35,6 +36,7 @@ class CartController extends Controller
             'quantity' => 'required| numeric|min:0',
             'size' => 'required',
         ]);
+        Artisan::call('cache:clear');
         if ($request->input('id') && $request->input('color') && $request->input('size')) {
             if ($request->input('quantity') >= 0) {
                 $product = Products::join('product_detail', 'products.id', 'product_detail.id_product')
@@ -77,6 +79,7 @@ class CartController extends Controller
             'idProduct' => 'required',
             'size' => 'required',
         ]);
+        Artisan::call('cache:clear');
         $oldcart = Session('cart') ? Session('cart') : null;
         $newcart = new Cart($oldcart);
         $newcart->removeProductInCart($request->input('idProduct'), $request->input('size'));
@@ -94,6 +97,7 @@ class CartController extends Controller
             'quantity' => 'required| numeric',
             'size' => 'required',
         ]);
+        Artisan::call('cache:clear');
         $product = ProductDetail::where('id', $request->input('idProduct'))->first();
         if ($product != null) {
             $oldcart = Session('cart') ? Session('cart') : null;
@@ -112,6 +116,7 @@ class CartController extends Controller
         //     $newcart = new Cart($oldcart);
         //     $newcart->removeCart();
         // }
+        Artisan::call('cache:clear');
         $request->session()->forget('cart');
     }
     public function getDiscount(Request $request)

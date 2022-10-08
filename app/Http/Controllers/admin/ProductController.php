@@ -16,6 +16,7 @@ use App\Models\Type;
 use Error;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Redis;
@@ -40,6 +41,7 @@ class ProductController extends Controller
     }
     public function create()
     {
+
         $typenav = Type::with('Img', 'Categories')->withCount('Product')->get()->toArray();
         // DB::enableQueryLog();
         // dd(Type::with(['Categories' => fn ($query) => $query->where('id', 1)])->where('id', 1)->get()->first()->toArray()['categories'][0]['name']);
@@ -48,6 +50,7 @@ class ProductController extends Controller
     }
     public function update(Request $request)
     {
+        //Artisan::call('cache:clear');
         //dd(Products::with('Img', 'BrandProduct', 'TypeProduct')->where('id', $request->get('id'))->first()->toArray());
         return view('admin.product.addproduct', [
             'typenav' => $this->typenav,
@@ -57,6 +60,7 @@ class ProductController extends Controller
     }
     public function store(ProductRequest $request)
     {
+        Artisan::call('cache:clear');
         //dd($request->all());
         DB::beginTransaction();
         try {
@@ -106,6 +110,7 @@ class ProductController extends Controller
     }
     public function createDetail(Request $request)
     {
+
         //dd(ProductDetail::with('sizeProduct', 'colorProduct')->where('id_product', $request->get('id'))->get()->toArray());
         return view('admin.product.category', [
             'typenav' => $this->typenav,
@@ -118,6 +123,7 @@ class ProductController extends Controller
     }
     public function storeDetail(Request $request)
     {
+        Artisan::call('cache:clear');
         $request->validate([
             'idProduct' => 'required',
             'color' => [
@@ -211,6 +217,7 @@ class ProductController extends Controller
     }
     public function removeDetail(Request $request)
     {
+        Artisan::call('cache:clear');
         if ($request->input('id')) {
             ProductDetail::where('id', $request->input('id'))->delete();
             Img::where('product_id', $request->input('id'))->where('type', 2)->delete();
@@ -218,6 +225,7 @@ class ProductController extends Controller
     }
     public function storeSize(Request $request)
     {
+        Artisan::call('cache:clear');
         $request->validate([
             'id' => 'required',
             'size' => ['required', Rule::in(Size::pluck('id')->toArray()), Rule::unique('product_size', 'size')
@@ -238,6 +246,7 @@ class ProductController extends Controller
     }
     public function updateSize(Request $request)
     {
+        Artisan::call('cache:clear');
         $request->validate([
             'idProductDetail' => 'required',
             'size' => ['required', Rule::in(Size::pluck('id')->toArray()), Rule::unique('product_size', 'size')
@@ -258,6 +267,7 @@ class ProductController extends Controller
     }
     public function removeSize(Request $request)
     {
+        Artisan::call('cache:clear');
         try {
             if (!$request->input('idproduct') || !$request->input('idsize')) {
                 throw new Exception("Remove failled", 30);
@@ -274,6 +284,7 @@ class ProductController extends Controller
     }
     public function changeSize(Request $request)
     {
+        Artisan::call('cache:clear');
         $request->validate([
             'idProductDetail' => 'required',
             'size' => 'required',
@@ -286,6 +297,7 @@ class ProductController extends Controller
     }
     public function changStatus(Request $request)
     {
+        Artisan::call('cache:clear');
         if ($request->input('id') && ($request->input('status') || $request->input('status') == 0)) {
             Products::where('id', $request->input('id'))->update([
                 'status' => $request->input('status')
@@ -296,6 +308,7 @@ class ProductController extends Controller
     }
     public function delete(Request $request)
     {
+        Artisan::call('cache:clear');
         $request->validate([
             'id' => 'required'
         ]);

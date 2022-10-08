@@ -9,6 +9,7 @@ use App\Models\Introduce;
 use App\Models\Type;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Throwable;
@@ -46,6 +47,7 @@ class IntroducesController extends Controller
             'type' => 'required',
             'photo' => $request->input('id') ? '' : 'required',
         ]);
+        Artisan::call('cache:clear');
         // dd($request->all());
         DB::beginTransaction();
         try {
@@ -94,6 +96,7 @@ class IntroducesController extends Controller
     }
     public function updateActive(Request $request)
     {
+        Artisan::call('cache:clear');
         try {
             if (!$request->input('id') || !$request->input('status')) {
                 throw new Exception("Thay đổi thất bại", 30);

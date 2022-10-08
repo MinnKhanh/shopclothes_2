@@ -14,6 +14,7 @@ use App\Models\ProductSize;
 use App\Models\Type;
 use Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -31,6 +32,7 @@ class OrderController extends Controller
     public function CreateOrder(OrderRequest $request)
     {
         DB::beginTransaction();
+        Artisan::call('cache:clear');
         try {
             $cart = Session::get('cart') ? Session::get('cart') : null;
             if ($cart != null) {
@@ -114,6 +116,7 @@ class OrderController extends Controller
     }
     public function delete(Request $request)
     {
+        Artisan::call('cache:clear');
         if ($request->input('id')) {
             try {
                 DB::beginTransaction();
@@ -156,6 +159,7 @@ class OrderController extends Controller
     }
     public function deleteDetail(Request $request)
     {
+        Artisan::call('cache:clear');
         if ($request->input('order') && $request->input('product') && $request->input('size')) {
             try {
                 DB::beginTransaction();
@@ -180,6 +184,7 @@ class OrderController extends Controller
     }
     public function updateOrder(OrderUpdate $request)
     {
+        Artisan::call('cache:clear');
         try {
             DB::beginTransaction();
             Orders::where('id', $request->input('id'))->update([
@@ -203,6 +208,7 @@ class OrderController extends Controller
     }
     public function rejectUpdate(Request $request)
     {
+        Artisan::call('cache:clear');
         return redirect()->route('orders.redirecttolist', ['id' => $request->input('id')]);
     }
     public function updateStatus(Request $request)
