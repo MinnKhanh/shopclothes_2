@@ -103,49 +103,48 @@
                               class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
                               <input type="checkbox" class="custom-control-input inputPrice" checked id="price-all">
                               <label class="custom-control-label priceall" for="price-all">Tất cả các giá</label>
-                              <span class="badge border font-weight-normal">100.000Đ</span>
-                          </div>
-                          <div
-                              class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
-                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-1">
-                              <label class="custom-control-label lbprice priceitem" for="price-1">
-                                  < 100.000Đ</label>
-                                      <span class="badge border font-weight-normal">150</span>
-                          </div>
-                          <div
-                              class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
-                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-2">
-                              <label class="custom-control-label lbprice priceitem" for="price-2">100.000Đ -
-                                  200.000Đ</label>
-                              <span class="badge border font-weight-normal">295</span>
                           </div>
                           <div
                               class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
                               <input type="checkbox" class="custom-control-input inputPrice inputPriceitem"
-                                  value='200000-400000' id="price-3">
+                                  data-price="< 100.000Đ" id="price-1">
+                              <label class="custom-control-label lbprice priceitem" for="price-1">
+                                  < 100.000Đ</label>
+                          </div>
+                          <div
+                              class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
+                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem"
+                                  data-price="100.000Đ - 200.000Đ" id="price-2">
+                              <label class="custom-control-label lbprice priceitem" for="price-2">100.000Đ -
+                                  200.000Đ</label>
+                          </div>
+                          <div
+                              class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
+                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem"
+                                  data-price='200000Đ - 400000Đ' id="price-3">
                               <label class="custom-control-label lbprice priceitem" for="price-3">200.000 -
                                   400.000Đ</label>
-                              <span class="badge border font-weight-normal">246</span>
                           </div>
                           <div
                               class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
-                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-4">
+                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem"
+                                  data-price="400.000Đ - 600.000Đ" id="price-4">
                               <label class="custom-control-label lbprice priceitem" for="price-4">400.000Đ -
                                   600.000Đ</label>
-                              <span class="badge border font-weight-normal">145</span>
                           </div>
                           <div
                               class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3 price">
-                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-5">
+                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem"
+                                  data-price="600.000Đ - 1000.000Đ" id="price-5">
                               <label class="custom-control-label lbprice priceitem" for="price-5">600.000Đ -
                                   1000.000Đ</label>
-                              <span class="badge border font-weight-normal">168</span>
                           </div>
                           <div
                               class="custom-control custom-checkbox d-flex align-items-center justify-content-between price">
-                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem" id="price-6">
+                              <input type="checkbox" class="custom-control-input inputPrice inputPriceitem"
+                                  data-price="> 1000.000Đ" id="price-6">
                               <label class="custom-control-label lbprice priceitem" for="price-6">> 1000.000Đ</label>
-                              <span class="badge border font-weight-normal">168</span>
+
                           </div>
                       </form>
                   </div>
@@ -241,68 +240,15 @@
                                           <div class="dropdown-item sort" data-sort='rate'>Đánh giá cao nhất</div>
                                       </div>
                                   </div>
-                                  {{-- <div class="btn-group ml-2">
-                                    <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Showing</button>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#">10</a>
-                                        <a class="dropdown-item" href="#">20</a>
-                                        <a class="dropdown-item" href="#">30</a>
-                                    </div>
-                                </div> --}}
                               </div>
                           </div>
                       </div>
                       <div class="col-12 pb-1 row" id="list-products">
-                          {{-- @forelse ($list as $item) --}}
-                          {{-- <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-                        <div class="product-item bg-light mb-4">
-                            <div class="product-img position-relative overflow-hidden">
-                                <img class="img-fluid w-100 imgProduct" src="{{asset('storage/'.$item['img'][0]['path'])}}" alt="">
-                                <div class="product-action">
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                                </div>
-                            </div>
-                            <div class="text-center py-4">
-                                <a class="h6 text-decoration-none text-truncate" href="">{{$item['name']}}</a>
-                                <div class="d-flex align-items-center justify-content-center mt-2">
-                                    <h5>{{$item['priceSell']}}Đ</h5>
-                                </div>
-                                 <div class="d-flex align-items-center justify-content-center mt-2">
-                                    <h5>{{$item['brand_product']['name']}}</h5>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center mb-1">
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    {{-- <small>(99)</small> --}}
-                          {{-- </div>
-                            </div>
-                        </div>
-                    </div> --}}
-                          {{-- @empty
-                        
-                    @endforelse --}}
 
 
                       </div>
                       <div class="col-12 pb-1" id="pagination">
-                          {{-- <div class="col-12"> 
-                        <nav>
-                          <ul class="pagination justify-content-center">
-                              
-                            <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                          </ul>
-                        </nav>
-                    </div> --}}
+
                       </div>
                   </div>
                   <!-- Shop Product End -->
@@ -369,35 +315,38 @@
                   rangePrice = ''
                   $(".inputPriceitem:checked").each(function() {
                       if (i == 0)
-                          rangePrice += $(this).next().text()
+                          rangePrice += $(this).attr('data-price')
                       else
-                          rangePrice += "_" + $(this).next().text()
+                          rangePrice += "_" + $(this).attr('data-price')
                       i++;
                   })
-                  //console.log(rangePrice)
+                  //   console.log(rangePrice)
                   getProduct()
               })
 
 
+
               function showproduct(response) {
                   $('#pagination').pagination({
-                      dataSource: response,
+                      dataSource: response[0],
                       pageSize: 3,
                       formatResult: function(data) {
 
                       },
-                      callback: function(response, pagination) {
+                      callback: function(list, pagination) {
                           console.log("respon", response)
                           let inner = ''
-                          response.forEach(element => {
+                          list.forEach(element => {
                               let price = Intl.NumberFormat('en-VN').format(element['priceSell'])
                               inner += `  <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
                     <div class="product-item bg-light mb-4">
                         <div class="product-img position-relative overflow-hidden">
                             <img class="img-fluid w-100 imgProduct" src="{{ asset('storage/') }}/${element['img'][0]['path']}" alt="">
                             <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                                <a class="btn btn-outline-dark btn-square addtocart" data-id={{ $item['id'] }}
+                                    href="{{ route('product.productdetail') }}?id=${element['id']}"><i
+                                        class="fa fa-shopping-cart"></i></a>
+                                    ${ response[1] ==1?`<a class="btn btn-outline-dark btn-square addpavorite" data-id=${element['id']}><i class="far fa-heart"></i></a>`:''}
                             </div>
                         </div>
                         <div class="text-center py-4">
@@ -409,19 +358,34 @@
                                 <h5>${element['brand_product']['name']}</h5>
                             </div>
                             <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                {{-- <small>(99)</small> --}}
+                                <div id="dataReadonlyReview" data-rating-half="true" data-rating-stars="5"
+                                    data-rating-readonly="true" data-rating-value=${element['star'] }
+                                    data-rating-input="#dataReadonlyInput">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>`
                           });
                           document.getElementById('list-products').innerHTML = inner;
+                          $('.addpavorite').unbind('click')
+                          $('.addpavorite').click(function() {
+                              let id = $(this).attr('data-id')
+                              $.ajax({
+                                  url: "{{ route('product.addfaverite') }}",
+                                  type: 'GET',
+                                  data: {
+                                      id: id,
+                                  },
+                                  success: function(response) {
+                                      $('.faverite').text(response[0]['quantity'])
+                                      console.log(response)
+                                  },
+                                  error: function(response) {
 
+                                  }
+                              });
+                          })
                       }
                   })
 
@@ -443,6 +407,8 @@
               checkUrl()
 
               function getProduct() {
+                  //   console.log("{{ route('product.listproduct') }}" + '?type=' + Maphanloai + '&category=' + categories +
+                  //       '&price=' + rangePrice + '&search=' + search + '&sort=' + sort)
                   $.ajax({
                       url: "{{ route('product.listproduct') }}" + '?type=' + Maphanloai + '&category=' + categories +
                           '&price=' + rangePrice + '&search=' + search + '&sort=' + sort,
@@ -509,4 +475,5 @@
                   getProduct()
               })
           </script>
+          <script src="{{ asset('js/rating-star-icons/dist/rating.js') }}"></script>
       @endpush

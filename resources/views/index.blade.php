@@ -218,7 +218,6 @@
                                     <a class="btn btn-outline-dark btn-square addpavorite" data-id={{ $item['id'] }}><i
                                             class="far fa-heart"></i></a>
                                 @endif
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
                             </div>
                         </div>
                         <div class="text-center py-4">
@@ -292,8 +291,6 @@
                                     <a class="btn btn-outline-dark btn-square addpavorite" data-id={{ $item['id'] }}><i
                                             class="far fa-heart"></i></a>
                                 @endif
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-search"></i></a>
                             </div>
                         </div>
                         <div class="text-center py-4">

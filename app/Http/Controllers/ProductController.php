@@ -71,6 +71,11 @@ class ProductController extends Controller
     }
     public function getProductBy(Request $request)
     {
+
+        $check = 0;
+        if (auth()->check()) {
+            $check = 1;
+        }
         $product = Products::with('Img', 'BrandProduct')
             ->join('categories', 'categories.id', 'products.category')
             ->leftjoin('rate', 'rate.id_product', 'products.id');
@@ -100,7 +105,7 @@ class ProductController extends Controller
         if ($request->input('search')) {
             $product->where('products.name', 'like', '%' . $request->get('search') . '%');
         }
-        $product = $product->select(DB::raw('products.*,rate.number_stars'));
+        $product = $product->select(DB::raw('products.*,IFNULL(rate.number_stars,0) as star'));
         if ($request->input('sort')) {
             if ($request->input('sort') == 'rate') {
                 $product->orderBy('rate.number_stars', 'DESC');
@@ -109,7 +114,8 @@ class ProductController extends Controller
             }
         }
         //  dd($product->get()->toArray());
-        return $product->get()->toArray();
+
+        return [$product->get()->toArray(), $check];
     }
     public function getProduct(Request $request)
     {
@@ -255,6 +261,7 @@ class ProductController extends Controller
         $data = Products::with('Img', 'BrandProduct')
             ->join('favorite', 'favorite.id_product', 'products.id')
             ->leftjoin('rate', 'rate.id_product', 'products.id')
+            ->where('favorite.id_customer', auth()->user()->id)
             ->groupBy('products.id', 'products.name', 'products.priceSell')
             ->select(
                 'products.id',

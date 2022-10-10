@@ -88,7 +88,7 @@
       </div>
       <div class="container-fluid">
           <div class="row px-xl-5">
-              <div class="col-lg-9 col-md-8">
+              <div class="col-lg-12 col-md-12">
                   <div class="row pb-3">
                       <h4 class="col-12 mb-5 border-bottom">Sản Phầm Yêu Thích</h4>
                       <div class="col-12 pb-1 row" id="list-products">
@@ -125,6 +125,7 @@
                                   </div>
                               </div>
                           @empty
+                              <h4 class="col-12 text-center">Hiện chưa có sản phẩm yêu thích nào</h4>
                           @endforelse
                       </div>
                       <div class="col-12 pb-1" id="pagination">

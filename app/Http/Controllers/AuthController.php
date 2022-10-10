@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Redis;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
 
@@ -176,14 +177,18 @@ class AuthController extends Controller
     public function handleProviderCallback($provider)
     {
         $user = Socialite::driver($provider)->user();
-        self::handleSocialLogin($provider, $user);
+        $data = self::handleSocialLogin($provider, $user);
+        if ($data == 0) {
+            return Redirect::back()->withErrors(['msg' => 'Đăng nhập thất bại']);
+        } else {
+            return Redirect::route('index');
+        }
     }
 
     public function handleSocialLogin($provider, $userProvider)
     {
         try {
             $providerId = $userProvider->id;
-            //return Redirect::route('index');
             $user = User::where('provider_id', $providerId)->where('provider', $provider)->first();
             if (!$user) {
                 $user = new User();
@@ -194,20 +199,17 @@ class AuthController extends Controller
                 $user->password = Hash::make(rand());
                 $user->phone = isset($userProvider->phone) ? $userProvider->phone : 0;
                 $user->save();
-                //   dd($user);
                 $role = DB::table('roles')->where('name', 'like', '%' . 'customer' . '%')->first();
                 $user->syncRoles($role->id);
                 $rolePermissions = DB::table('role_has_permissions')->whereIn('role_id', [$role->id])->get()->pluck('permission_id')->unique()->toArray();
                 $user->permissions()->sync($rolePermissions);
             }
-            // dd('ngoai', $user);
             $userId = $user->id;
             Artisan::call('cache:clear');
             Auth::loginUsingId($userId, true);
-            Redirect::route('index');
+            return 1;
         } catch (Throwable $e) {
-            dd('chay');
-            return redirect()->back();
+            return 0;
         }
     }
     public function redirectRoute()

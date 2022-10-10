@@ -23,7 +23,7 @@ class Controller extends BaseController
       $cart = 0;
       $this->middleware(function ($request, $next) {
          View::share('numerberOfcart', Session('cart') ? Session('cart')->getTotalQuantity() : 0);
-         View::share('Favorite', favorite::get()->count());
+         View::share('Favorite', auth()->check() ? favorite::where('id_customer', auth()->user()->id)->get()->count() : 0);
          return $next($request);
       });
       $this->configs = SystemConfigController::getAndCache();

@@ -49,7 +49,7 @@ Route::group([
     Route::get('/add-faverite', [ProductController::class, 'addFaverite'])->name('addfaverite');
     Route::get('/remove-faverite', [ProductController::class, 'removeFaverite'])->name('removefaverite');
     Route::post('/rate-product', [ProductController::class, 'rateProduct'])->name('rateproduct');
-    Route::get('/view-favorite', [ProductController::class, 'viewFavorite'])->name('viewfavorite');
+    Route::get('/view-favorite', [ProductController::class, 'viewFavorite'])->name('viewfavorite')->middleware('auth');
 });
 Route::group([
     'as'     => 'cart.',
@@ -84,7 +84,7 @@ Route::group([
     'as'     => 'auth.',
     'prefix' => 'auth',
 ], static function () {
-    Route::get('/', [AuthController::class, 'login'])->name('login');
+    Route::get('/', [AuthController::class, 'login'])->name('login')->middleware('checklogin');
     Route::get('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/registering', [AuthController::class, 'registering'])->name('registering');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
