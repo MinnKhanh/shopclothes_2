@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Redis;
 use Throwable;
 
 class UserController extends Controller
@@ -61,5 +62,24 @@ class UserController extends Controller
     public function conTact(Request $request)
     {
         return view('customer.contact', ['typenav' => $this->typenav]);
+    }
+    public function sendMessage(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'message' => 'required|string'
+        ]);
+        try {
+            DB::table('user_message')->insert([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'message' => $request->input('message'),
+                'id_user' => auth()->user()->id
+            ]);
+            return Redirect::route('index');
+        } catch (Throwable $e) {
+            return Redirect::back()->withErrors(['msg' => 'Gửi thất bại']);
+        }
     }
 }

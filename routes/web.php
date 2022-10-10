@@ -104,6 +104,7 @@ Route::group([
     Route::post('/', [UserController::class, 'index'])->name('index');
     Route::put('/updateinfo', [UserController::class, 'updateInfo'])->name('updateinfo');
     Route::get('/contact', [UserController::class, 'conTact'])->name('contact');
+    Route::post('/send-message', [UserController::class, 'sendMessage'])->name('sendmessage');
 });
 Route::group([
     'as'     => 'discount.',

@@ -1,4 +1,26 @@
 @extends('layout.master')
+@push('css')
+    <style>
+        .mapouter {
+            position: relative;
+            text-align: right;
+            width: 400px;
+            height: 250px;
+        }
+
+        .gmap_canvas {
+            overflow: hidden;
+            background: none !important;
+            width: 400px;
+            height: 250px;
+        }
+
+        .gmap_iframe {
+            width: 400px !important;
+            height: 250px !important;
+        }
+    </style>
+@endpush
 @section('content')
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
@@ -22,26 +44,41 @@
             <div class="col-lg-7 mb-5">
                 <div class="contact-form bg-light p-30">
                     <div id="success"></div>
-                    <form name="sentMessage" id="contactForm" novalidate="novalidate">
+                    <p class="help-block text-danger">
+                        @if ($errors->has('msg'))
+                            {{ $errors->first('msg') }}
+                        @endif
+                    </p>
+                    <form name="sentMessage" id="contactForm" action="{{ route('user.sendmessage') }}"
+                        novalidate="novalidate" method="POST">
+                        @csrf
                         <div class="control-group">
-                            <input type="text" class="form-control" id="name" placeholder="Your Name"
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Your Name"
                                 required="required" data-validation-required-message="Please enter your name" />
-                            <p class="help-block text-danger"></p>
+                            <p class="help-block text-danger">
+                                @if ($errors->has('name'))
+                                    {{ $errors->first('name') }}
+                                @endif
+                            </p>
                         </div>
                         <div class="control-group">
-                            <input type="email" class="form-control" id="email" placeholder="Your Email"
-                                required="required" data-validation-required-message="Please enter your email" />
-                            <p class="help-block text-danger"></p>
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="Your Email" required="required"
+                                data-validation-required-message="Please enter your email" />
+                            <p class="help-block text-danger">
+                                @if ($errors->has('email'))
+                                    {{ $errors->first('email') }}
+                                @endif
+                            </p>
                         </div>
                         <div class="control-group">
-                            <input type="text" class="form-control" id="subject" placeholder="Subject"
-                                required="required" data-validation-required-message="Please enter a subject" />
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <div class="control-group">
-                            <textarea class="form-control" rows="8" id="message" placeholder="Message" required="required"
+                            <textarea class="form-control" rows="8" id="message" name="message" placeholder="Message" required="required"
                                 data-validation-required-message="Please enter your message"></textarea>
-                            <p class="help-block text-danger"></p>
+                            <p class="help-block text-danger">
+                                @if ($errors->has('message'))
+                                    {{ $errors->first('message') }}
+                                @endif
+                            </p>
                         </div>
                         <div>
                             <button class="btn btn-primary py-2 px-4" type="submit" id="sendMessageButton">Send
@@ -52,14 +89,19 @@
             </div>
             <div class="col-lg-5 mb-5">
                 <div class="bg-light p-30 mb-30">
-                    <iframe style="width: 100%; height: 250px;"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3001156.4288297426!2d-78.01371936852176!3d42.72876761954724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ccc4bf0f123a5a9%3A0xddcfc6c1de189567!2sNew%20York%2C%20USA!5e0!3m2!1sen!2sbd!4v1603794290143!5m2!1sen!2sbd"
-                        frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                    <div class="mapouter" style="width: 100%;overflow:hidden;">
+                        <div class="gmap_canvas" style="width: 100%;overflow:hidden;"><iframe class="gmap_iframe"
+                                style="width: 100% !important;height: 250px !important;" frameborder="0" scrolling="no"
+                                marginheight="0" marginwidth="0"
+                                src="https://maps.google.com/maps?width=400&amp;height=250&amp;hl=en&amp;q=số 3 Cầu giấy&amp;t=&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe><a
+                                href="https://piratebay-proxys.com/">Piratebay</a></div>
+
+                    </div>
                 </div>
                 <div class="bg-light p-30 mb-3">
-                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
-                    <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>Số 3, Cầu Giấy, Hà Nội</p>
+                    <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>khanhdeptrai@gmail.com</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt text-primary mr-3"></i>012 345 6789</p>
                 </div>
             </div>
         </div>
