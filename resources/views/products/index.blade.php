@@ -329,7 +329,7 @@
               function showproduct(response) {
                   $('#pagination').pagination({
                       dataSource: response[0],
-                      pageSize: 3,
+                      pageSize: 6,
                       formatResult: function(data) {
 
                       },
@@ -355,13 +355,10 @@
                                 <h5>${price} Đ</h5>
                             </div>
                                 <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>${element['brand_product']['name']}</h5>
+                                <h5>Nhãn hàng: ${element['brand_product']['name']}</h5>
                             </div>
                             <div class="d-flex align-items-center justify-content-center mb-1">
-                                <div id="dataReadonlyReview" data-rating-half="true" data-rating-stars="5"
-                                    data-rating-readonly="true" data-rating-value=${element['star'] }
-                                    data-rating-input="#dataReadonlyInput">
-                                </div>
+                               
                             </div>
                         </div>
                     </div>
@@ -475,5 +472,4 @@
                   getProduct()
               })
           </script>
-          <script src="{{ asset('js/rating-star-icons/dist/rating.js') }}"></script>
       @endpush
