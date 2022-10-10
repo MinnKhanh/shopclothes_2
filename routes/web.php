@@ -22,6 +22,8 @@ use App\Models\Size;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 /*
@@ -120,4 +122,13 @@ Route::group([
         // ->select('discount_user.id_customer', 'discount.id', 'discount.code', 'discount.name')->get()->toArray();
         dd($count = DB::table('discount_user')->where('id_customer', auth()->user()->id)->where('id_discount', 2)->where('use', 0)->count());
     })->name('put');
+});
+Route::get('auth/{social}', [AuthController::class, 'redirectToProvider'])->name('social');
+Route::get('auth/{social}/callback', [AuthController::class, 'handleProviderCallback']);
+Route::get('chinh-sach-quyen-rieng-tu', function () {
+    return '<h1>Chinh sach quyen rieng tu<h1>';
+});
+
+Route::get('clear', function () {
+    Artisan::call('cache:clear');
 });

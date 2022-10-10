@@ -11,17 +11,17 @@
          <div class="col-lg-6 text-center text-lg-right">
              <div class="d-inline-flex align-items-center">
                  <div class="btn-group">
-                     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My
-                         Account</button>
+                     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Tài
+                         Khoản</button>
                      <div class="dropdown-menu dropdown-menu-right">
                          @if (!auth()->check())
-                             <a href="{{ route('auth.login') }}" class="dropdown-item" type="button">Sign in</a>
+                             <a href="{{ route('auth.login') }}" class="dropdown-item" type="button">Đăng nhập</a>
                          @else
-                             <a href="{{ route('auth.logout') }}" class="dropdown-item" type="button">log out</a>
-                             <a href="{{ route('auth.updateaccont') }}" class="dropdown-item" type="button">Change
-                                 password</a>
+                             <a href="{{ route('auth.logout') }}" class="dropdown-item" type="button">Đăng xuất</a>
+                             <a href="{{ route('auth.updateaccont') }}" class="dropdown-item" type="button">Đổi mật
+                                 khẩu</a>
                          @endif
-                         <a href="{{ route('auth.register') }}" class="dropdown-item" type="button">Sign up</a>
+                         <a href="{{ route('auth.register') }}" class="dropdown-item" type="button">Đăng kí</a>
                      </div>
                  </div>
              </div>
@@ -56,7 +56,7 @@
 
      </div>
      <div class="col-lg-4 col-6 text-right">
-         <p class="m-0">Customer Service</p>
+         <p class="m-0">Dịch vụ chăm sóc khách hàng</p>
          <h5 class="m-0">+012 345 6789</h5>
      </div>
  </div>

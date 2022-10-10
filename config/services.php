@@ -29,5 +29,21 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'github' => [
+        'client_id' => env('GITHUB_CLIENT_ID'),
+        'client_secret' => env('GITHUB_CLIENT_SECRET'),
+        'redirect' => env('GITHUB_CLIENT_REDIRECT'),
+    ],
+
+    'facebook' => [
+        'client_id' => env('GITHUB_CLIENT_ID'),
+        'client_secret' => env('GITHUB_CLIENT_SECRET'),
+        'redirect' => env('GITHUB_CLIENT_REDIRECT'),
+    ],
+    'google' => [
+        'client_id' => '1026571824355-h5617la6ron6tt5lqn31q9349rc2avpr.apps.googleusercontent.com',
+        'client_secret' => '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',
+        'redirect' => 'http://localhost/Shop_clothes/public/auth/google/callback',
+    ],
 
 ];

@@ -10,14 +10,17 @@ use App\Models\Type;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Laravel\Socialite\Facades\Socialite;
 use Throwable;
 
 class AuthController extends Controller
 {
+    private $redirectTo;
     public function __construct()
     {
         // $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
@@ -45,6 +48,7 @@ class AuthController extends Controller
     }
     public function registering(RegisterRequest $request)
     {
+        Artisan::call('cache:clear');
         $password = Hash::make($request->password);
         $roles     = $request->input('role');
         $user = User::create([
@@ -65,7 +69,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-
+        Artisan::call('cache:clear');
         $request->session()->invalidate();
 
         return redirect()->route('index');
@@ -76,6 +80,7 @@ class AuthController extends Controller
     }
     public function signin(LoginRequest $request)
     {
+        Artisan::call('cache:clear');
         $remember = $request->input('remember') ? true : false;
         if (Auth::attempt(['username' => $request->input('email'), 'password' => $request->password], $remember)) {
             return redirect(session('link'));
@@ -91,6 +96,7 @@ class AuthController extends Controller
     }
     public function update(ChangePassAccountRequest $request)
     {
+        Artisan::call('cache:clear');
         $user = auth()->user();
         if (Hash::check($request->input('password'), $user->password)) {
             $password = Hash::make($request->input('newpassword'));
@@ -104,6 +110,7 @@ class AuthController extends Controller
     }
     public function updateByEmail(Request $request)
     {
+        Artisan::call('cache:clear');
         $request->validate([
             'email' => 'required',
             'newpassword' => 'required',
@@ -156,5 +163,55 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         return view('auth.resetpassword', ['email' => $request->input('email'), 'typenav' => $this->typenav, 'token' => $request->input('token')]);
+    }
+    public function redirectToProvider($provider)
+    {
+        try {
+            return Socialite::driver($provider)->redirect();
+        } catch (Throwable $e) {
+            return redirect()->route('auth.login');
+        }
+    }
+
+    public function handleProviderCallback($provider)
+    {
+        $user = Socialite::driver($provider)->user();
+        self::handleSocialLogin($provider, $user);
+    }
+
+    public function handleSocialLogin($provider, $userProvider)
+    {
+        try {
+            $providerId = $userProvider->id;
+            //return Redirect::route('index');
+            $user = User::where('provider_id', $providerId)->where('provider', $provider)->first();
+            if (!$user) {
+                $user = new User();
+                $user->name = $userProvider->name ? $userProvider->name : $userProvider->email;
+                $user->email = $userProvider->email;
+                $user->provider_id = $userProvider->id;
+                $user->provider = $provider;
+                $user->password = Hash::make(rand());
+                $user->phone = isset($userProvider->phone) ? $userProvider->phone : 0;
+                $user->save();
+                //   dd($user);
+                $role = DB::table('roles')->where('name', 'like', '%' . 'customer' . '%')->first();
+                $user->syncRoles($role->id);
+                $rolePermissions = DB::table('role_has_permissions')->whereIn('role_id', [$role->id])->get()->pluck('permission_id')->unique()->toArray();
+                $user->permissions()->sync($rolePermissions);
+            }
+            // dd('ngoai', $user);
+            $userId = $user->id;
+            Artisan::call('cache:clear');
+            Auth::loginUsingId($userId, true);
+            Redirect::route('index');
+        } catch (Throwable $e) {
+            dd('chay');
+            return redirect()->back();
+        }
+    }
+    public function redirectRoute()
+    {
+        return redirect()->route('index');
     }
 }
