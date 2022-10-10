@@ -58,4 +58,8 @@ class UserController extends Controller
             return response()->json(['error' => $e->getMessage()], 404);
         }
     }
+    public function conTact(Request $request)
+    {
+        return view('customer.contact', ['typenav' => $this->typenav]);
+    }
 }

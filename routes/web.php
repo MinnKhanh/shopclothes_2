@@ -103,6 +103,7 @@ Route::group([
 ], static function () {
     Route::post('/', [UserController::class, 'index'])->name('index');
     Route::put('/updateinfo', [UserController::class, 'updateInfo'])->name('updateinfo');
+    Route::get('/contact', [UserController::class, 'conTact'])->name('contact');
 });
 Route::group([
     'as'     => 'discount.',

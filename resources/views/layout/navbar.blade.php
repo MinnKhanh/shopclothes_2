@@ -49,7 +49,7 @@
                                      thích</a>
                              </div>
                          </div>
-                         <a href="contact.html" class="nav-item nav-link">Kết Nối</a>
+                         <a href="{{ route('user.contact') }}" class="nav-item nav-link">Kết Nối</a>
                          @if (auth()->check() &&
                              (auth()->user()->hasRole('manager') ||
                                  auth()->user()->hasRole('admin')))
