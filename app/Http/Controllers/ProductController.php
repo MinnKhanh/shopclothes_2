@@ -76,9 +76,12 @@ class ProductController extends Controller
         if (auth()->check()) {
             $check = 1;
         }
+        $rate = Rate::groupBy('id_product')->select('id_product', DB::raw('(sum(rate.number_stars)/count(rate.id_product)) as stars'));
         $product = Products::with('Img', 'BrandProduct')
             ->join('categories', 'categories.id', 'products.category')
-            ->leftjoin('rate', 'rate.id_product', 'products.id');
+            ->leftjoinSub($rate, 'rate', function ($join) {
+                $join->on('products.id', '=', 'rate.id_product');
+            });
 
         if ($request->input('type')) {
             $types = explode('-', $request->input('type'));
@@ -105,10 +108,10 @@ class ProductController extends Controller
         if ($request->input('search')) {
             $product->where('products.name', 'like', '%' . $request->get('search') . '%');
         }
-        $product = $product->select(DB::raw('products.*,IFNULL(rate.number_stars,0) as star'));
+        $product = $product->select(DB::raw('products.*,IFNULL(rate.stars,0) as star'));
         if ($request->input('sort')) {
             if ($request->input('sort') == 'rate') {
-                $product->orderBy('rate.number_stars', 'DESC');
+                $product->orderBy('rate.stars', 'DESC');
             } else if ($request->input('sort') == 'created_at') {
                 $product->orderBy('products.created_at', 'DESC');
             }
