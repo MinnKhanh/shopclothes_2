@@ -59,8 +59,8 @@ class OrderExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
                     '',
                     '',
                     '',
-                    $this->product[$item->id_product],
                     $data->created_at,
+                    $this->product[$item->id_product],
                     $item->quantity,
                     $item->price
                 ];

@@ -69,16 +69,17 @@ Route::group([
     'prefix' => 'orders',
     'middleware' => 'auth'
 ], static function () {
-    Route::post('/', [OrderController::class, 'index'])->name('index');
+    Route::get('/', [OrderController::class, 'index'])->name('index');
     Route::get('/detail', [OrderController::class, 'OrderDetail'])->name('detail');
     Route::delete('/delete', [OrderController::class, 'delete'])->name('delete');
-    Route::post('/updateinfor/{id}', [OrderController::class, 'updateInfor'])->name('updateinfor');
+    Route::post('/updateinfor', [OrderController::class, 'updateInfor'])->name('updateinfor');
     Route::delete('/deletedetail', [OrderController::class, 'deleteDetail'])->name('deletedetail');
     Route::post('/update-order', [OrderController::class, 'updateOrder'])->name('updateorder');
     Route::get('/reject', [OrderController::class, 'rejectUpdate'])->name('reject');
     Route::put('/updatestatus', [OrderController::class, 'updateStatus'])->name('updatestatus');
     Route::get('/export', [OrderController::class, 'Export'])->name('export');
     Route::get('/redirect-to-list', [OrderController::class, 'redirectToList'])->name('redirecttolist');
+    Route::get('/print', [OrderController::class, 'ExportDetail'])->name('print');
 });
 Route::group([
     'as'     => 'auth.',
@@ -116,14 +117,15 @@ Route::group([
     'as'     => 'test.',
     'prefix' => 'test',
 ], static function () {
-    // Route::get('/', [Testcontroller::class, 'index'])->name('index');
+    Route::get('/', [Testcontroller::class, 'index'])->name('index');
     // Route::post('/import', [Testcontroller::class, 'import'])->name('import');
-    Route::get('/', function () {
-        $listdiscount = DB::table('discount_user')->join('discount', 'discount.id', 'discount_user.id_discount')
-            ->whereDate('begin', '<=', date('Y-m-d'))->whereDate('end', '>=', date('Y-m-d'))->get()->toArray();
-        // ->select('discount_user.id_customer', 'discount.id', 'discount.code', 'discount.name')->get()->toArray();
-        dd($count = DB::table('discount_user')->where('id_customer', auth()->user()->id)->where('id_discount', 2)->where('use', 0)->count());
-    })->name('put');
+    // Route::get('/', function () {
+    //     $listdiscount = DB::table('discount_user')->join('discount', 'discount.id', 'discount_user.id_discount')
+    //         ->whereDate('begin', '<=', date('Y-m-d'))->whereDate('end', '>=', date('Y-m-d'))->get()->toArray();
+    //     // ->select('discount_user.id_customer', 'discount.id', 'discount.code', 'discount.name')->get()->toArray();
+    //     dd($count = DB::table('discount_user')->where('id_customer', auth()->user()->id)->where('id_discount', 2)->where('use', 0)->count());
+    // })->name('put');
+
 });
 Route::get('auth/{social}', [AuthController::class, 'redirectToProvider'])->name('social');
 Route::get('auth/{social}/callback', [AuthController::class, 'handleProviderCallback']);

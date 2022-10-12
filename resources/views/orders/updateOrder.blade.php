@@ -14,9 +14,9 @@
         }
 
         /* .table{
-                padding-left: 3rem !important;
-                padding-right: 3rem !important;
-            } */
+                            padding-left: 3rem !important;
+                            padding-right: 3rem !important;
+                        } */
         .error {
             color: red !important;
         }
@@ -47,6 +47,9 @@
                 <div class="error">{{ $errors->first('msg') }}</div>
             @endif
             @csrf
+            @if ($admincheck == 1)
+                <input type="text" name="admincheck" class="d-none" value={{ $admincheck }}>
+            @endif
             <div class="col-lg-8">
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Billing
                         Address</span></h5>
@@ -159,7 +162,7 @@
                     </div>
                 </div>
                 <button class="btn btn-block btn-primary font-weight-bold py-3" type="submit">Cập Nhật</button>
-                <a href="{{ route('orders.reject', ['id' => $iduser]) }}"
+                <a href="{{ route('orders.reject', ['id' => $iduser, 'admincheck' => $admincheck]) }}"
                     class="btn btn-block btn-primary font-weight-bold py-3" type="button">Hủy</a>
             </div>
 

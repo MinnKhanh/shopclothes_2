@@ -18,7 +18,10 @@ class Testcontroller extends Controller
     }
     public function index(Request $request)
     {
-        return view('test.index');
+        $data = User::get();
+        return Excel::download(new TestEport(
+            $data
+        ), 'danhsachkhachhang' . date('Y-m-d-His') . '.xlsx');
     }
     public function put(Request $request)
     {

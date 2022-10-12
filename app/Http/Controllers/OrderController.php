@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderTypeEnum;
 use App\Enums\StatusOrderEnum;
+use App\Exports\OrderDetailExport;
 use App\Exports\OrderExport;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\OrderUpdate;
@@ -19,12 +20,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Calculation\Database\DGet;
 use Throwable;
 
 class OrderController extends Controller
 {
+    protected $page;
     public function __construct()
     {
+        $this->page = 3;
         // $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
         //     ->get()->toArray();
         parent::__construct();
@@ -90,9 +94,20 @@ class OrderController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->input('id')) {
-            $orders = Orders::where('id_customer', $request->input('id'))->where('type', OrderTypeEnum::OrderSell)->get()->toArray();
-            return view('orders.listorder', ['orders' => $orders, 'typenav' => $this->typenav, 'iduser' => $request->input('id')]);
+        $id = 0;
+        $querystringArray = [];
+        $admincheck = 0;
+        if ($request->input('admincheck')) {
+            $id = $request->input('id');
+            $admincheck = 1;
+            $querystringArray = ['id' => $id, 'admincheck' =>  $admincheck];
+        } else {
+            $id = auth()->user()->id;
+        }
+        if ($id) {
+            $orders = Orders::where('id_customer', $id)->where('type', OrderTypeEnum::OrderSell)->paginate($this->page)->appends($querystringArray);
+            //dd($orders);
+            return view('orders.listorder', ['orders' => $orders, 'typenav' => $this->typenav, 'iduser' => $id, 'admincheck' => $admincheck]);
         }
         return Redirect::route('index');
     }
@@ -138,12 +153,16 @@ class OrderController extends Controller
             }
         }
     }
-    public function updateInfor($id, Request $request)
+    public function updateInfor(Request $request)
     {
-        if ($id) {
-            $order = Orders::where('id', $id)->with('DiscountProduct')->first();
+        $admincheck = 0;
+        if ($request->input('admincheck')) {
+            $admincheck = 1;
+        }
+        if ($request->input('id')) {
+            $order = Orders::where('id', $request->input('id'))->with('DiscountProduct')->first();
             //  dd($order);
-            $orderdetail = OrderDetails::where('id_order', $id)
+            $orderdetail = OrderDetails::where('id_order', $request->input('id'))
                 ->join('product_detail', 'product_detail.id', 'order_details.id_product')
                 ->join('product_size', function ($join) {
                     $join->on('product_size.id_productdetail', '=', 'product_detail.id');
@@ -154,7 +173,7 @@ class OrderController extends Controller
                 ->join('size', 'size.id', 'product_size.size')
                 ->join('imgs', 'imgs.product_id', 'product_detail.id')->where('img_index', 1)
                 ->select('order_details.quantity', 'order_details.id_order', 'order_details.id_product', 'order_details.totalPrice', 'order_details.size', 'products.name', 'imgs.path', DB::raw('color.name as colorname'), DB::raw('size.name as sizename'))->get()->toArray();
-            return view('orders.updateorder', ['iduser' => $request->input('iduser'), 'order' => $order, 'orderdetail' => $orderdetail, 'id' => $id, 'typenav' => $this->typenav]);
+            return view('orders.updateorder', ['iduser' => $request->input('iduser'), 'order' => $order, 'orderdetail' => $orderdetail, 'id' => $request->input('id'), 'typenav' => $this->typenav, 'admincheck' => $admincheck]);
         }
     }
     public function deleteDetail(Request $request)
@@ -200,7 +219,10 @@ class OrderController extends Controller
                 'ship' => $request->input('ship')
             ]);
             DB::commit();
-            return Redirect::route('orders.redirecttolist', ['id' => $request->input('iduser')]);
+            if ($request->input('admincheck') == 1) {
+                return redirect()->route('orders.index', ['id' => $request->input('iduser'), 'admincheck' => 1]);
+            }
+            return Redirect::route('orders.index');
         } catch (Throwable $e) {
             DB::rollBack();
             return Redirect::back()->withInput($request->input())->withErrors(['msg' => 'Cập nhật thất bại vui lòng thử lại']);
@@ -209,7 +231,10 @@ class OrderController extends Controller
     public function rejectUpdate(Request $request)
     {
         Artisan::call('cache:clear');
-        return redirect()->route('orders.redirecttolist', ['id' => $request->input('id')]);
+        if ($request->input('admincheck') == 1) {
+            return redirect()->route('orders.index', ['id' => $request->input('id'), 'admincheck' => 1]);
+        }
+        return redirect()->route('orders.index');
     }
     public function updateStatus(Request $request)
     {
@@ -234,16 +259,63 @@ class OrderController extends Controller
     }
     public function Export(Request $request)
     {
-        $data = Orders::with('OrderDetail', 'Customers')->where('id_user', $request->input('id'))->where('type', 1)->get();
+        $data = Orders::with('OrderDetail', 'Customers')->where('id_customer', $request->input('id'))->where('type', 1)->get();
         $product = Products::join('product_detail', 'product_detail.id_product', 'products.id')->pluck('products.name', 'product_detail.id')->toArray();
-        // dd($product);
+        // dd($data);
         return Excel::download(new OrderExport(
             $data,
             $product
         ), 'DanhSachHoaDon' . date('Y-m-d-His') . '.xlsx');
     }
+    public function ExportDetail(Request $request)
+    {
+        $order = Orders::where('orders.id', $request->input('id'))->join('users', 'users.id', 'orders.id_customer');
+        $data = $order->join('order_details', 'order_details.id_order', 'orders.id')
+            ->join('product_detail', 'product_detail.id', 'order_details.id_product')
+            ->join('products', 'products.id', 'product_detail.id_product')
+            ->join('color', 'color.id', 'product_detail.id_color')
+            ->join('size', 'size.id', 'order_details.size')
+            ->select(
+                DB::raw(
+                    'products.name as name,
+                size.name as sizename,
+                color.name as colorname,
+                order_details.price as price,
+                order_details.quantity as count,
+                order_details.totalPrice as totalPrice'
+                )
+            )
+            ->get();
+        $info = $order->select(
+            DB::raw('users.name as username,users.address as address,orders.price,orders.discount')
+        )->first()->toArray();
+        // dd($data, $info);
+        return Excel::download(new OrderDetailExport(
+            $info['username'],
+            $info['address'],
+            $info['price'],
+            $info['discount'],
+            $data
+        ), 'HoaDon' . date('Y-m-d-His') . '.xlsx');
+    }
     public function redirectToList(Request $request)
     {
         return view('orders.redirect', ['id' => $request->input('id'), 'typenav' => $this->typenav]);
     }
+    // public function print(Request $request)
+    // {
+    //     if ($request->input('id')) {
+    //         $order = Orders::where('orders.id', $request->input('id'))->join('order_details', 'order_details.id_order', 'orders.id')
+    //             ->join('product_detail', 'product_detail.id', 'order_details.id_product')
+    //             ->join('products', 'products.id', 'product_detail.id_product')
+    //             ->join('color', 'color.id', 'product_detail.id_color')
+    //             ->join('size', 'size.id', 'order_details.size')
+    //             ->select(DB::raw('orders.id as idmain,product_detail.*,size.name as namesize'))
+    //             ->get();
+    //         // dd($order->all());
+    //         return Excel::download(new OrderDetailExport(
+    //             $order
+    //         ), 'DanhSachHoaDon' . date('Y-m-d-His') . '.xlsx');
+    //     }
+    // }
 }

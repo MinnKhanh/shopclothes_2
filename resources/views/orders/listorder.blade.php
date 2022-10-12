@@ -41,12 +41,11 @@ use App\Enums\StatusOrderEnum;
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 100px">
             <h1 class="font-weight-semi-bold text-uppercase">Hóa Đơn</h1>
         </div>
-        <a href="{{ route('orders.export', ['id' => auth()->user()->id]) }}" type="submit"
-            class="btn btn-primary mb-3 ml-5">Export</a>
+        <a href="{{ route('orders.export', ['id' => $iduser]) }}" type="submit" class="btn btn-primary mb-3 ml-5">Export</a>
     </div>
     <!-- Page Header End -->
 
-    <table class="table container">
+    <table class="table container table-bordered">
         <thead class="thead-dark">
             <tr>
                 <th scope="col" class="text-center">#</th>
@@ -67,16 +66,16 @@ use App\Enums\StatusOrderEnum;
             @endphp
             @forelse ($orders as $item)
                 <tr>
-                    <td scope="col">{{ ++$i }}</td>
-                    <td scope="col">{{ $item['name'] }}</td>
-                    <td scope="col">{{ $item['email'] }}</td>
-                    <td scope="col">{{ $item['address'] }}</td>
-                    <td scope="col">{{ $item['created_at'] }}</td>
-                    <td scope="col">{{ $item['quantity'] }}</td>
-                    <td scope="col">{{ $item['price'] }}</td>
-                    <td scope="col">{{ $item['ship'] }}</td>
-                    <td scope="col">
-                        <select name="status" id="status"
+                    <td scope="col" class="align-middle text-center">{{ ++$i }}</td>
+                    <td scope="col" class="align-middle text-center">{{ $item['name'] }}</td>
+                    <td scope="col" class="align-middle text-center">{{ $item['email'] }}</td>
+                    <td scope="col" class="align-middle text-center">{{ $item['address'] }}</td>
+                    <td scope="col" class="align-middle text-center">{{ $item['created_at'] }}</td>
+                    <td scope="col" class="align-middle text-center">{{ $item['quantity'] }}</td>
+                    <td scope="col" class="align-middle text-center">{{ $item['price'] }}</td>
+                    <td scope="col" class="align-middle text-center">{{ $item['ship'] }}</td>
+                    <td scope="col" class="align-middle text-center">
+                        <select name="status" class="status"
                             {{ auth()->user()->hasDirectPermission('Admin')? '': 'disabled' }} data-id={{ $item['id'] }}>
                             @foreach (StatusOrderEnum::getValues() as $itemsta)
                                 <option {{ $item['status'] == $itemsta ? 'selected' : '' }} value="{{ $itemsta }}">
@@ -84,7 +83,7 @@ use App\Enums\StatusOrderEnum;
                             @endforeach
                         </select>
                     </td>
-                    <td class=" d-flex justify-content-center flex-column">
+                    <td scope="col" class="align-middle">
                         {{-- <button type="button" class="btn btn-warning buttondetail" style="" data-id={{$item['id']}} data-toggle="modal" data-target="#modalbrand">Chi Tiết</button> --}}
                         <a class="btn btn-primary btn-sm shadow-none rounded-0 w-100 mb-1 buttondetail detail primary"
                             style="margin-right:10px" data-id={{ $item['id'] }} data-toggle="modal"
@@ -93,20 +92,18 @@ use App\Enums\StatusOrderEnum;
                             <a class="btn btn-danger btn-sm shadow-none rounded-0 w-100 mb-1 delete"
                                 style="margin-right:10px" data-id={{ $item['id'] }}>Xóa</a>
                         @endif
-                        <form action="{{ route('orders.updateinfor', ['id' => $item['id'], 'iduser' => $iduser]) }}"
-                            method="POST">
+                        <form action="{{ route('orders.updateinfor') }}" method="POST">
                             @csrf
-                            <input type="text" name="id" value={{ $item['id'] }} class="d-none">
-                            <input type="text" name="iduser" value={{ $iduser }} class="d-none">
+                            @if ($admincheck == 1)
+                                <input type="text" name="admincheck" class="d-none" value={{ $admincheck }}>
+                            @endif
+                            <input type="text" name="id" class="d-none" value={{ $item['id'] }}>
+                            <input type="text" name="iduser" class="d-none" value={{ $iduser }}>
                             <button class="btn btn-success btn-sm shadow-none rounded-0 w-100 mb-1 edit">Sửa</button>
                         </form>
-                        {{-- <a href="{{ route('orders.updateinfor', ['id' => $item['id'], 'iduser' => $iduser]) }}"
-                            class="edit" data-id={{ $item['id'] }}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
-                            </svg></a> --}}
+                        <a class="btn btn-info btn-sm shadow-none rounded-0 w-100 mb-1"
+                            href="{{ route('orders.print', ['id' => $item['id']]) }}" style="margin-right:10px"
+                            data-id={{ $item['id'] }}>In</a>
                     </td>
 
                 </tr>
@@ -114,6 +111,7 @@ use App\Enums\StatusOrderEnum;
             @endforelse
         </tbody>
     </table>
+    {{ $orders->links() }}
 
 @endsection
 @section('modal')
@@ -198,7 +196,7 @@ use App\Enums\StatusOrderEnum;
                     }
                 });
             })
-            $('#status').change(function() {
+            $('.status').change(function() {
                 let status = $(this).val()
                 let id = $(this).attr('data-id')
                 console.log('data', status, id)

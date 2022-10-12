@@ -26,6 +26,11 @@
         .buttoncate {
             width: 30%;
         }
+
+        .table th,
+        .table td {
+            padding: .2rem !important;
+        }
     </style>
 @endpush
 @section('content')
@@ -57,22 +62,22 @@
                             $i = 0;
                         @endphp
                         @forelse ($customers as $item)
-                            <tr>
+                            <tr scope="col" class="align-middle text-center">
                                 <td>{{ $i++ }}</td>
                                 <td class="itemimg">
-                                    <img class="img-fluid img"
+                                    <img class="img-fluid img mt-2"
                                         src='{{ asset('storage/' . (isset($item['img'][0]) ? $item['img'][0]['path'] : '')) }}'
                                         alt="">
                                 </td>
-                                <td>{{ $item['name'] }}</td>
-                                <td>{{ $item['age'] }}</td>
-                                <td>{{ $item['gender'] }}</td>
-                                <td>{{ $item['email'] }}</td>
-                                <td>{{ $item['phone'] }}</td>
-                                <td>{{ $item['address'] }}</td>
-                                <td>{{ $item['city'] }}</td>
-                                <td>{{ $item['district'] }}</td>
-                                <td class="custom">
+                                <td scope="col" class="align-middle text-center">{{ $item['name'] }}</td>
+                                <td scope="col" class="align-middle text-center">{{ $item['age'] }}</td>
+                                <td scope="col" class="align-middle text-center">{{ $item['gender'] }}</td>
+                                <td scope="col" class="align-middle text-center">{{ $item['email'] }}</td>
+                                <td scope="col" class="align-middle text-center">{{ $item['phone'] }}</td>
+                                <td scope="col" class="align-middle text-center">{{ $item['address'] }}</td>
+                                <td scope="col" class="align-middle text-center">{{ $item['city'] }}</td>
+                                <td scope="col" class="align-middle text-center">{{ $item['district'] }}</td>
+                                <td class="custom align-middle text-center" scope="col">
                                     <form action="{{ route('user.index') }}" method="POST">
                                         @csrf
                                         <input type="text" class="d-none" name="id" value={{ $item['id'] }}>
@@ -93,9 +98,9 @@
                                                 d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
                                         </svg> Xóa
                                     </button>
-                                    <form action="{{ route('orders.index') }}" method="Post">
-                                        @csrf
+                                    <form action="{{ route('orders.index') }}" method="GET">
                                         <input type="text" class="d-none" name="id" value={{ $item['id'] }}>
+                                        <input type="text" class="d-none" name="admincheck" value=1>
                                         <button class="btn btn-info btn-sm mb-2 d-block buttonchange">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                 fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">

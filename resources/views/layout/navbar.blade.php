@@ -59,9 +59,7 @@
                              </div>
                          @endif
                          @if (auth()->check())
-                             <form action="{{ route('orders.index') }}" method="POST" class="nav-item">
-                                 @csrf
-                                 <input type="text" class="d-none" value="{{ auth()->user()->id }}" name="id">
+                             <form action="{{ route('orders.index') }}" method="GET" class="nav-item">
                                  <input type="submit" href="{{ route('orders.index') }}"
                                      style="background: none;border: none;" class="nav-link" value="Hóa Đơn">
                              </form>

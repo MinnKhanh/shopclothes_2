@@ -8,30 +8,45 @@ use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-class TestEport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell
+class OrderDetailExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell
 {
-    private $data;
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function __construct($data)
+    private $data;
+    private $name;
+    private $address;
+    private $price;
+    private $discount;
+    private $insex;
+    public function __construct($name, $address, $price, $discount, $data)
     {
+        $this->name = $name;
+        $this->address = $address;
         $this->data = $data;
+        $this->price = $price;
+        $this->discount = $discount;
+        $this->index = 0;
     }
     public function collection()
     {
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
         return $this->data;
     }
     public function map($data): array
     {
+        $this->index++;
+
         return [
-            $data->name,
-            $data->phone,
-            $data->email
+            $this->index,
+            $data->name . $data->colorname . ' (size: ' . $data->sizename . ')',
+            $data->count,
+            $data->price,
+            $data->totalPrice
         ];
     }
     public function headings(): array
@@ -52,7 +67,11 @@ class TestEport implements FromCollection, WithHeadings, WithMapping, ShouldAuto
     {
         // dd($this->data->count());
         $count = $this->data->count() + 10;
-        return [AfterSheet::class => function (AfterSheet $event) use ($count) {
+        $name = $this->name;
+        $address = $this->address;
+        $discount = $this->discount;
+        $price = $this->price;
+        return [AfterSheet::class => function (AfterSheet $event) use ($count, $name, $address, $price, $discount) {
             $default_font_style = [
                 'font' => [
                     'name' => 'Times New Roman', 'size' => 12, 'color' => ['argb' => '#FFFFFF'],
@@ -72,28 +91,20 @@ class TestEport implements FromCollection, WithHeadings, WithMapping, ShouldAuto
             };
             $cellRange = 'A1:E1';
             $active_sheet->mergeCells($cellRange);
+            $active_sheet->getStyle($cellRange)->getFont()->setBold(true);
             $active_sheet->getStyle($cellRange)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $active_sheet->setCellValue('A1', 'MULTI SHOP');
             $active_sheet->mergeCellsByColumnAndRow(1, 2, 5, 3)->getStyle('A2:E2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+            $active_sheet->getStyle('A2:E2')->getFont()->setBold(true);
             $active_sheet->setCellValue('A2', 'HÓA ĐƠN BÁN HÀNG');
             $active_sheet->mergeCells('A5:C5');
-            $active_sheet->setCellValue('A5', 'Tên Khách Hàng: ');
+            $active_sheet->setCellValue('A5', 'Tên Khách Hàng: ' . $name);
             $active_sheet->mergeCells('A6:C6');
-            $active_sheet->setCellValue('A6', 'Địa Chỉ: ');
+            $active_sheet->setCellValue('A6', 'Địa Chỉ: ' . $address);
             $endRange = "A$count:E$count";
             $active_sheet->mergeCells($endRange);
-            $active_sheet->setCellValue("A$count", 'Tổng Tiền: ');
+            $active_sheet->setCellValue("A$count", 'Tổng Tiền: ' . (floatval($price) - floatval($discount)) . ' - ' . 'Khuyến Mại: ' . $discount);
             $active_sheet->getStyle($endRange)->getFont()->setBold(true);
-            // $active_sheet->getStyle($cellRange)->applyFromArray($default_font_style);
-            // $active_sheet->getStyle($cellRange)->getFont()
-            //     ->getColor()->setRGB('000000');
-            // $active_sheet->getStyle($cellRange)->getFill()
-            //     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            //     ->getStartColor()->setARGB('00d6d6c2');
-            // $active_sheet->getStyle($cellRange)->getAlignment()->applyFromArray(
-            //     array('horizontal' => 'center', 'vertical' => 'center')
-            // );
-            // $active_sheet->getStyle($cellRange)->getFont()->setBold(true);
         },];
     }
 }
