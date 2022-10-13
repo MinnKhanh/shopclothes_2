@@ -12,6 +12,7 @@ use App\Models\Type;
 use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
@@ -46,5 +47,6 @@ class AppServiceProvider extends ServiceProvider
             7 => Discount::class,
             8 => Introduce::class
         ]);
+        Paginator::useBootstrap();
     }
 }

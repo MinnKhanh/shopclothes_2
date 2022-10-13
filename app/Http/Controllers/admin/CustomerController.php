@@ -13,15 +13,17 @@ use Throwable;
 
 class CustomerController extends Controller
 {
+    protected $page;
     public function __construct()
     {
+        $this->page = 3;
         $this->typenav = Type::with('Img', 'Categories')->withCount('Product')
             ->get()->toArray();
         parent::__construct();
     }
     public function index(Request $request)
     {
-        $customers = User::with('Img')->get()->toArray();
+        $customers = User::with('Img')->paginate($this->page);
         return view('admin.customers.index', ['typenav' => $this->typenav, 'customers' => $customers]);
     }
     public function deletecustomer(Request $request)

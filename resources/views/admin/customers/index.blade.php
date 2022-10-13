@@ -31,6 +31,11 @@
         .table td {
             padding: .2rem !important;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
     </style>
 @endpush
 @section('content')
@@ -116,6 +121,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                {{ $customers->links() }}
             </div>
         </div>
     </div>

@@ -33,6 +33,11 @@ use App\Enums\StatusOrderEnum;
         .table td {
             padding: 20px 5px !important;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
     </style>
 @endpush
 @section('content')
