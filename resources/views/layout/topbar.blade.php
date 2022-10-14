@@ -20,6 +20,12 @@
                              <a href="{{ route('auth.logout') }}" class="dropdown-item" type="button">Đăng xuất</a>
                              <a href="{{ route('auth.updateaccont') }}" class="dropdown-item" type="button">Đổi mật
                                  khẩu</a>
+                             <form action="{{ route('user.index') }}" method="POST" class="nav-item">
+                                 @csrf
+                                 <input type="text" class="d-none" name="id" value={{ auth()->user()->id }}>
+                                 <input type="submit" style="background: none;border: none;" class="nav-link"
+                                     value="Cập nhật thông tin">
+                             </form>
                          @endif
                          <a href="{{ route('auth.register') }}" class="dropdown-item" type="button">Đăng kí</a>
                      </div>

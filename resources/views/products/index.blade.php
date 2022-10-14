@@ -404,6 +404,7 @@
               checkUrl()
 
               function getProduct() {
+                  $(".container-spin").fadeIn("fast");
                   //   console.log("{{ route('product.listproduct') }}" + '?type=' + Maphanloai + '&category=' + categories +
                   //       '&price=' + rangePrice + '&search=' + search + '&sort=' + sort)
                   $.ajax({
@@ -413,7 +414,7 @@
                       success: function(response) {
                           console.log(response);
                           showproduct(response)
-
+                          $(".container-spin").fadeOut("fast");
                       }
                   })
               }

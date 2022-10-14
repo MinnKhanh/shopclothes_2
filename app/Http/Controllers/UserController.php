@@ -21,7 +21,7 @@ class UserController extends Controller
     }
     public function index(Request $request)
     {
-        if (auth()->check()) {
+        if ($request->input('id')) {
             $user = User::with('Img')->where('id', $request->input('id'))->get()->toArray();
             return view('customer.userinfo', ['typenav' => $this->typenav, 'user' => $user[0]]);
         }

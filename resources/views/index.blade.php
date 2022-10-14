@@ -88,11 +88,68 @@
             font-size: .8rem;
             border-radius: 1px;
         }
+
+        .container-spin {
+            position: fixed;
+            display: inline-block;
+            box-sizing: border-box;
+            padding: 30px;
+            width: 25%;
+            height: 140px;
+            z-index: 10;
+            top: 50%;
+            left: 50%;
+            transform: translate(-23%, -28%)
+        }
+
+
+        .circle {
+            box-sizing: border-box;
+            width: 5rem;
+            height: 5rem;
+            border-radius: 100%;
+            border: 10px solid rgba(133, 130, 128, .3);
+            border-top-color: yellow;
+            animation: spin 1s infinite linear;
+        }
+
+        .circleloader {
+            position: absolute;
+            box-sizing: border-box;
+            top: 50%;
+            margin-top: -10px;
+            border-radius: 16px;
+            width: 80px;
+            height: 20px;
+            padding: 4px;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .circleloader:before {
+            content: '';
+            position: absolute;
+            border-radius: 16px;
+            width: 20px;
+            height: 12px;
+            left: 0;
+            background: #fff;
+            animation: push 1s infinite linear;
+        }
+
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 @endpush
 
 @section('content')
     <!-- Carousel Start -->
+    <div class="container-spin">
+        <div class="circle"></div>
+    </div>
     <div class="container-fluid mb-3">
         <div class="row px-xl-5">
             <div class="col-lg-12">
@@ -439,5 +496,8 @@
                 }
             });
         })
+        $(window).on("load", function() {
+            $(".container-spin").fadeOut("fast");
+        });
     </script>
 @endpush

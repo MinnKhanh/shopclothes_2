@@ -305,6 +305,7 @@
         })
 
         function sumitform(formData, obj) {
+            $(".container-spin").fadeIn("fast");
             console.log(obj.attr('action'), 'dd')
             $.ajax({
                 url: obj.attr('action'),
@@ -317,6 +318,7 @@
                 cache: false,
                 enctype: 'multipart/form-data',
                 success: function(response) {
+                    $(".container-spin").fadeOut("fast");
                     Swal.fire({
                         icon: 'success',
                         title: 'Thêm thành công',
@@ -325,6 +327,7 @@
                     })
                 },
                 error: function(response) {
+                    $(".container-spin").fadeOut("fast");
                     object = response.responseJSON ? response.responseJSON.errors : {}
                     for (const property in object) {
                         obj.find('.error' + property).text(object[property][0])
