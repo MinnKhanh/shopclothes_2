@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class OrderImportRequest extends FormRequest
+class SupplierRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,15 +24,14 @@ class OrderImportRequest extends FormRequest
      */
     public function rules()
     {
-        $check = request('exists') ? ['idsupplier' => ['required', 'numeric', 'min:1'], 'ship' => ['required']] : [
+        $check = [
             'name' => ['required', 'string'],
-            'phone' => ['required', 'string', Rule::unique('suppliers', 'phone')],
-            'email' => ['required', 'string', 'regex:/^.+@.+$/', Rule::unique('suppliers', 'email')],
+            'phone' => ['required', 'string', Rule::unique('suppliers', 'phone')->ignore(request('id'), 'id')],
+            'email' => ['required', 'string', 'regex:/^.+@.+$/', Rule::unique('suppliers', 'email')->ignore(request('id'), 'id')],
             'address' => ['required', 'string'],
             'city' => ['required', 'string'],
             'district' => ['required', 'string'],
             'country' => ['required', 'string'],
-            'ship' => ['required'],
         ];
         return $check;
     }

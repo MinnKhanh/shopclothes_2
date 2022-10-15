@@ -8,6 +8,7 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ProductController as ControllersProductController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\SizeController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TypeController;
 use App\Models\Color;
 use App\Models\ProductDetail;
@@ -48,3 +49,4 @@ Route::get('/get-type-by-id', [TypeController::class, 'getTypeById'])->name('get
 Route::get('/discounts', [DiscountController::class, 'getList'])->name('discounts');
 Route::get('/discountbyid', [DiscountController::class, 'getDiscountById'])->name('discountbyid');
 Route::get('/ship', [ShipController::class, 'getShip'])->name('ship');
+Route::get('/supplier', [SupplierController::class, 'getSupplier'])->name('supplier');

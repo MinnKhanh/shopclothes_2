@@ -8,6 +8,7 @@ use App\Models\Discount;
 use App\Models\Introduce;
 use App\Models\ProductDetail;
 use App\Models\Products;
+use App\Models\Suppliers;
 use App\Models\Type;
 use App\Models\User;
 use Illuminate\Support\ServiceProvider;
@@ -45,7 +46,8 @@ class AppServiceProvider extends ServiceProvider
             4 => Categories::class,
             6 => User::class,
             7 => Discount::class,
-            8 => Introduce::class
+            8 => Introduce::class,
+            9 => Suppliers::class
         ]);
         Paginator::useBootstrap();
     }

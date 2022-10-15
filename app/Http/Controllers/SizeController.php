@@ -27,7 +27,8 @@ class SizeController extends Controller
             $data = Products::where('products.id', $request->input('id'))
                 ->join('product_detail', 'product_detail.id_product', 'products.id')
                 ->join('product_size', 'product_size.id_productdetail', 'product_detail.id')
-                ->join('size', 'size.id', 'product_size.size')->where('product_detail.id_color', $request->input('color'));
+                ->join('size', 'size.id', 'product_size.size')->where('product_detail.id_color', $request->input('color'))
+                ->whereNull('product_size.deleted_at')->whereNull('product_detail.deleted_at');
             if ($request->input('q')) {
                 $data->where('size.name', 'like', '%' . $request->input('q') . '%');
             }

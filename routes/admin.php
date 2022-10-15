@@ -12,6 +12,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderImportController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\StatisticalController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TypeController;
 use App\Models\favorite;
 use App\Models\Orders;
@@ -186,4 +187,15 @@ Route::group([
 ], static function () {
     Route::get('/', [ShipController::class, 'index'])->name('index');
     Route::put('/update', [ShipController::class, 'update'])->name('update');
+});
+Route::group([
+    'as'     => 'supplier.',
+    'prefix' => 'supplier',
+    'middleware' => 'checkadmin'
+], static function () {
+    Route::get('/', [SupplierController::class, 'index'])->name('index');
+    Route::get('/create', [SupplierController::class, 'create'])->name('create');
+    Route::post('/store', [SupplierController::class, 'store'])->name('store');
+    Route::get('/update', [SupplierController::class, 'update'])->name('update');
+    Route::delete('/delete', [SupplierController::class, 'delete'])->name('delete');
 });

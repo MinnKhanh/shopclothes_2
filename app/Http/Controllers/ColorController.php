@@ -34,7 +34,7 @@ class ColorController extends Controller
         if ($request->input('id')) {
             $data = Products::where('products.id', $request->input('id'))
                 ->join('product_detail', 'product_detail.id_product', 'products.id')
-                ->join('color', 'color.id', 'product_detail.id_color');
+                ->join('color', 'color.id', 'product_detail.id_color')->whereNull('color.deleted_at');
             if ($request->input('q')) {
                 $data->where('color.name', 'like', '%' . $request->get('q') . '%');
             }

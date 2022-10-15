@@ -11,6 +11,7 @@ use App\Models\Orders;
 use App\Models\ProductDetail;
 use App\Models\Products;
 use App\Models\ProductSize;
+use App\Models\Suppliers;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -129,7 +130,8 @@ class OrderImportController extends Controller
     public function checkOut(Request $request)
     {
         $cart = Session('cartimport') ? Session('cartimport') : null;
-        return view('admin.orderimport.checkout', ['typenav' => $this->typenav, 'cart' => $cart]);
+        $suppliers = Suppliers::get()->toArray();
+        return view('admin.orderimport.checkout', ['typenav' => $this->typenav, 'cart' => $cart, 'suppliers' => $suppliers]);
     }
     public function CreateOrder(OrderImportRequest $request)
     {
@@ -138,25 +140,60 @@ class OrderImportController extends Controller
         try {
             $cart = Session::get('cartimport') ? Session::get('cartimport') : null;
             if ($cart != null) {
-                $order = Orders::create([
-                    'id_user' => 1,
-                    'price' => $cart->getTotalMoney(),
-                    'quantity' => $cart->getTotalQuantity(),
-                    'type' => OrderTypeEnum::OrderImport,
-                    'payment_method' => 1,
-                    'note' => $request->input('note') ? $request->input('note') : '',
-                    'address' => $request->input('address'),
-                    'discount' => 0,
-                    'name' => $request->input('name'),
-                    'phone' => $request->input('phone'),
-                    'email' => $request->input('email'),
-                    'country' => $request->input('country'),
-                    'city' => $request->input('city'),
-                    'district' => $request->input('district'),
-                    'zip_code' => $request->input('zip_code') ? $request->input('zip_code') : '',
-                    'status' => StatusOrderEnum::Delivered,
-                    'ship' => $request->input('ship')
-                ]);
+                if (!$request->input('idsupplier')) {
+                    $supplier = Suppliers::create([
+                        'name' => $request->input('name'),
+                        'address' => $request->input('address'),
+                        'city' => $request->input('city'),
+                        'district' => $request->input('district'),
+                        'email' => $request->input('email'),
+                        'phone' => $request->input('phone'),
+                        'country' => $request->input('country')
+                    ]);
+                    $order = Orders::create([
+                        'id_user' => 1,
+                        'id_customer' => $supplier->id,
+                        'price' => $cart->getTotalMoney(),
+                        'quantity' => $cart->getTotalQuantity(),
+                        'type' => OrderTypeEnum::OrderImport,
+                        'payment_method' => 1,
+                        'note' => $request->input('note') ? $request->input('note') : '',
+                        'address' => $request->input('address'),
+                        'discount' => 0,
+                        'name' => $request->input('name'),
+                        'phone' => $request->input('phone'),
+                        'email' => $request->input('email'),
+                        'country' => $request->input('country'),
+                        'city' => $request->input('city'),
+                        'district' => $request->input('district'),
+                        'zip_code' => $request->input('zip_code') ? $request->input('zip_code') : '',
+                        'status' => StatusOrderEnum::Delivered,
+                        'ship' => $request->input('ship')
+                    ]);
+                } else {
+                    $supplier = Suppliers::where('id', $request->input('idsupplier'))->first();
+                    $order = Orders::create([
+                        'id_user' => 1,
+                        'id_customer' => $request->input('idsupplier'),
+                        'price' => $cart->getTotalMoney(),
+                        'quantity' => $cart->getTotalQuantity(),
+                        'type' => OrderTypeEnum::OrderImport,
+                        'payment_method' => 1,
+                        'note' => $request->input('note') ? $request->input('note') : '',
+                        'address' => $supplier->address,
+                        'discount' => 0,
+                        'name' => $supplier->name,
+                        'phone' => $supplier->phone,
+                        'email' => $supplier->email,
+                        'country' => $supplier->country,
+                        'city' => $supplier->city,
+                        'district' => $supplier->district,
+                        'zip_code' => $request->input('zip_code') ? $request->input('zip_code') : '',
+                        'status' => StatusOrderEnum::Delivered,
+                        'ship' => $request->input('ship')
+                    ]);
+                }
+
                 foreach ($cart->getProductInCart() as $item) {
                     $productsize = ProductSize::where('size', $item['productInfo']['idsize'])->where('id_productdetail', $item['productInfo']['idProductDetail'])->first();
 

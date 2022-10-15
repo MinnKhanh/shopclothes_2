@@ -28,7 +28,7 @@
                     @endif
                     <div class="row col-12">
                         <div class="col-md-6 form-group mb-4">
-                            <label>Tên Loại</label>
+                            <label>Tên</label>
                             <input class="form-control shadow-none rounded-0" id="namecategory" type="text"
                                 name="name" value={{ isset($brand) ? $brand['name'] : '' }}>
                             @if ($errors->has('name'))

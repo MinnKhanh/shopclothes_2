@@ -286,7 +286,7 @@
                         ${index}
                     </option>`)
             })
-            if ($('.city').val) {
+            if ($('.city').val()) {
                 let path = $(".city option:selected").data('path')
                 let array = path.split("/");
                 loadDistrict(array[2])
