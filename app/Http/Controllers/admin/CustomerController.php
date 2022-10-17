@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendNotification;
 use App\Models\OrderDetails;
 use App\Models\Orders;
 use App\Models\Type;
@@ -42,5 +43,19 @@ class CustomerController extends Controller
             DB::rollBack();
             return response()->json(['eror' => "Xóa thất bại"], 400);
         }
+    }
+    public function sendNotification(Request $request)
+    {
+        $message = $request->input('message');
+        $logo = optional($request->file('photo'))->store('public/introduce_img');
+        $logo = str_replace("public/", "", $logo);
+        $header = $request->input('name');
+        // dd([$header, $logo, $message]);
+        SendNotification::dispatch(array($header, $logo, $message), User::whereNull('provider_id')->get());
+        return redirect()->route('admin.customers.viewsendnotification');
+    }
+    public function viewSendNotification(Request $request)
+    {
+        return view('admin.notifications.send', ['typenav' => $this->typenav]);
     }
 }

@@ -193,5 +193,22 @@
                 </div>
             </div>
         </div>
+        <div class="col-xxl-3 col-sm-4 col-12">
+            <div class="card bg-success text-white">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="card-body__info">
+                        <h4>Send Notifications</h4>
+                        <span>Gửi Thông Báo</span>
+                    </div>
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-center">
+                    <a class="text-white" href="{{ route('admin.customers.viewsendnotification') }}">
+                        Xem chi tiết
+                        <i class="fas fa-arrow-alt-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

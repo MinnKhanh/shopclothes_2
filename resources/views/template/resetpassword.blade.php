@@ -11,8 +11,8 @@
 <body>
     <h3>{{ $messenger }}</h3>
     <form action="{{ route('auth.resetpassword') }}" method="GET">
-        <input type="text" value='{{ $email }}' style="display: none;" name='email'>
-        <input type="text" value='{{ $token }}' style="display: none;" name='token'>
+        <input type="text" style="display: none;" name='email' value='{{ $email }}'>
+        <input type="text" style="display: none;" name='token' value='{{ $token }}'>
         <button class="btn btn-primary mb-3">Go</button>
     </form>
 </body>

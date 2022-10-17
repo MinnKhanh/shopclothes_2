@@ -69,6 +69,9 @@ class AuthController extends Controller
     }
     public function logout(Request $request)
     {
+        User::where('id', auth()->user()->id)->update([
+            'remember_token' => null
+        ]);
         Auth::logout();
         Artisan::call('cache:clear');
         $request->session()->invalidate();
@@ -83,7 +86,7 @@ class AuthController extends Controller
     {
         Artisan::call('cache:clear');
         $remember = $request->input('remember') ? true : false;
-        if (Auth::attempt(['username' => $request->input('email'), 'password' => $request->password], $remember)) {
+        if (Auth::attempt(['username' => $request->input('email'), 'password' => $request->input('password')], $remember)) {
             return redirect(session('link'));
         } else
             return Redirect::back()->withErrors(['msg' => 'Đăng nhập thất bại, có thể bạn đã nhập sai tài khoản hoặc mật khẩu vui lòng thử lại']);
@@ -124,13 +127,12 @@ class AuthController extends Controller
             $exit = DB::table('password_resets')->where('token', $request->input('token_email'))->where('email', $request->input('email'))->count();
             if ($exit) {
                 $password = Hash::make($request->input('newpassword'));
-                DB::enableQueryLog();
-                User::where('email', $request->input('email'))->update([
+                User::where('email', $request->input('email'))->whereNull('deleted_at')->whereNull('provider_id')->update([
                     'password' => $password
                 ]);
                 DB::table('password_resets')->where('token', $request->input('token_email'))->where('email', $request->input('email'))->delete();
-                // dd(User::where('email', $request->input('email'))->get()->toArray());
                 DB::commit();
+                // dd($password);
                 return redirect()->route('auth.login');
             } else {
                 throw new Exception("Thay đổi thất bại", 30);
@@ -148,7 +150,7 @@ class AuthController extends Controller
     public function sendConfirm(Request $request)
     {
         if ($request->input('email')) {
-            $count = User::where('email', $request->input('email'))->get()->count();
+            $count = User::where('email', $request->input('email'))->whereNull('provider_id')->get()->count();
             if ($count) {
                 $token = md5($request->input('email') . now());
                 DB::table('password_resets')->insert([

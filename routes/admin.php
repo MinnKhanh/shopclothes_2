@@ -114,6 +114,8 @@ Route::group([
     Route::get('/create', [CustomerController::class, 'create'])->name('create');
     Route::post('/store', [CustomerController::class, 'store'])->name('store');
     Route::delete('/deleteCustomer', [CustomerController::class, 'deletecustomer'])->name('deletecustomer');
+    Route::post('/send-notification', [CustomerController::class, 'sendNotification'])->name('sendnotification');
+    Route::get('/view-send-notification', [CustomerController::class, 'viewSendNotification'])->name('viewsendnotification');
 });
 Route::group([
     'as'     => 'introduce.',
