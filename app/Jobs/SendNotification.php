@@ -26,6 +26,7 @@ class SendNotification implements ShouldQueue
     {
         $this->messenger = $messenger;
         $this->data = $data;
+        $this->queue = 'notification';
     }
     /**
      * Execute the job.

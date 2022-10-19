@@ -51,7 +51,7 @@ class CustomerController extends Controller
         $logo = str_replace("public/", "", $logo);
         $header = $request->input('name');
         // dd([$header, $logo, $message]);
-        SendNotification::dispatch(array($header, $logo, $message), User::whereNull('provider_id')->get());
+        SendNotification::dispatch(array($header, $logo, $message), User::whereNull('provider_id')->get())->delay(now()->addSeconds(10));
         return redirect()->route('admin.customers.viewsendnotification');
     }
     public function viewSendNotification(Request $request)
