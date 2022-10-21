@@ -13,9 +13,9 @@ class UpdateColumnForeignkyey extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign('orders_id_customer_foreign');
-        });
+        // Schema::table('orders', function (Blueprint $table) {
+        //     $table->dropForeign('orders_id_customer_foreign');
+        // });
     }
 
     /**
