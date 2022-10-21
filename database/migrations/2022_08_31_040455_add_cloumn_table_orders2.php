@@ -14,7 +14,7 @@ class AddCloumnTableOrders2 extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('zip_code')->nullable();
+            $table->string('zip_code')->nullable()->change();
         });
     }
 
