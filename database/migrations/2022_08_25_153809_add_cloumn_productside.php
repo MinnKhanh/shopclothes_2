@@ -14,8 +14,8 @@ class AddCloumnProductside extends Migration
     public function up()
     {
         Schema::create('product_size', function (Blueprint $table) {
-            $table->integer('id_productdetail');
-            $table->integer('size');
+            $table->bigInteger('id_productdetail')->unsigned();
+            $table->bigInteger('size')->unsigned();
             $table->integer('quantity');
             $table->softDeletes();
         });

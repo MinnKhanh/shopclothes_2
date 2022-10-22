@@ -18,6 +18,9 @@ class CreateIntroduces extends Migration
             $table->string('title');
             $table->string('description');
             $table->integer('index');
+            $table->integer('type');
+            $table->string('link');
+            $table->integer('active');
             $table->integer('relate_id')->nullable();
         });
     }

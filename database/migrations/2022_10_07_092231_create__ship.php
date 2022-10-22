@@ -13,9 +13,7 @@ class CreateShip extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('Ship');
-        Schema::dropIfExists('ship');
-        Schema::create('Ship', function (Blueprint $table) {
+        Schema::create('ship', function (Blueprint $table) {
             $table->id();
             $table->integer('location');
             $table->integer('price');
@@ -29,6 +27,6 @@ class CreateShip extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('_ship');
+        Schema::dropIfExists('ship');
     }
 }

@@ -21,7 +21,7 @@ class CreateSuppliers extends Migration
             $table->string('district');
             $table->string('email')->unique();
             $table->string('phone')->unique();
-            $table->integer('country');
+            $table->string('country');
             $table->softDeletes();
             $table->timestamps();
         });

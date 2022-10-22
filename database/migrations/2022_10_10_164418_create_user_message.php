@@ -16,7 +16,6 @@ class CreateUserMessage extends Migration
         Schema::create('user_message', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('id_user')->unsigned();
-            $table->foreign('id_user')->references('id')->on('users');
             $table->string('name');
             $table->string('email');
             $table->string('message');

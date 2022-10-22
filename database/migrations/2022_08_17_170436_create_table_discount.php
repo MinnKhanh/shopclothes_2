@@ -22,6 +22,10 @@ class CreateTableDiscount extends Migration
             $table->date('end');
             $table->softDeletes();
             $table->timestamps();
+            $table->string('code');
+            $table->string('discription')->nullable();
+            $table->integer('unit');
+            $table->integer('show');
         });
     }
 

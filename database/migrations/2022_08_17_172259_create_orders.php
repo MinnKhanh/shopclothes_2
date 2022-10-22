@@ -13,6 +13,7 @@ class CreateOrders extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('orders');
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('id_customer')->unsigned()->nullable();
@@ -24,6 +25,15 @@ class CreateOrders extends Migration
             $table->string('note')->nullable();
             $table->string('address')->nullable();
             $table->integer('discount')->nullable();
+            $table->integer('status');
+            $table->string('name');
+            $table->string('phone');
+            $table->string('email');
+            $table->string('country')->nullable();
+            $table->string('city');
+            $table->string('district');
+            $table->string('zip_code')->nullable();
+            $table->double('ship');
             $table->softDeletes();
             $table->timestamps();
         });

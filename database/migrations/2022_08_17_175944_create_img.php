@@ -16,8 +16,9 @@ class CreateImg extends Migration
         Schema::create('imgs', function (Blueprint $table) {
             $table->id();
             $table->string('path');
-            $table->integer('id_product');
+            $table->integer('product_id');
             $table->integer('type');
+            $table->integer('img_index');
             $table->softDeletes();
         });
     }

@@ -15,8 +15,8 @@ class CreateBills extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('id_user')->unsigned()->change();
-            $table->bigInteger('customer')->unsigned()->change();
+            $table->bigInteger('id_user')->unsigned();
+            $table->bigInteger('customer')->unsigned();
             $table->float('price');
             $table->string('reason')->nullable();
             $table->softDeletes();

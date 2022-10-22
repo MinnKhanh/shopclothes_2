@@ -14,8 +14,8 @@ class CreateTableDiscountdetail extends Migration
     public function up()
     {
         Schema::create('discount_detail', function (Blueprint $table) {
+            $table->bigInteger('id_discount')->unsigned();
             $table->integer('condition');
-            $table->bigInteger('id_discount')->unsigned()->change();
             $table->softDeletes();
         });
     }
