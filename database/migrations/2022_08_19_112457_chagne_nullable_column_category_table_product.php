@@ -14,7 +14,7 @@ class ChagneNullableColumnCategoryTableProduct extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->integer('category')->nullable()->change();
+            // $table->integer('category')->nullable()->change();
         });
     }
 
