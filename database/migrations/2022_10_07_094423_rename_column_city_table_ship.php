@@ -14,7 +14,7 @@ class RenameColumnCityTableShip extends Migration
     public function up()
     {
         Schema::table(
-            'Ship',
+            'ship',
             function (Blueprint $table) {
                 $table->renameColumn('city', 'location');
             }
