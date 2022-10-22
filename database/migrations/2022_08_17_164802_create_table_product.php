@@ -18,14 +18,14 @@ class CreateTableProduct extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->integer('quantity');
-            $table->integer('category');
             $table->float('priceImport');
             $table->float('priceSell');
-            $table->integer('type');
-            $table->integer('supplier')->nullable();
             $table->softDeletes();
-            $table->integer('brand');
             $table->timestamps();
+            $table->bigInteger('category')->unsigned()->change();
+            $table->bigInteger('type')->unsigned()->change();
+            $table->bigInteger('brand')->unsigned()->change();
+            $table->bigInteger('supplier')->unsigned()->change();
         });
     }
 

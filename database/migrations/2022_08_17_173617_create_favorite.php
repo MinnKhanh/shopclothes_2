@@ -14,8 +14,8 @@ class CreateFavorite extends Migration
     public function up()
     {
         Schema::create('favorite', function (Blueprint $table) {
-            $table->integer('id_product');
-            $table->integer('id_customer');
+            $table->bigInteger('id_product')->unsigned()->change();
+            $table->bigInteger('id_customer')->unsigned()->change();
             $table->softDeletes();
             $table->timestamps();
         });

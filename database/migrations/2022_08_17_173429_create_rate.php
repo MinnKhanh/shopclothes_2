@@ -14,8 +14,8 @@ class CreateRate extends Migration
     public function up()
     {
         Schema::create('rate', function (Blueprint $table) {
-            $table->integer('id_product');
-            $table->integer('id_customer');
+            $table->bigInteger('id_product')->unsigned()->change();
+            $table->bigInteger('id_customer')->unsigned()->change();
             $table->integer('number_stars');
             $table->softDeletes();
             $table->timestamps();

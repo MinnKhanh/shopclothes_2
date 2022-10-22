@@ -14,8 +14,8 @@ class CreateTableConditions extends Migration
     public function up()
     {
         Schema::create('discount_user', function (Blueprint $table) {
-            $table->integer('id_customer');
-            $table->integer('id_discount');
+            $table->bigInteger('id_customer')->unsigned()->change();
+            $table->bigInteger('id_discount')->unsigned()->change();
             $table->softDeletes();
         });
     }
