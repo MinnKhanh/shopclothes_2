@@ -43,29 +43,35 @@ class AuthController extends Controller
     }
     public function register(Request $request)
     {
-
+        Artisan::call('cache:clear');
         $listroles = DB::table('permissions')->pluck('name', 'id');
         return view('auth.register', ['typenav' => $this->typenav, 'listroles' => $listroles]);
     }
     public function registering(RegisterRequest $request)
     {
-        Artisan::call('cache:clear');
-        $password = Hash::make($request->password);
-        $roles     = $request->input('role');
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => $password,
-            'phone' => $request->input('phone'),
-            'username' => $request->input('username') ? $request->input('username') : $request->email
-        ]);
-        $user->syncRoles($roles);
-        $rolePermissions = DB::table('role_has_permissions')->whereIn('role_id', [$roles])->get()->pluck('permission_id')->unique()->toArray();
-        $user->permissions()->sync($rolePermissions);
-        // RegisterEvent::dispatch($user);
-        SendEmail::dispatch('Chúc mừng bạn đã đăng kí tài khoản thành công', $user);
-        // Auth::login($user);
-        return redirect()->route('auth.login');
+        DB::beginTransaction();
+        try {
+            Artisan::call('cache:clear');
+            $password = Hash::make($request->password);
+            $roles     = $request->input('role');
+            $user = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => $password,
+                'phone' => $request->input('phone'),
+                'username' => $request->input('username') ? $request->input('username') : $request->email
+            ]);
+            $user->syncRoles($roles);
+            $rolePermissions = DB::table('role_has_permissions')->whereIn('role_id', [$roles])->get()->pluck('permission_id')->unique()->toArray();
+            $user->permissions()->sync($rolePermissions);
+            // RegisterEvent::dispatch($user);
+            SendEmail::dispatch('Chúc mừng bạn đã đăng kí tài khoản thành công', $user);
+            // Auth::login($user);
+            return redirect()->route('auth.login');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return Redirect::back()->withInput($request->input())->withErrors(['msg' => 'Đăng kí thất bại']);
+        }
     }
     public function logout(Request $request)
     {
