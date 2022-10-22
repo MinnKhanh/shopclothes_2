@@ -13,12 +13,12 @@ class RenameColumnCityTableShip extends Migration
      */
     public function up()
     {
-        Schema::table(
-            'ship',
-            function (Blueprint $table) {
-                $table->renameColumn('city', 'location');
-            }
-        );
+        // Schema::table(
+        //     'ship',
+        //     function (Blueprint $table) {
+        //         $table->renameColumn('city', 'location');
+        //     }
+        // );
     }
 
     /**
