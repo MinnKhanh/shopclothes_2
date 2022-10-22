@@ -14,7 +14,7 @@ class AddCustomerId extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->bigInteger('id_customer')->nullable();
+            // $table->bigInteger('id_customer')->unsigned()->nullable();
         });
     }
 

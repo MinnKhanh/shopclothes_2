@@ -15,8 +15,8 @@ class CreateOrders extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_customer');
-            $table->integer('id_user');
+            $table->bigInteger('id_customer')->unsigned()->nullable();
+            $table->bigInteger('id_user')->unsigned()->nullable();
             $table->float('price', 15, 2);
             $table->integer('quantity');
             $table->integer('type');

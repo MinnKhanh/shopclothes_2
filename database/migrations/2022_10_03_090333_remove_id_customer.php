@@ -14,7 +14,7 @@ class RemoveIdCustomer extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('id_customer');
+            //  $table->dropColumn('id_customer');
         });
     }
 

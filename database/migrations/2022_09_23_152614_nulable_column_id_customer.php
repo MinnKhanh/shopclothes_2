@@ -14,7 +14,7 @@ class NulableColumnIdCustomer extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->integer('id_customer')->nullable()->change();
+            //  $table->integer('id_customer')->nullable()->change();
         });
     }
 
