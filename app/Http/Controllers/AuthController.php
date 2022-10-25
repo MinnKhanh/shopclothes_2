@@ -50,6 +50,7 @@ class AuthController extends Controller
     }
     public function registering(RegisterRequest $request)
     {
+        dd(User::all());
         DB::beginTransaction();
         try {
             Artisan::call('cache:clear');
@@ -65,9 +66,7 @@ class AuthController extends Controller
             $user->syncRoles($roles);
             $rolePermissions = DB::table('role_has_permissions')->whereIn('role_id', [$roles])->get()->pluck('permission_id')->unique()->toArray();
             $user->permissions()->sync($rolePermissions);
-            // RegisterEvent::dispatch($user);
             SendEmail::dispatch('Chúc mừng bạn đã đăng kí tài khoản thành công', $user);
-            // Auth::login($user);
             return redirect()->route('auth.login');
         } catch (Throwable $e) {
             DB::rollBack();
