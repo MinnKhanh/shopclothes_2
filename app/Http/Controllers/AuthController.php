@@ -44,7 +44,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         Artisan::call('cache:clear');
-        $listroles = DB::table('permissions')->pluck('name', 'id');
+        $listroles = DB::table('roles')->pluck('name', 'id');
         return view('auth.register', ['typenav' => $this->typenav, 'listroles' => $listroles]);
     }
     public function registering(RegisterRequest $request)

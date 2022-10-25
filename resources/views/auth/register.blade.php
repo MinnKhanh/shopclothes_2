@@ -53,13 +53,14 @@
                         type="text">
                         {{-- {{auth()->check()?(auth()->user()->hasDirectPermission('Admin')?'':'d-none'):'d-none'}} --}}
                         @foreach ($listroles as $key => $item)
-                            <option value={{ $key }} {{ $key == 2 ? 'selected="selected"' : '' }}>{{ $item }}
+                            <option value={{ $key }} {{ $key == 2 ? 'selected="selected"' : '' }}>
+                                {{ $item }}
                             </option>
                         @endforeach
                     </select>
                     <span class="field-validation-valid text-danger mb-3">
-                        @if ($errors->has('permiss'))
-                            {{ $errors->first('permiss') }}
+                        @if ($errors->has('role'))
+                            {{ $errors->first('role') }}
                         @endif
                     </span>
                     <button class="btn btn-primary rounded-0 shadow-none mb-3">Đăng ký</button>
