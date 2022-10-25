@@ -67,7 +67,7 @@ class AuthController extends Controller
             $rolePermissions = DB::table('role_has_permissions')->whereIn('role_id', [$roles])->get()->pluck('permission_id')->unique()->toArray();
             $user->permissions()->sync($rolePermissions);
             SendEmail::dispatch('Chúc mừng bạn đã đăng kí tài khoản thành công', $user);
-            dd(User::all());
+            DB::commit();
             return redirect()->route('auth.login');
         } catch (Throwable $e) {
             DB::rollBack();
