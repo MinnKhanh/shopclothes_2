@@ -37,6 +37,9 @@
             <a href="{{ route('admin.type.create') }}" type="submit" class="btn btn-primary mb-3">Thêm</a>
             <div class="custom-datatable bg-light p-30 table-responsive">
                 <table id="classify-table" class="table table-bordered text-center align-items-center">
+                    @php
+                        dd($typenav);
+                    @endphp
                     <thead class="align-middle table-dark">
                         <tr>
                             <th>#</th>
